@@ -1,0 +1,93 @@
+/**
+ * Magic icon insertions
+ */
+.prepend_icon_hamburger:before {
+  content: " \2261 ";
+}
+.prepend_icon_white_flag:before {
+  content: " \2690 ";
+}
+.prepend_icon_circle_1:before {
+  content: " \278A ";
+}
+.prepend_icon_circle_2:before {
+  content: " \278B ";
+}
+.prepend_icon_circle_3:before {
+  content: " \278C ";
+}
+.prepend_icon_circle_4:before {
+  content: " \278D ";
+}
+.prepend_icon_circle_5:before {
+  content: " \278E ";
+}
+.prepend_icon_circle_6:before {
+  content: " \278F ";
+}
+.prepend_icon_circle_7:before {
+  content: " \2790 ";
+}
+.prepend_icon_circle_8:before {
+  content: " \2791 ";
+}
+.prepend_icon_circle_9:before {
+  content: " \2792 ";
+}
+.prepend_icon_circle_10:before {
+  content: " \2793 ";
+}
+.prepend_icon_calendar:before {
+  content: " \25A6 ";
+}
+.prepend_icon_location:before {
+  content: " \2609 ";
+}
+.prepend_icon_helmet:before {
+  content: " \26D1 ";
+}
+.append_icon_hamburger:after {
+  content: " \2261 ";
+}
+.append_icon_white_flag:after {
+  content: " \2690 ";
+}
+.append_icon_circle_1:after {
+  content: " \278A ";
+}
+.append_icon_circle_2:after {
+  content: " \278B ";
+}
+.append_icon_circle_3:after {
+  content: " \278C ";
+}
+.append_icon_circle_4:after {
+  content: " \278D ";
+}
+.append_icon_circle_5:after {
+  content: " \278E ";
+}
+.append_icon_circle_6:after {
+  content: " \278F ";
+}
+.append_icon_circle_7:after {
+  content: " \2790 ";
+}
+.append_icon_circle_8:after {
+  content: " \2791 ";
+}
+.append_icon_circle_9:after {
+  content: " \2792 ";
+}
+.append_icon_circle_10:after {
+  content: " \2793 ";
+}
+.append_icon_calendar:after {
+  content: " \25A6 ";
+}
+.append_icon_location:after {
+  content: " \2609 ";
+}
+.append_icon_helmt:after {
+  content: " \26D1 ";
+}

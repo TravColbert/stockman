@@ -1,0 +1,550 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Stock-Man</title>
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <link rel="stylesheet" media="all" href="js/normalize.css">
+    <link rel="stylesheet" media="all" href="js/laminar-base.css">
+    <link rel="stylesheet" media="all" href="js/Laminar.Layouts/laminar-unicode-icons.css">
+    <!--<link rel="stylesheet" href="../../Libraries/font-awesome-4.7.0/css/font-awesome.min.css">-->
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <!-- Cinzel is all CAPS. Looks nice as a title -->
+    <link href="https://fonts.googleapis.com/css?family=Cinzel|Comfortaa" rel="stylesheet">
+    <!--<link href="https://fonts.googleapis.com/css?family=Saira" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Muli" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Play" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Inconsolata" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Lora" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Playfair+Display" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Rokkitt" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet">
+    -->
+    <link href="https://fonts.googleapis.com/css?family=Josefin+Slab" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Sanchez" rel="stylesheet">
+    <style>
+      body {
+        /*color: #303040;*/
+        color: gray;
+        /*background-color: #ff3030;*/
+        /*background: linear-gradient(to bottom, rgba(255,255,255,0.15) 0%, rgba(0,0,0,0.15) 100%), radial-gradient(at top center, rgba(255,255,255,0.40) 0%, rgba(0,0,0,0.40) 120%) rgb(255,255,255);*/
+        /*background-blend-mode: multiply,multiply;*/
+        background-image: linear-gradient(to top, #d5d4d0 0%, #d5d4d0 1%, #eeeeec 31%, #efeeec 75%, #e9e9e7 100%);
+        font-family: 'Sanchez', monospace;
+      }
+      #background {
+        position: absolute;
+        bottom: 0;
+        z-index: 1;
+        overflow: hidden;
+        /*
+        background-image: url(../../my_profile/face7_cropped_newscopy.png);
+        background-size: contain;
+        background-repeat: no-repeat;
+        background-attachment: fixed;
+        background-position: bottom;
+        height: 100%;
+        width: 100%;
+        */
+      }
+      header,
+      sidebar,
+      footer {
+        /*background-color: white;*/
+      }
+      #my_portrait {
+        height: 100%;
+        width: auto;
+      }
+      #main {
+        /*background-color: #fafafa;*/
+      }
+      #messagebody {
+      }
+      #messagebody, #settingmenu {
+        overflow: auto;
+      }
+      #messagebody, #settingmenu li {
+        padding: 0.6em;
+      }
+      #settingmenu {
+        /*background-color: white;*/
+        background: rgba(255,227,129,0.4);
+      }
+      #settingmenu ol {
+        list-style-type: none;
+        padding: 0;
+        margin: 0;
+      }
+      #settingmenu li {
+        /*border-bottom: 1px solid #ddd;*/
+        /*overflow: hidden;*/
+        flex: 0 0 auto;
+      }
+      #settingmenu li:first-child {
+        padding-top: 0.75em;
+      }
+      #settingmenu li:last-child {
+        border: 0;
+      }
+      #settingmenu li > a {
+        font-size: 1.6em;
+        white-space: nowrap;
+      }
+      .linktext {
+        margin: 0 1em;
+        margin-left: 0.5em;
+        font-size: 0.8em;
+      }
+      article {
+        /*font-family: 'Comfortaa', sans-serif;*/
+        z-index: 1;
+      }
+      article:not(.active) {
+        opacity: 0;
+        visibility: hidden;
+        height: 0;
+        display: none;
+      }
+      .top-border {
+        border-top: 1px solid black;
+      }
+      /*
+      #portrait {
+        position: absolute;
+        bottom: 48px;
+        z-index: 0;
+        align-self: center;
+      }
+      #portrait img {
+        height: 100%;
+        width: auto;
+      }
+      */
+      /**
+       * LINK styling
+       */
+      a {
+        text-decoration: none;
+        color: gray;
+      }
+      /**
+       * NAV styling
+       */
+      nav {
+        align-items: baseline;
+      }
+      #menu-title div {
+        font-family: 'Cinzel', serif;
+        font-size: 1.6em;
+        white-space: nowrap;
+        letter-spacing: 2px;
+        color: #ff3030;
+      }
+      #menu-title label {
+        font-size: 2em;
+      }
+      nav > a {
+        display: none;
+      }
+      nav > #show-menu, nav label {
+        display: none;
+      }
+      nav ul, nav ol {
+        list-style-type: none;
+        padding: 0;
+        margin: 0;
+      }
+      /**
+       * FOOTER
+       */
+      nav, footer {
+        padding: 0.3em 0.6em;
+      }
+      footer {
+        font-size: .8em;
+        /*font-family: 'Cinzel', serif;*/
+      }
+
+      /**
+       * Reactivity candy
+       */
+      #settingmenu li:hover {
+        background-color: #ff8181;
+      }
+      #settingmenu li:hover a {
+        color: white;
+      }
+      #settingmenu li a:target {
+        background-color: #ff8181;
+        color: white;
+      }
+      #settingmenu li a:active {
+        background-color: #ff8181;
+        color: white;
+      }
+
+      /**
+       * Specific Article-Types
+       */
+      #home {
+        font-size: 2em;
+        text-shadow: 0px 2px 3px rgba(0,0,0,0.2);
+      }
+      #title {
+        font-family: 'Cinzel',serif;
+        font-size: 2.5em;
+        color: #ff8181;
+        display: flex;
+        flex: 0 0 auto;
+      }
+      #blurb {
+        padding-top: 0.25em;
+        display: flex;
+        flex: 0 0 auto;
+        color: gray;
+      }
+      /* SKILL GRAPH */
+      #skillsblurb {
+        text-align: justify;
+      }
+      #skillsgraphcontainer {
+        font-size: 0.55em;
+      }
+      .skillbutton {
+        padding: 0.5em 1em;
+        /* background-color: rgba(47,45,46,0.2); */
+        border: 1px solid gray;
+        border-radius: 1px;
+        box-shadow: 0 0px 3px rgba(0,0,0,0.3);
+        margin-bottom: 0.5em;
+        font-size: 1.8em;
+        /* font-weight: bold; */
+      }
+      .skillbutton:active {
+        box-shadow: none;
+      }
+      #skilllist {
+        font-family: 'Comfortaa', sans-serif;
+      }
+      .skillrecord {
+        margin-bottom: 0.15em;
+      }
+      .skilllabel {
+        /*text-shadow: 0px 0px 2px #473D3D;*/
+      }
+      .skillgraph {
+        /*
+        border-radius: 8px;
+        border: 1px solid rgba(255,255,255,0.3);
+        background-color: rgba(120,120,120,0.1);;
+        box-shadow: inset 1px 2px 3px rgba(0,0,0,0.3);
+        */
+      }
+      .skillscore {
+        color: #F6F6F6;
+        font-size: 0.8em;
+        border-radius: 2px;
+        /* border: 1px solid rgba(255,255,255,0.7); */
+        /* background-color: rgb(129, 187, 151); */
+        background-color: #ae3434;
+        margin: 5px;
+        padding: 5px;
+        text-shadow: 0px 0px 2px #473D3D;
+        box-shadow: 0px 2px 3px rgba(0,0,0,0.3);
+      }
+
+
+
+      @media only screen and (max-width: 767px) {
+        #title {
+          font-size: 1.6em;
+        }
+        #menu-title div {
+          letter-spacing: 0px;
+        }
+      }
+      @media screen and (max-width: 424px) {
+        nav {
+          align-items: initial;
+        }
+        nav #menu-title {
+          font-size: 1.3em;
+          /*font-weight: bold;*/
+        }
+        nav label {
+          display: flex;
+        }
+        nav > #show-menu:checked ~ ul {
+          display: flex;
+        }
+        nav > ul, nav > ol {
+          background-color: white;
+          padding: 0 0.6em;
+        }
+        nav li {
+          padding: 0.6em;
+          border-bottom: 1px solid #ddd;
+        }
+        nav li:last-child {
+          border: 0;
+        }
+        #settingmenu {
+          border-right: 1px solid gray;
+          /*background: rgba(244,213,141,1);*/
+          background: rgba(255,227,129,1);
+        }
+        #settingmenu .linktext {
+          display: none;
+        }
+        #settingmenu li {
+          justify-content: center;
+        }
+      }
+      @media screen and (max-width: 768px) and (orientation: landscape) {
+        #background {
+          opacity: 0.3;
+        }
+      }
+    </style>
+  </head>
+  <body class="main-static footer-static">
+    <div id="background" class="layout-sm-height-2-5 layout-height-1-2 layout-width-1-1 layout-justify-center">
+      <img id="my_portrait" src="../../my_profile/face7_cropped_newscopy.png" class="">
+    </div>
+    <section id="main" class="layout-row layout-width-1-1 layout-z-center">
+      <div id="settingmenu" class="layout-col"><!-- set the width with .layout-width-2-8 -->
+        <ol class="layout-col">
+          <li class="transition-all layout-row" alt="Home">
+            <a class="layout-row layout-align-center transition-all" href="#home">
+              <i class="material-icons">home</i>
+              <span class="linktext">Home</span>
+            </a>
+          </li>
+          <li class="transition-all layout-row" alt="Skills"><a class="layout-row layout-align-center transition-all" href="#skills"><i class="material-icons">school</i><span class="linktext">Skills</span></a></li>
+          <li class="transition-all layout-row" alt="Blog"><a class="layout-row layout-align-center transition-all" href="#blog"><i class="material-icons">create</i><span class="linktext">Blog</span></a></li>
+          <li class="transition-all layout-row" alt="Projects"><a class="layout-row layout-align-center transition-all" href="#projects"><i class="material-icons">lightbulb_outline</i><span class="linktext">Projects</span></a></li>
+          <li class="transition-all layout-row" alt="Labs"><a class="layout-row layout-align-center transition-all" href="#labs"><i class="material-icons">whatshot</i><span class="linktext">Labs</span></a></li>
+          <li class="transition-all layout-row" alt="Links"><a class="layout-row layout-align-center transition-all" href="#links"><i class="material-icons">link</i><span class="linktext">Links</span></a></li>
+        </ol>
+      </div>
+      <section id="messagebody" class="layout-col layout-sm-size-x2 layout-md-size-x3 layout-size-x4">
+        <article id="home" class="active transition-all layout-col layout-height-1-1 layout-justify-start layout-align-center">
+          <div class="layout-col layout-xs-width-1-1 layout-sm-width-1-1 layout-width-4-5 layout-height-1-2">
+            <div id="blurb" class="">I'm</div>
+            <div id="title" class="layout-width-1-1 layout-justify-start">Travis Colbert</div>
+            <div id="blurb" class="">I build unique and highly-vertical web and mobile applications</div>
+          </div>
+        </article>
+        <article id="skills" class="transition-all layout-col layout-width-1-1 layout-align-center">
+          <div class="layout-row layout-sm-col layout-width-4-5">
+            <div id="skillsblurb" class="layout-col layout-xs-hidden layout-width-5-12 layout-sm-width-1-1">
+              <div class="layout-sm-hidden">I want to appeal to clients who value an honest and communicative partner. To that end I present to you my objective assessment of my strengths.</div>
+              <div>Use this handy chart to get an idea of what my strengths are.</div>
+            </div>
+            <div class="layout-xs-hidden layout-sm-hidden layout-width-1-12"></div>
+            <div id="skillsgraphcontainer" class="layout-col layout-xs-width-1-1 layout-sm-width-1-1 layout-width-6-12">
+              <div class="layout-row layout-width-1-1 layout-justify-around">
+                <span id="button_dev_fu" class="skillbutton layout-width-1-3 text-align-center">Dev-Fu</span>
+                <span id="button_ops_fu" class="skillbutton layout-width-1-3 text-align-center">Ops-Fu</span>
+              </div>
+              <div id="skilllist" class="layout-col layout-width-1-1"></div>
+            </div>
+          </div>
+        </article>
+        <article id="blog" class="transition-all">
+          Questions From Readers
+          Why does 1 Corinthians 10:8 say that 23,000 Israelites fell in one day for committing fornication, while Numbers 25:9 gives the figure as 24,000?
+          There are several factors that may account for the difference in the figures given in these two verses. The simplest one could be that the actual number is somewhere between 23,000 and 24,000, thus allowing it to be rounded off in either direction.
+          Consider another possibility. The apostle Paul cited the account of the Israelites at Shittim as a warning example to Christians in ancient Corinth, a city notorious for its licentious way of life. He wrote: “Neither let us practice fornication, as some of them committed fornication, only to fall, twenty-three thousand of them in one day.” Singling out those who were put to death by Jehovah because they committed fornication, Paul gave the number as 23,000.—1 Corinthians 10:8.
+          Numbers chapter 25, however, tells us that “Israel attached itself to the Baal of Peor; and the anger of Jehovah began to blaze against Israel.” Then, Jehovah commanded Moses to execute “all the head ones of the people.” Moses, in turn, ordered the judges to carry out that command. Finally, when Phinehas acted quickly to put to death the Israelite who brought a Midianite woman into the camp, “the scourge was halted.” The account ends with the statement: “Those who died from the scourge amounted to twenty-four thousand.”—Numbers 25:1-9.
+          The figure given in Numbers evidently included “the head ones of the people” executed by the judges and those executed directly by Jehovah. There might well have been a thousand of those head ones who died at the hands of the judges, bringing the number to 24,000. Whether these head ones, or ringleaders, committed fornication, participated in the festivities, or gave consent to those who did, they were guilty of having “an attachment with the Baal of Peor.”
+          Regarding the word “attachment,” one Bible reference work explains that it can mean “to bind one’s self to a person.” The Israelites were a people dedicated to Jehovah, but when they formed “an attachment with the Baal of Peor,” they broke their dedicated relationship with God. Some 700 years later, through the prophet Hosea, Jehovah said of the Israelites: “They themselves went in to Baal of Peor, and they proceeded to dedicate themselves to the shameful thing, and they came to be disgusting like the thing of their love.” (Hosea 9:10) All those who did so were deserving of adverse divine judgment. Thus, Moses reminded the sons of Israel: “Your own eyes are the ones that saw what Jehovah did in the case of the Baal of Peor, that every man who walked after the Baal of Peor was the one whom Jehovah your God annihilated from your midst.”—Deuteronomy 4:3.
+        </article>
+        <article id="projects" class="transition-all">
+          BAAL OF PEOR
+          (Baʹal of Peʹor).
+          The particular Baal worshiped at Mount Peor by both Moabites and Midianites. (Nu 25:1, 3, 6) It has been suggested that Baal of Peor may actually have been Chemosh, in view of the fact that the latter deity was the chief god of the Moabites. (Nu 21:29) As with Baalism generally, grossly licentious rites were probably connected with the worship of Baal of Peor. The Israelites, while encamped at Shittim on the high plains of Moab, were enticed into immorality and idolatry by the female worshipers of this god.—Nu 25:1-18; De 4:3; Ps 106:28; Ho 9:10; Re 2:14.
+          Israel’s sin in connection with Baal of Peor resulted in Jehovah’s sending a death-dealing scourge that killed thousands of Israelites. A question arises as to the number of those actually killed by the scourge in view of a seeming discrepancy between Numbers 25:9 and 1 Corinthians 10:8. Apparently 23,000 were directly killed by the scourge, whereas 1,000 “head ones” or ringleaders were killed by the judges of Israel and then hung up, exposed to public view.—Nu 25:4, 5; see BAAL No. 4.
+        </article>
+        <article id="labs" class="transition-all">
+          BAAL
+          (Baʹal) [Owner; Master].
+          1. The fourth-listed son of Jeiel, a Benjamite.—1Ch 8:29, 30; 9:35, 36.
+          2. A Reubenite whose son Beerah was among those taken captive by the Assyrian king Tiglath-pileser III.—1Ch 5:5, 6, 26.
+          3. A Simeonite enclave city within the territory of Judah, apparently the same as Baalath-beer and Ramah of the south (or Negeb).—Compare 1Ch 4:32, 33 and Jos 19:7-9.
+          4. In the Scriptures, the Hebrew word baʹʽal is employed with reference to (1) a husband as owner of his wife (Ge 20:3); (2) landowners (Jos 24:11, ftn); (3) “owners of the nations” (Isa 16:8, ftn); (4) “confederates” (literally, “owners [masters] of a covenant”) (Ge 14:13, ftn); (5) owners or possessors of tangibles (Ex 21:28, 34; 22:8; 2Ki 1:8, ftn); (6) persons or things having something that is characteristic of their nature, manner, occupation, and the like, for example, an archer (literally, “owner of arrows”) (Ge 49:23), a “creditor of the debt” (literally, “owner of a debt of his hand”) (De 15:2), “anyone given to anger” (literally, “owner of anger”) (Pr 22:24), “judicial antagonist” (literally, “owner of judgment”) (Isa 50:8, ftn); (7) Jehovah (Ho 2:16); (8) false gods (Jg 2:11, 13).
+          The term hab·Baʹʽal (the Baal) is the designation applied to the false god Baal. The expression hab·Beʽa·limʹ (the Baals) refers to the various local deities thought of as owning or possessing and having influence over particular places.
+          The term “Baal” occurs once in the Christian Greek Scriptures, in Romans 11:4, where it is preceded in the Greek text by the feminine article he. Commenting on the use of the feminine article before “Baal” in the Greek Septuagint and Romans 11:4, John Newton wrote in an essay on Baal worship: “Though he is of the masculine gender in the Hebrew, [hab·Baʹʽal], the lord, yet Baal is called [he Baʹal], = the lady, in the Septuagint; Hos. ii. 8; Zeph. i. 4; and in the New Testament, Romans xi. 4. At the licentious worship of this androgyne, or two-sexed god, the men on certain occasions wore female garments, whilst the women appeared in male attire, brandishing weapons.”—Ancient Pagan and Modern Christian Symbolism, by T. Inman, 1875, p. 119.
+          At times in Israel’s history Jehovah was referred to as “Baal,” in the sense of his being the Owner or Husband of the nation. (Isa 54:5) Also, the Israelites may have improperly associated Jehovah with Baal in their apostasy. The latter appears to be borne out by Hosea’s prophecy that the time would come when Israel, after going into and being restored from exile, would repentantly call Jehovah “My husband,” and no more “My owner” (“My Baal,” AT). The context suggests that the designation “Baal” and its associations with the false god would never again pass the lips of the Israelites. (Ho 2:9-17) The bad connotation that appears to have become attached to the Hebrew word baʹʽal because of its association with the degraded worship of Baal is thought by some to be the reason the writer of Second Samuel used the names “Ish-bosheth” and “Mephibosheth” (boʹsheth means shame) instead of “Eshbaal” and “Merib-baal.”—2Sa 2:8; 9:6; 1Ch 8:33, 34; see ISH-BOSHETH.
+          Baal Worship. Little was known about Baal worship aside from the many Scriptural references to it until excavations at Ugarit (the modern Ras Shamra on the Syrian coast opposite the NE tip of the island of Cyprus) brought to light many religious artifacts and hundreds of clay tablets. Many of these ancient documents, now known as the Ras Shamra texts, are thought to be the liturgies of or words spoken by those participating in the rituals at the religious festivals.
+          In the Ras Shamra texts, Baal (also called Aliyan [the one who prevails] Baal) is referred to as “Zabul [Prince], Lord of the Earth” and “the Rider of the Clouds.” This harmonizes with a representation of Baal, showing him as holding a club or mace in his right hand and a stylized lightning flash with a spearhead in his left. He is also depicted as wearing a helmet with horns, suggesting an intimate connection with the bull, a symbol of fertility.
+          Normally from late April to September there is hardly any rain in Palestine. In October the rains start and continue throughout winter and into April, resulting in abundant vegetation. The changes of the seasons and the resulting effects were thought to come in cycles because of the never-ending conflicts between the gods. The cessation of the rains and the dying of vegetation were attributed to the triumph of the god Mot (death and aridity) over Baal (rain and fertility), compelling Baal to withdraw into the depths of the earth. The beginning of the rainy season was believed to indicate that Baal had awakened to life. This, it was thought, was made possible by the triumph of Baal’s sister Anath over Mot, allowing her brother Baal to return to his throne. The mating of Baal with his wife, presumably Ashtoreth, was believed to ensure fertility for the coming year.
+          The farming and cattle-raising Canaanites probably thought that their engaging in a prescribed ritual, a sort of sympathetic magic, helped to stimulate their gods to action according to the pattern enacted at their religious festivals and was necessary to ensure productive crops and herds in the coming year and to avert droughts, locust plagues, and so forth. Hence Baal’s coming to life again to be enthroned and mated with his consort apparently was celebrated with licentious fertility rites, marked by sexual orgies of unrestrained debauchery.
+          Undoubtedly each Canaanite city built its Baal sanctuary in honor of its local patron Baal. Priests were appointed to conduct the worship at these sanctuaries and the many shrines on neighboring hilltops known as high places. (Compare 2Ki 17:32.) Inside the shrines there may have been images or representations of Baal, whereas near the altars outside were to be found stone pillars (likely phallic symbols of Baal), sacred poles representing the goddess Asherah, and incense stands. (Compare 2Ch 34:4-7; see SACRED POLE.) Male and female prostitutes served at the high places, and besides ceremonial prostitution, even child sacrifice was practiced. (Compare 1Ki 14:23, 24; Ho 4:13, 14; Isa 57:5; Jer 7:31; 19:5.) Worship of Baal was also carried out right on the housetops of the people, from where sacrificial smoke to their god was frequently seen to rise.—Jer 32:29.
+          There are indications that Baal and other gods and goddesses of the Canaanite pantheon were associated in the minds of their worshipers with certain heavenly bodies. For instance, one of the Ras Shamra texts mentions an offering to “Queen Shapash (the Sun) and to the stars,” and another alludes to “the army of the sun and the host of the day.”
+        </article>
+        <!--<div id="portrait" class="layout-justify-center layout-height-2-5 layout-xs-height-1-3 layout-sm-height-1-3"><img id="myface" src="face7_cropped.png"></div>-->
+      </section>
+    </section>
+    <footer class="layout-row layout-width-1-1 layout-align-center">
+      <div><!--<img id="my_portrait" src="../../my_profile/face7_cropped_newscopy.png">--></div>
+      <div class="layout-col">
+        <div>© 2017 Travis Colbert</div>
+        <div>Made with Laminar</div>
+      </div>
+    </footer>
+    <script src="js/laminar.js"></script>
+    <script src="js/laminar.model.js"></script>
+    <script>
+      var devSkill = [
+        {label:"Javascript",score:6},
+        {label:"Bootstrap",score:6},
+        {label:"Node.js",score:4},
+        {label:"Ajax",score:5},
+        {label:"CSS",score:6},
+        {label:"HTML5",score:6},
+        {label:"AngularJS",score:2},
+        {label:"PHP",score:4}
+      ];
+      var opsSkill = [
+        {label:"TCP/IP",score:6},
+        {label:"Windows",score:4},
+        {label:"Mobile",score:5},
+        {label:"BASH",score:5},
+        {label:"Linux",score:6},
+        {label:"SQL",score:5},
+        {label:"Cloud",score:5},
+      ];
+      var skillsChart = {dev:devSkill,ops:opsSkill};
+
+      function showSkill(element, fu, skillCount) {
+        var skillRecordId = "skill_" + skillCount;
+        var skillRecord = new Laminar.Widget({
+          id:skillRecordId,
+          // classlist:["layout-row","layout-sm-col","layout-width-1-1","skillrecord"],
+          classlist:["layout-row","layout-width-1-1","skillrecord"],
+          parent:"#" + element
+        }).update();
+        var skillLabel = new Laminar.Widget({
+          id:"skill_label_" + skillCount,
+          // classlist:["layout-width-1-3","layout-justify-end","layout-align-center","layout-sm-width-1-1","layout-sm-justify-center","skilllabel"],
+          classlist:["layout-width-1-3","layout-justify-end","layout-align-center","layout-sm-width-1-1","skilllabel"],
+          content:skillsChart[fu][skillCount]["label"] + "&nbsp;&nbsp;",
+          parent:"#" + skillRecordId
+        }).update();
+        var skillGraph = new Laminar.Widget({
+          id:"skill_graph_" + skillCount,
+          classlist:["layout-width-2-3","layout-sm-width-1-1","skillgraph"],
+          parent:"#" + skillRecordId
+        }).update();
+        var skillScore = new Laminar.Widget({
+          id:"skill_score_" + skillCount,
+          classlist:["layout-width-" + skillsChart[fu][skillCount]["score"] + "-6","layout-row","layout-justify-center","skillscore"],
+          content:"<div class=\"skillscorescore layout-sm-hidden\">" + skillsChart[fu][skillCount]["score"] + "</div>",
+          parent:"#skill_graph_" + skillCount
+        }).update();
+      }
+
+      function showSkills(fu) {
+        var skillList = document.getElementById("skilllist");
+        skillList.innerHTML = '';
+        fu = fu || "dev";
+        for(var c=0;c<skillsChart[fu].length;c++) {
+          showSkill("skilllist",fu,c);
+        }
+      }
+
+      function setSkillsTrigger() {
+        var button = document.getElementById("button_dev_fu");
+        button.addEventListener("click",function() {
+          showSkills("dev");
+        });
+        button = document.getElementById("button_ops_fu");
+        button.addEventListener("click",function() {
+          showSkills("ops");
+        });
+      }
+
+
+      /**
+       * Make a Laminar model that tracks the state of the app
+       */
+      var state = Laminar.createModel({
+        state:'home'
+      });
+
+      /**
+       * We need to add a method that is triggered when the state changes.
+       * We pull out an object from the state model and add a method to it
+       */
+      var stateTriggers = state.__getHandlerObject();
+
+      /**
+       * Create a function-creator function
+       * The function that is returned takes an object and its property and
+       * if it equals the domObject in the closure then it sets a panel to
+       * active.
+       */
+      var createTriggerFunction = function(domObj) {
+        return function(target,property) {
+          // console.log(target[property],"|",domObj.getId());
+          if(property=="state" && target[property]==domObj.getId()) {
+            domObj.addClass("active");
+          } else {
+            domObj.removeClass("active");
+          }
+        }
+      }
+
+      /**
+       * For all of our fragments (#), let's add/register a method that will be
+       * triggered when a CHANGE happens to the state.
+       *
+       * Let's fetch all of our main content DOM elements and
+       * give them Laminar powers.
+       *
+       * In this case, all 'article' elements will react
+       */
+      var contentList = document.querySelectorAll("article");
+      for(var c=0;c<contentList.length;c++) {
+        /**
+         * Turn each one into a Laminar.Widget
+         */
+        var contentBox = new Laminar.Widget(contentList[c]);
+
+        /**
+         * We put this functionality in an IIAF
+         */
+        (function() {
+          console.log("Building triggers for DOM element ID:",contentBox.getId());
+          stateTriggers.addHandler("change",createTriggerFunction(contentBox));
+        })();
+      }
+
+
+      /**
+       * Let's listen to any hash changes. If so, set the state of the model
+       */
+      var hashChangeTrigger = function() {
+        console.log("Hash changed to",window.location.hash);
+        state.state = window.location.hash.replace("#",'');
+      }
+
+      function ready(fn) {
+        if (document.readyState != 'loading'){
+          fn();
+        } else {
+          document.addEventListener('DOMContentLoaded', fn);
+        }
+      }
+
+      ready(function() {
+        window.addEventListener("hashchange",hashChangeTrigger);
+        hashChangeTrigger();
+        setSkillsTrigger();
+        showSkills();
+      });
+
+    </script>
+  </body>
+</html>
