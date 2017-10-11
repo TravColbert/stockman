@@ -1,0 +1,49 @@
+nav a {
+  text-decoration: none;
+  color: #333;
+}
+nav {
+  align-items: baseline;
+  padding: 0.3em 0.6em;
+}
+nav #menu-title {
+  font-size: 1.5em;
+  font-weight: bold;
+  white-space: nowrap;
+}
+nav > a {
+  display: none;
+}
+nav > #show-menu, nav label {
+  display: none;
+}
+nav ul, nav ol {
+  list-style-type: none;
+  padding: 0;
+  margin: 0;
+}
+@media screen and (max-width: 424px) {
+  nav {
+    align-items: initial;
+  }
+  nav #menu-title {
+    font-size: 1.3em;
+    font-weight: bold;
+  }
+  nav label {
+    display: flex;
+  }
+  nav > #show-menu:checked ~ ul {
+    display: flex;
+  }
+  nav > ul, nav > ol {
+    padding: 0 0.6em;
+  }
+  nav li {
+    padding: 0.6em;
+    border-bottom: 1px solid #ddd;
+  }
+  nav li:last-child {
+    border: none;
+  }
+}

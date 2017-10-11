@@ -14,6 +14,9 @@ let sessionConfig = {
 /**
  * Configuration
  */
+// Template Engine setup:
+app.set('views','./views');
+app.set('view engine','pug');
 app.use(express.static('public'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended:true}));
@@ -35,14 +38,14 @@ let responseString = '';
  *          if false - show the menu item only when logged-out
  */
 let menu = [
-  {link:"/",text:"Home"},
-  {link:"/secure",text:"Secured Stuff",secured:true},
-  {link:"/users",text:"User List",secured:true},
-  {link:"/parts",text:"Parts List"},
-  {link:"/cases",text:"Cases List"},
-  {link:"/update",text:"Update Database",secured:true},
-  {link:"/login",text:"Log In",secured:false},
-  {link:"/logout",text:"Log Out",secured:true},
+  {link:"/",text:"Home",icon:"home"},
+  {link:"/secure",text:"Secured",icon:"lock_outline",secured:true},
+  {link:"/users",text:"Users",icon:"people_outline",secured:true},
+  {link:"/parts",text:"Parts",icon:"devices"},
+  {link:"/cases",text:"Cases",icon:"assignment"},
+  {link:"/update",text:"Update Database",icon:"update",secured:true},
+  {link:"/login",text:"Log In",icon:"verified_user",secured:false},
+  {link:"/logout",text:"Log Out",icon:"highlight_off",secured:true},
 ];
 
 let parts = {
@@ -220,25 +223,24 @@ let users = {
   find:function(field,val) {
     let methodName = "find";
     console.log(this.myName + ": " + methodName + ": Searching: ",field," for: ",val);
-    let user = this.userdb.filter(function(userRecord) {
+    let user = this.db.filter(function(userRecord) {
       return userRecord[field]==val;
     },this);
     return user;
   },
   add:function(userObj) {
-    let x=this.userdb.length;
+    let x=this.db.length;
     while(this.find("id",x).length>0) {
       x++;
     }
-    this.userdb.push({
+    this.db.push({
       id:x,
       username:userObj.username,
-      password:userObj.password,
-      cases:[]
+      password:userObj.password
     });
     return;
   },
-  userdb:[
+  db:[
     {id:0,username:'admin',password:'test123!',cases:[]}
   ]
 };
@@ -311,6 +313,8 @@ var appStart = function(req,res,next) {
   let myName = "appStart";
   logThis(myName + ": Original request: " + req.session.originalReq);
   responseString = '';
+  req.appData = {};
+  req.appData.title = "Stock-Man";
   return next();
 }
 
@@ -329,13 +333,14 @@ var appCheckAuthentication = function(req,res,next) {
   }
   logThis(myName + ": Found session for: " + JSON.stringify(req.user));
   logThis(myName + ": session is authenticated");
+  // req.appData.user = req.user ? req.user : "Hi!";
   return next();
 }
 
 var timeStart = function(req,res,next) {
   let myName = "timeStart";
-  req.startTime = Date.now();
   logThis(myName);
+  req.appData.startTime = Date.now();
   return next();
 }
 
@@ -357,11 +362,44 @@ var appMenu = function(req,res,next) {
   return next();
 }
 
+var appGetMenu = function(req,res,next) {
+  let myName = "appGetMenu";
+  logThis(myName + ": Building menu object");
+  req.appData.menu = [];
+  menu.forEach(function(v,i,a) {
+    if(!v.hasOwnProperty("secured")) {
+      req.appData.menu.push(v);
+    } else {
+      if(v.secured && req.user) req.appData.menu.push(v);
+      if(!v.secured && !req.user) req.appData.menu.push(v);
+    }
+  });
+  return next();
+}
+
+var appGetMenuJson = function(req,res,next) {
+  let myName = "appGetMenuJson";
+  let objMenu = {"menu":[]};
+  let makeMenuItem = function(menuItem) {
+    return {"link":menuItem.link,"text":menuItem.text,"icon":menuItem.icon};
+  };
+  menu.forEach(function(v) {
+    if(!v.hasOwnProperty("secured")) {
+      objMenu.menu.push(makeMenuItem(v));
+    } else {
+      if(v.secured && req.user) objMenu.menu.push(makeMenuItem(v));
+      if(!v.secured && !req.user) objMenu.menu.push(makeMenuItem(v));
+    }
+  });
+  return res.json(objMenu);
+}
+
 var helloWorld = function(req,res,next) {
   var myName = "root";
   logThis(myName + ": User: " + req.user);
   let audience = req.user || "World";
   responseString += "Hello " + audience;
+  req.appData.user = req.user;
   return next();
 }
 
@@ -369,14 +407,6 @@ var updateApp = function(req,res,next) {
   var myName = "update";
   logThis(myName);
   responseString += "<br>\nI'm going to update my records";
-  return next();
-}
-
-var getMake = function(req,res,next) {
-  var myName = "makes";
-  logThis(myName);
-  let model = req.params.make;
-  responseString += "<br>\nDATA FOR MAKE: " + model;
   return next();
 }
 
@@ -402,8 +432,8 @@ var setSessionData = function(req,res,next) {
 
 var timeEnd = function(req,res,next) {
   let myName = "timeEnd";
-  req.stopTime = Date.now();
   logThis(myName);
+  req.appData.stopTime = Date.now();
   return next();
 }
 
@@ -412,6 +442,14 @@ var resEnd = function(req,res) {
   logThis(myName + ": ^^^^^^^^^^");
   return res.send(req.startTime + "<br>\n" + responseString + "<br>\n" + req.stopTime);
   // return;
+}
+
+var appRender = function(req,res) {
+  let myName = "appRender";
+  let templateFile = req.appData.mode || "index";
+  logThis(myName + ": Sending off to template: " + templateFile);
+  logThis(myName + ": " + JSON.stringify(req.appData));
+  res.render(templateFile,req.appData);
 }
 
 var appLoginPage = function(req,res) {
@@ -442,13 +480,27 @@ var appRedirectToOriginalReq = function(req,res) {
 
 var appGetUsers = function(req,res,next) {
   let myName = "appGetUsers";
-  responseString += "Users";
-  responseString += "<ul>";
-  users.userdb.forEach(function(user,i,a) {
-    responseString += "<li><a href='/user/" + user.id + "'>" + user.username + " (" + user.id + ")</a></li>";
+  logThis(myName + ": Getting user list.");
+  req.appData.users = [];
+  req.appData.mode = "users";
+  users.db.forEach(function(user,i,a) {
+    logThis(myName + ": " + user.id + " " + user.username);
+    req.appData.users.push({id:user.id,username:user.username});
   });
-  responseString += "</ul>";
   return next();
+}
+
+let makeUserJson = function(user) {
+  return {"id":user.id,"username":user.username};
+}
+
+var appGetUsersJson = function(req,res,next) {
+  let myName = "appGetUsersJson";
+  let objUsers = {"users":[]};
+  users.db.forEach(function(v) {
+    objUsers.users.push(makeUserJson(v));
+  });
+  return res.json(objUsers);
 }
 
 var appGetUser = function(req,res,next) {
@@ -462,6 +514,17 @@ var appGetUser = function(req,res,next) {
   });
   responseString += "</ul>";
   return next();
+}
+
+var appGetUserJson = function(req,res,next) {
+  let myName = "appGetUserJson";
+  let userId = req.params.userId;
+  let objUsers = {"users":[]};
+  logThis(myName + ": Getting user with id: " + userId);
+  users.findById(userId,function(err,user) {
+    if(!err) objUsers.users.push(makeUserJson(user));
+  });
+  return res.json(objUsers);
 }
 
 var appFormCreateUser = function(req,res,next) {
@@ -502,6 +565,27 @@ var appGetParts = function(req,res,next) {
   return next();
 }
 
+var appGetPartsJson = function(req,res,next) {
+  let myName = "appGetPartsJson";
+  logThis(myName + ": Request to get ALL PARTS: " + JSON.stringify(req.body));
+  let objParts = {"parts":[]};
+  parts.db.forEach(function(v) {
+    objParts.parts.push(v);
+  });
+  return res.json(objParts);
+}
+
+var appGetPartsByCaseJson = function(req,res,next) {
+  let myName = "appGetPartsByCaseJson";
+  let caseId = req.params.caseId;
+  let objParts = {"parts":[]};  
+  logThis(myName + ": Getting parts with case #: " + caseId);
+  parts.findByCase(caseId).forEach(function(v) {
+    objParts.parts.push(v);
+  });
+  return res.json(objParts);
+}
+
 var appGetPart = function(req,res,next) {
   let myName = "appGetPart";
   let partId = req.params.partId;
@@ -533,6 +617,17 @@ var appGetPart = function(req,res,next) {
   })
   responseString += "</ul>";
   return next();
+}
+
+var appGetPartJson = function(req,res,next) {
+  let myName = "appGetPartJson";
+  let partId = req.params.partId;
+  let objParts = {"parts":[]};
+  logThis(myName + ": Getting part with ID: " + partId);
+  parts.find("id",partId).forEach(function(v) {
+    objParts.parts.push(v);
+  });
+  return res.json(objParts);
 }
 
 var appFormSearchPart = function(req,res,next) {
@@ -703,6 +798,17 @@ var appGetCases = function(req,res,next) {
   return next();
 }
 
+var appGetCasesJson = function(req,res,next) {
+  let myName = "appGetCasesJson";
+  logThis(myName + ": Request to get all cases");
+  let objCases = {"cases":parts.getCases()};
+  // parts.getCases();
+  // parts.db.forEach(function(v) {
+  //   objParts.parts.push(v);
+  // });
+  return res.json(objCases);
+}
+
 var appGetCase = function(req,res,next) {
   let myName = "appCase";
   let caseId = req.params.caseId;
@@ -774,33 +880,48 @@ app.get('/logout',appLogout);
 /**
  * NORMAL ROUTES
  */
-app.use(setSessionData,helloWorld,appMenu);
+// app.use(setSessionData,helloWorld,appMenu);
+app.use(setSessionData,helloWorld,appGetMenu);
+
+// app.get('/test',appGetMenu,function(req,res) {
+//   console.log("Rendering the template:");
+//   console.log(JSON.stringify(req.appData));
+//   res.render('index',req.appData);
+// });
+
+// app.get('/menu/',appGetMenuJson);
 
 app.get('/secure/',appCheckAuthentication,secureApp);
 app.get('/secure/',appTest(1,false),appTest(2,false));
 app.get('/secure/',appTest(3,false));
 app.get('/update/',updateApp);
-app.get('/makes/:make',getMake);
-app.get('/users/',appCheckAuthentication,appGetUsers,appFormCreateUser);
-app.get('/user/:userId',appCheckAuthentication,appGetUser);
+// The HTML response
+// app.get('/users/',appCheckAuthentication,appGetUsers,appFormCreateUser);
+// The JSON response
+app.get('/users/',appCheckAuthentication,appGetUsers);
+// app.get('/user/:userId',appCheckAuthentication,appGetUser);
+app.get('/user/:userId',appCheckAuthentication,appGetUserJson);
 app.post('/user/',appCheckAuthentication,appCreateUser);
 
-app.get('/parts/',appGetParts,appGetAddPartUi);
+// app.get('/parts/',appGetParts,appGetAddPartUi);
+app.get('/parts/',appGetPartsJson);
 app.get('/parts/add',appCheckAuthentication,appFormCreatePart,appGetParts);
 app.get('/parts/checkin/:partId',appCheckAuthentication,appCheckinPartVerify,appGetParts);
 app.get('/parts/checkout/:partId',appCheckAuthentication,appCheckoutPartVerify,appGetParts);
 app.post('/parts/checkinverified',appCheckAuthentication,appCheckinPart);
 app.post('/parts/checkoutverified',appCheckAuthentication,appCheckoutPart);
-app.get('/part/:partId',appCheckAuthentication,appGetPart);
+// app.get('/part/:partId',appCheckAuthentication,appGetPart);
+app.get('/part/:partId',appCheckAuthentication,appGetPartJson);
 app.post('/part/',appCheckAuthentication,appCreatePart);
 
-app.get('/cases/',appGetCases);
-app.get('/case/:caseId',appCheckAuthentication,appGetCase);
+app.get('/cases/',appGetCasesJson);
+app.get('/case/:caseId',appCheckAuthentication,appGetPartsByCaseJson);
 
 app.get('/dump/:dbId',appDump);
 
 // app.use(appTest("end",false));
-app.use(getSessionData,timeEnd,resEnd);
+//app.use(getSessionData,timeEnd,resEnd);
+app.use(getSessionData,timeEnd,appRender);
 
 /**
  * Error-handling route
