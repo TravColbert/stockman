@@ -416,11 +416,13 @@ var resEnd = function(req,res) {
 
 var appLoginPage = function(req,res) {
   logThis("...(sending login page)...");
-  // Windows:
-  //return res.sendFile('/public/login.html',{root:'C:/Users/Travis/Downloads/Node/'});
-  // Linux:
-  return res.sendFile('/public/login.html',{root:'/home/travis/Downloads/Projects/stockman/'});
-  //return;
+  if(process.platform=="win32") {
+    // Windows:
+    return res.sendFile('/public/login.html',{root:'C:/Users/Travis/Downloads/Node/'});
+  } else {
+    // Linux:
+    return res.sendFile('/public/login.html',{root:'/home/travis/Downloads/Projects/stockman/'});
+  }
 }
 
 var appLogout = function(req,res,next) {
