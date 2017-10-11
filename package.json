@@ -2,7 +2,7 @@
   "name": "stockman",
   "version": "0.0.1",
   "description": "Stock check-in and check-out system",
-  "main": "express_server.js",
+  "main": "index.js",
   "dependencies": {
     "body-parser": "^1.18.2",
     "express": "^4.16.1",
