@@ -117,9 +117,9 @@ let parts = {
    * array in the part record.
    * To check-out : add a case number to the array
    * To check-in : remove a case number from the array
-   * 
+   *
    * The 'count' property now indicates the total desired parts in the stock
-   */ 
+   */
 
   /**
    * Checking-in will involve submitting am ID indicating the part and a case (or cases)
@@ -417,9 +417,9 @@ var resEnd = function(req,res) {
 var appLoginPage = function(req,res) {
   logThis("...(sending login page)...");
   // Windows:
-  return res.sendFile('/public/login.html',{root:'C:/Users/Travis/Downloads/Node/'});
+  //return res.sendFile('/public/login.html',{root:'C:/Users/Travis/Downloads/Node/'});
   // Linux:
-  // return res.sendFile('/public/login.html',{root:'/home/travis/Downloads/Projects/StockMan/'});
+  return res.sendFile('/public/login.html',{root:'/home/travis/Downloads/Projects/stockman/'});
   //return;
 }
 
@@ -545,7 +545,7 @@ var appFormSearchPart = function(req,res,next) {
   <div><input type="text" name="count" id="count" placeholder="Current Count" /></div>
   <input type="submit" id="submit" value="Create Part" />
   </form>`;
-  return next();  
+  return next();
 }
 
 var appGetAddPartUi = function(req,res,next) {
@@ -598,7 +598,7 @@ var appFormEditPart = function(req,res,next) {
   <div><input type="text" name="make" id="make" placeholder="Manufacturer" value="${part.make}" />${part.make}</div>
   <div><input type="text" name="count" id="count" placeholder="Current Count" value="${part.count}" />${part.count}</div>
   <input type="submit" id="submit" value="Submit" />
-  </form>`;  
+  </form>`;
   next();
 }
 
@@ -610,10 +610,10 @@ var appEditPartVerify = function(req,res,next) {
 
 /**
  * Perform basic checks on part check-in. Then proceed
- * 
- * @param {*} req 
- * @param {*} res 
- * @param {*} next 
+ *
+ * @param {*} req
+ * @param {*} res
+ * @param {*} next
  */
 var appCheckinPartVerify = function(req,res,next) {
   let myName = "appCheckinPartVerify";
@@ -637,7 +637,7 @@ var appCheckinPartVerify = function(req,res,next) {
   <div><input type="hidden" name="count" id="count" placeholder="Current Count" value="${part.count}" />${part.count}</div>
   <div><input type="text" name="casenum" id="casenum" placeholder="Case #" /></div>
   <input type="submit" id="submit" value="Checkin Part" />
-  </form>`;  
+  </form>`;
   next();
 }
 
@@ -673,7 +673,7 @@ var appCheckoutPartVerify = function(req,res,next) {
   <div><input type="hidden" name="count" id="count" value="${part.count}" />${part.count}</div>
   <div><input type="text" name="casenum" id="casenum" placeholder="Case #" /></div>
   <input type="submit" id="submit" value="Checkout Part" />
-  </form>`;  
+  </form>`;
   next();
 }
 
