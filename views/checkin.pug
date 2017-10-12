@@ -1,0 +1,22 @@
+extends index.pug
+
+block content
+  .layout-col
+    form(action="/part/checkinverified" method="post")
+      input(type="hidden" name="partid" id="partid" value=part.id)
+      #prompt Confirm check-in of part #{part.id} from Case: #{caseId}
+      .layout-col
+        .layout-row #{part.make}
+        .layout-row #{part.description}
+        .layout-row #{part.partnum}
+        .layout-row
+          input(type="hidden" name="caseid" id="caseid" placeholder="Case #" value=caseId)
+        .layout-row
+          input.buttonconfirm(type="submit" id="submit" value="Confirm")
+          a.buttoncancel(href="/part/" + part.id) Cancel
+          //- - let cases = part.cases;
+          //- #caselist.layout-col 
+          //-   div Cases:
+          //-   ul
+          //-     each c in cases
+          //-       li.caseselector(data-casenum=c) #{c}

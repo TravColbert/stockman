@@ -1,15 +1,10 @@
 extends index.pug
 
 block content
-  - let p = parts;
   ul
-    each item in p
-      - let id = item.id;
-      - let description = item.description;
-      - let partnum = item.partnum;
-      - let make = item.make;
-      - let count = item.count;
-      - let cases = item.cases;
+    li This is the beginning.
+    each item in parts
       li
-        a(href="/part/" + id) #{make} #{partnum} #{description} (#{id})
-        span Stock level: #{count}
+        a(href="/part/" + item.id) #{item.make} #{item.partnum} #{item.description} (#{item.id})
+        span Stock level: #{item.count}
+    li This is the end.

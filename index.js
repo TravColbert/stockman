@@ -41,10 +41,10 @@ let responseString = '';
 let menu = [
   /*{link:"/",text:"Home",icon:"home"},*/
   /*{link:"/secure",text:"Secured",icon:"lock_outline",secured:true},*/
-  {link:"/users",text:"Users",icon:"people_outline",secured:true},
   {link:"/parts",text:"Parts",icon:"devices"},
   {link:"/cases",text:"Cases",icon:"assignment"},
   /*{link:"/update",text:"Update Database",icon:"update",secured:true},*/
+  {link:"/users",text:"Users",icon:"people_outline",secured:true},
   {link:"/login",text:"Log In",icon:"verified_user",secured:false},
   {link:"/logout",text:"Log Out",icon:"highlight_off",secured:true},
 ];
@@ -450,7 +450,7 @@ var timeEnd = function(req,res,next) {
 var appRender = function(req,res) {
   let myName = "appRender";
   let templateFile = req.appData.mode || "index";
-  logThis(myName + ": Sending off to template: " + templateFile);
+  logThis(myName + ": Sending off to template: " + templateFile + " (" + req.appData.mode + ")");
   logThis(myName + ": " + JSON.stringify(req.appData));
   res.render(templateFile,req.appData);
 }
@@ -526,16 +526,16 @@ var appGetUser = function(req,res,next) {
   return next();
 }
 
-var appGetUserJson = function(req,res,next) {
-  let myName = "appGetUserJson";
-  let userId = req.params.userId;
-  let objUsers = {"users":[]};
-  logThis(myName + ": Getting user with id: " + userId);
-  users.findById(userId,function(err,user) {
-    if(!err) objUsers.users.push(makeUserJson(user));
-  });
-  return res.json(objUsers);
-}
+// var appGetUserJson = function(req,res,next) {
+//   let myName = "appGetUserJson";
+//   let userId = req.params.userId;
+//   let objUsers = {"users":[]};
+//   logThis(myName + ": Getting user with id: " + userId);
+//   users.findById(userId,function(err,user) {
+//     if(!err) objUsers.users.push(makeUserJson(user));
+//   });
+//   return res.json(objUsers);
+// }
 
 var appFormCreateUser = function(req,res,next) {
   let myName = "appFormCreateUser";
@@ -560,47 +560,36 @@ var appCreateUser = function(req,res,next) {
 var appGetParts = function(req,res,next) {
   let myName = "appGetParts";
   logThis(myName + ": Request to get ALL PARTS: " + JSON.stringify(req.body));
-
   req.appData.parts = parts.db;
   req.appData.mode = "parts";
-  /*
-  users.db.forEach(function(user,i,a) {
-    logThis(myName + ": " + user.id + " " + user.username);
-    req.appData.users.push({id:user.id,username:user.username});
+  req.appData.parts.forEach(function(part,i,a) {
+    logThis(myName + ": Calculating stock levels for part: " + part.id);
+    part.free = parts.countFree(part.id);
+    part.used = parts.countUsed(part.id);
   });
-  parts.db.forEach(function(part,i,a) {
-    logThis(myName + ": Examining part: " + part.id);
-    let message = '';
-    let freeParts = parts.countFree(part.id);
-    let usedParts = parts.countUsed(part.id);
-    if((freeParts + usedParts)!=part.count) message = '<span class="error">There seems to be a descrepancy in the parts stock amount</span>';
-    responseString += "<li><a href='/part/" + part.id + "'>" + part.make + ": " + part.partnum + ": " + part.description + " (Available:" + freeParts + " checked-out:" + usedParts + " Total stock:" + part.count + ")</a> " + message + "</li>";
-  });
-  responseString += "</ul>";
-  */
   return next();
 }
 
-var appGetPartsJson = function(req,res,next) {
-  let myName = "appGetPartsJson";
-  logThis(myName + ": Request to get ALL PARTS: " + JSON.stringify(req.body));
-  let objParts = {"parts":[]};
-  parts.db.forEach(function(v) {
-    objParts.parts.push(v);
-  });
-  return res.json(objParts);
-}
+// var appGetPartsJson = function(req,res,next) {
+//   let myName = "appGetPartsJson";
+//   logThis(myName + ": Request to get ALL PARTS: " + JSON.stringify(req.body));
+//   let objParts = {"parts":[]};
+//   parts.db.forEach(function(v) {
+//     objParts.parts.push(v);
+//   });
+//   return res.json(objParts);
+// }
 
-var appGetPartsByCaseJson = function(req,res,next) {
-  let myName = "appGetPartsByCaseJson";
-  let caseId = req.params.caseId;
-  let objParts = {"parts":[]};
-  logThis(myName + ": Getting parts with case #: " + caseId);
-  parts.findByCase(caseId).forEach(function(v) {
-    objParts.parts.push(v);
-  });
-  return res.json(objParts);
-}
+// var appGetPartsByCaseJson = function(req,res,next) {
+//   let myName = "appGetPartsByCaseJson";
+//   let caseId = req.params.caseId;
+//   let objParts = {"parts":[]};
+//   logThis(myName + ": Getting parts with case #: " + caseId);
+//   parts.findByCase(caseId).forEach(function(v) {
+//     objParts.parts.push(v);
+//   });
+//   return res.json(objParts);
+// }
 
 var appGetPart = function(req,res,next) {
   let myName = "appGetPart";
@@ -640,16 +629,16 @@ var appGetPart = function(req,res,next) {
   return next();
 }
 
-var appGetPartJson = function(req,res,next) {
-  let myName = "appGetPartJson";
-  let partId = req.params.partId;
-  let objParts = {"parts":[]};
-  logThis(myName + ": Getting part with ID: " + partId);
-  parts.find("id",partId).forEach(function(v) {
-    objParts.parts.push(v);
-  });
-  return res.json(objParts);
-}
+// var appGetPartJson = function(req,res,next) {
+//   let myName = "appGetPartJson";
+//   let partId = req.params.partId;
+//   let objParts = {"parts":[]};
+//   logThis(myName + ": Getting part with ID: " + partId);
+//   parts.find("id",partId).forEach(function(v) {
+//     objParts.parts.push(v);
+//   });
+//   return res.json(objParts);
+// }
 
 var appFormSearchPart = function(req,res,next) {
   let myName = "appFormSearchPart";
@@ -666,12 +655,12 @@ var appFormSearchPart = function(req,res,next) {
   return next();
 }
 
-var appGetAddPartUi = function(req,res,next) {
-  let myName = "appGetAddPartUi";
-  logThis(myName);
-  responseString += "<a href='/parts/add'>Add Part</a>";
-  return next();
-}
+// var appGetAddPartUi = function(req,res,next) {
+//   let myName = "appGetAddPartUi";
+//   logThis(myName);
+//   responseString += "<a href='/parts/add'>Add Part</a>";
+//   return next();
+// }
 
 var appFormCreatePart = function(req,res,next) {
   let myName = "appFormCreateUser";
@@ -696,35 +685,35 @@ var appCreatePart = function(req,res,next) {
   return;
 }
 
-var appFormEditPart = function(req,res,next) {
-  let myName = "appFormEditPart";
-  let partId = req.params.partId;
-  logThis(myName + ": Request to edit part: " + req.params.partId + " " + JSON.stringify(req.body));
-  let part = parts.find('id',partId);
-  if(part.length<1) return next(new Error("Could not find part for editing"));
-  part = part[0];
-  logThis(myName + ": " + JSON.stringify(part));
-  let dateNow = Date.now();
-  // We need to build a new form here to verify
-  // /parts/checkinverify/:partId
-  responseString +=`
-  <form action="/parts/editverified" method="post">
-  <input type="hidden" name="partid" id="partid" value="${partId}" />
-  <div id="prompt">Edit Part</div>
-  <div><input type="text" name="partnum" id="partnum" placeholder="Manufacturer Part Number" value="${part.partnum}" />${part.partnum}</div>
-  <div><input type="text" name="description" id="description" placeholder="Description" value="${part.description}" />${part.description}</div>
-  <div><input type="text" name="make" id="make" placeholder="Manufacturer" value="${part.make}" />${part.make}</div>
-  <div><input type="text" name="count" id="count" placeholder="Current Count" value="${part.count}" />${part.count}</div>
-  <input type="submit" id="submit" value="Submit" />
-  </form>`;
-  next();
-}
+// var appFormEditPart = function(req,res,next) {
+//   let myName = "appFormEditPart";
+//   let partId = req.params.partId;
+//   logThis(myName + ": Request to edit part: " + req.params.partId + " " + JSON.stringify(req.body));
+//   let part = parts.find('id',partId);
+//   if(part.length<1) return next(new Error("Could not find part for editing"));
+//   part = part[0];
+//   logThis(myName + ": " + JSON.stringify(part));
+//   let dateNow = Date.now();
+//   // We need to build a new form here to verify
+//   // /parts/checkinverify/:partId
+//   responseString +=`
+//   <form action="/parts/editverified" method="post">
+//   <input type="hidden" name="partid" id="partid" value="${partId}" />
+//   <div id="prompt">Edit Part</div>
+//   <div><input type="text" name="partnum" id="partnum" placeholder="Manufacturer Part Number" value="${part.partnum}" />${part.partnum}</div>
+//   <div><input type="text" name="description" id="description" placeholder="Description" value="${part.description}" />${part.description}</div>
+//   <div><input type="text" name="make" id="make" placeholder="Manufacturer" value="${part.make}" />${part.make}</div>
+//   <div><input type="text" name="count" id="count" placeholder="Current Count" value="${part.count}" />${part.count}</div>
+//   <input type="submit" id="submit" value="Submit" />
+//   </form>`;
+//   next();
+// }
 
-var appEditPartVerify = function(req,res,next) {
-  let myName = "appEditPartVerify";
-  logThis(myName + ": Verifying modification of part: " + req.body.partid);
+// var appEditPartVerify = function(req,res,next) {
+//   let myName = "appEditPartVerify";
+//   logThis(myName + ": Verifying modification of part: " + req.body.partid);
 
-}
+// }
 
 /**
  * Perform basic checks on part check-in. Then proceed
@@ -736,33 +725,23 @@ var appEditPartVerify = function(req,res,next) {
 var appCheckinPartVerify = function(req,res,next) {
   let myName = "appCheckinPartVerify";
   let partId = req.params.partId;
+  req.appData.caseId = req.params.caseId;
   logThis(myName + ": Request to verify check-in of part: " + partId);
-  // Verify part exists, fetch description and count
   let part = parts.find("id",partId);
   if(part.length<1) return next(new Error("Could not find part for check-in"));
-  part = part[0];
+  // Check if that case is attached to this part
+  if(part[0].cases.indexOf(req.appData.caseId)==-1) next(new Error("This part can't be checked-in from this case"));
+  req.appData.part = part[0];
+  req.appData.mode = "checkin";
   logThis(myName + ": " + JSON.stringify(part));
   let dateNow = Date.now();
-  // We need to build a new form here to verify
-  // /parts/checkinverify/:partId
-  responseString +=`
-  <form action="/parts/checkinverified" method="post">
-  <input type="hidden" name="partid" id="partid" value="${partId}" />
-  <div id="prompt">Verify Check-In</div>
-  <div><input type="hidden" name="date" id="date" placeholder="Date" value="${dateNow}" />${dateNow}</div>
-  <div><input type="hidden" name="description" id="description" placeholder="Description" value="${part.description}" />${part.description}</div>
-  <div><input type="hidden" name="make" id="make" placeholder="Manufacturer" value="${part.make}" />${part.make}</div>
-  <div><input type="hidden" name="count" id="count" placeholder="Current Count" value="${part.count}" />${part.count}</div>
-  <div><input type="text" name="casenum" id="casenum" placeholder="Case #" /></div>
-  <input type="submit" id="submit" value="Checkin Part" />
-  </form>`;
   next();
 }
 
 var appCheckinPart = function(req,res,next) {
   let myName = "appCheckinPart";
   logThis(myName + ": Request to check in part: " + req.body.partid + " in case #: " + req.body.casenum);
-  if(parts.checkin(req.body.partid,req.body.casenum)) {
+  if(parts.checkin(req.body.partid,req.body.caseid)) {
     logThis(myName + ": Redirecting to: /part/" + req.body.partid);
     return res.redirect('/part/' + req.body.partid);
   }
@@ -773,35 +752,52 @@ var appCheckoutPartVerify = function(req,res,next) {
   let myName = "appCheckoutPartVerify";
   let partId = req.params.partId;
   logThis(myName + ": Request to verify check-out of part: " + partId);
-  // Verify part exists, fetch description and count
   var part = parts.find("id",partId);
   if(part.length<1) return next(new Error("Could not find part for check-out"));
-  part = part[0];
+  req.appData.part = part[0];
+  req.appData.mode = "checkout";
   logThis(myName + ": " + JSON.stringify(part));
   let dateNow = Date.now();
-  // We need to build a new form here to verify
-  // /parts/checkinverify/:partId
-  responseString +=`
-  <form action="/parts/checkoutverified" method="post">
-  <input type="hidden" name="partid" id="partid" value="${partId}" />
-  <div id="prompt">Verify Check-Out</div>
-  <div><input type="hidden" name="date" id="date" value="${dateNow}" />${dateNow}</div>
-  <div><input type="hidden" name="description" id="description" value="${part.description}" />${part.description}</div>
-  <div><input type="hidden" name="make" id="make" value="${part.make}" />${part.make}</div>
-  <div><input type="hidden" name="count" id="count" value="${part.count}" />${part.count}</div>
-  <div><input type="text" name="casenum" id="casenum" placeholder="Case #" /></div>
-  <input type="submit" id="submit" value="Checkout Part" />
-  </form>`;
   next();
 }
 
 var appCheckoutPart = function(req,res,next) {
   let myName = "appCheckoutPart";
   logThis(myName + ": Request to check out part: " + req.body.partid);
-  if(parts.checkout(req.body.partid,req.body.casenum)) {
+  if(parts.checkout(req.body.partid,req.body.caseid)) {
     return res.redirect('/part/' + req.body.partid);
   }
   return next(new Error('Something went wrong :-('));
+}
+
+var appEditPartVerify = function(req,res,next) {
+  let myName = "appEditPartVerify";
+  logThis(myName + ": Request to edit part #:" + req.params.partId);
+  let partId = req.params.partId;
+  let partList = parts.find("id",partId);
+  if(partList.length<1) return next(new Error("Could not find part " + partId));
+  req.appData.part = partList[0];
+  req.appData.mode = "editpart";
+  return next();
+}
+
+var appEditPart = function(req,res,next) {
+  let myName = "appEditPart";
+  logThis(myName + ": Editing part #:" + req.body.partid);
+  logThis(JSON.stringify(req.body));
+  if(!req.body.hasOwnProperty("partid") || req.body.partid===null || req.body.partid===undefined) {
+    logThis(myName + ": No part ID given. Punting!");
+    return res.redirect('/parts/');
+  }
+  let partIndex = parts.db.findIndex(function(partRecord) {
+    return partRecord.id==req.body.partid;
+  });
+  if(partIndex==-1) return next(new Error("No part with id: " + req.body.partid));
+  parts.db[partIndex].partnum = req.body.partnum;
+  parts.db[partIndex].description = req.body.description;
+  parts.db[partIndex].make = req.body.make;
+  parts.db[partIndex].count = req.body.count;
+  return res.redirect('/part/' + req.body.partid);
 }
 
 var appGetCases = function(req,res,next) {
@@ -810,17 +806,6 @@ var appGetCases = function(req,res,next) {
   req.appData.cases = parts.getCases();
   logThis(JSON.stringify(req.appData.cases));
   req.appData.mode = "cases";
-  /*
-  responseString += "Cases";
-  responseString += "<br>Opened cases:" + caseList.length + " (cases with parts still checked-out)";
-  if(caseList.length==0) return next();
-  responseString += "<ul>";
-  caseList.forEach(function(v,i,a) {
-    let partCount = parts.findByCase(v).length;
-    responseString += "<li><a href='/case/" + v + "'>" + v + "</a> (" + partCount + " part(s) checked-out)</li>";
-  });
-  responseString += "</ul>";
-  */
   return next();
 }
 
@@ -828,10 +813,6 @@ var appGetCasesJson = function(req,res,next) {
   let myName = "appGetCasesJson";
   logThis(myName + ": Request to get all cases");
   let objCases = {"cases":parts.getCases()};
-  // parts.getCases();
-  // parts.db.forEach(function(v) {
-  //   objParts.parts.push(v);
-  // });
   return res.json(objCases);
 }
 
@@ -839,17 +820,9 @@ var appGetCase = function(req,res,next) {
   let myName = "appCase";
   let caseId = req.params.caseId;
   logThis(myName + ": Getting parts with case #: " + caseId);
-  responseString += "<br>Parts for Case #" + caseId;
-  responseString += "<ul>";
-  let partList = parts.findByCase(caseId);
-  partList.forEach(function(part,i,a) {
-    let message = '';
-    let freeParts = parts.countFree(part.id);
-    let usedParts = parts.countUsed(part.id);
-    if((freeParts + usedParts)!=part.count) message = '<span class="error">There seems to be a descrepancy in the parts stock amount</span>';
-    responseString += "<li><a href='/part/" + part.id + "'>" + part.make + ": " + part.description + " (Available:" + freeParts + " checked-out:" + usedParts + " Total stock:" + part.count + ")</a> " + message + "</li>";
-  });
-  responseString += "</ul>";
+  req.appData.mode = "case";  
+  req.appData.caseId = caseId;
+  req.appData.parts = parts.findByCase(caseId);
   return next();
 }
 
@@ -925,24 +898,22 @@ app.get('/secure/',appTest(3,false));
 // app.get('/users/',appCheckAuthentication,appGetUsers,appFormCreateUser);
 // The JSON response
 app.get('/users/',appCheckAuthentication,appGetUsers);
-// app.get('/user/:userId',appCheckAuthentication,appGetUser);
 app.get('/user/:userId',appCheckAuthentication,appGetUser);
 app.post('/user/',appCheckAuthentication,appCreateUser);
 
-// app.get('/parts/',appGetParts,appGetAddPartUi);
 app.get('/parts/',appGetParts);
-// app.get('/parts/',appGetPartsJson);
 app.get('/parts/add',appCheckAuthentication,appFormCreatePart,appGetParts);
-app.get('/parts/checkin/:partId',appCheckAuthentication,appCheckinPartVerify,appGetParts);
-app.get('/parts/checkout/:partId',appCheckAuthentication,appCheckoutPartVerify,appGetParts);
-app.post('/parts/checkinverified',appCheckAuthentication,appCheckinPart);
-app.post('/parts/checkoutverified',appCheckAuthentication,appCheckoutPart);
-// app.get('/part/:partId',appCheckAuthentication,appGetPart);
+app.get('/part/checkin/:partId/case/:caseId',appCheckAuthentication,appCheckinPartVerify);
+app.get('/part/checkout/:partId',appCheckAuthentication,appCheckoutPartVerify);
+app.post('/part/checkinverified',appCheckAuthentication,appCheckinPart);
+app.post('/part/checkoutverified',appCheckAuthentication,appCheckoutPart);
+app.get('/part/edit/:partId',appCheckAuthentication,appEditPartVerify);
+app.post('/part/edit',appCheckAuthentication,appEditPart);
 app.get('/part/:partId',appCheckAuthentication,appGetPart);
 app.post('/part/',appCheckAuthentication,appCreatePart);
 
 app.get('/cases/',appGetCases);
-app.get('/case/:caseId',appCheckAuthentication,appGetPartsByCaseJson);
+app.get('/case/:caseId',appCheckAuthentication,appGetCase);
 
 app.get('/dump/:dbId',appDump);
 
