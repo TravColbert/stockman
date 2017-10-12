@@ -1,15 +1,10 @@
-doctype html
-html
-  include head.pug
-  body.header-static.footer-static
-    include navigation.pug
-    - let u = users;
-    .content.layout-height-1-1.layout-width-1-1
-      ol
-        each item in u
-          - var id = item.id;
-          - var username = item.username;
-          li
-            a(href="/user/" + id) #{username}
+extends index.pug
 
-  include foot.pug
+block content
+  - let u = users;
+  ul
+    each item in u
+      - var id = item.id;
+      - var username = item.username;
+      li
+        a(href="/user/" + id) #{username} (#{id})

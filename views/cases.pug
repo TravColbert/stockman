@@ -1,0 +1,8 @@
+extends index.pug
+
+block content
+  - let c = cases;
+  ul
+    each item in c
+      li
+        a(href="/case/" + item) #{item}

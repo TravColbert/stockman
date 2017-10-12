@@ -3,5 +3,6 @@ html
   include head.pug
   body.header-static.footer-static
     include navigation.pug
-    
-  include foot.pug
+    #main.content.layout-height-1-1.layout-width-1-1
+      block content
+    include foot.pug

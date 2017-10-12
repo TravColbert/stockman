@@ -5,6 +5,7 @@ const app = express();
 const port = 3000;
 const passport = require('passport');
 const LocalStrategy = require('passport-local').Strategy;
+const appName = "Stock-Man";
 let sessionConfig = {
   secret:'yoyo!',
   resave:false,
@@ -38,12 +39,12 @@ let responseString = '';
  *          if false - show the menu item only when logged-out
  */
 let menu = [
-  {link:"/",text:"Home",icon:"home"},
-  {link:"/secure",text:"Secured",icon:"lock_outline",secured:true},
+  /*{link:"/",text:"Home",icon:"home"},*/
+  /*{link:"/secure",text:"Secured",icon:"lock_outline",secured:true},*/
   {link:"/users",text:"Users",icon:"people_outline",secured:true},
   {link:"/parts",text:"Parts",icon:"devices"},
   {link:"/cases",text:"Cases",icon:"assignment"},
-  {link:"/update",text:"Update Database",icon:"update",secured:true},
+  /*{link:"/update",text:"Update Database",icon:"update",secured:true},*/
   {link:"/login",text:"Log In",icon:"verified_user",secured:false},
   {link:"/logout",text:"Log Out",icon:"highlight_off",secured:true},
 ];
@@ -241,7 +242,7 @@ let users = {
     return;
   },
   db:[
-    {id:0,username:'admin',password:'test123!',cases:[]}
+    {id:0,username:'admin',password:'test123!'}
   ]
 };
 
@@ -312,9 +313,9 @@ var appStats = function(req,res,next) {
 var appStart = function(req,res,next) {
   let myName = "appStart";
   logThis(myName + ": Original request: " + req.session.originalReq);
-  responseString = '';
+  // responseString = '';
   req.appData = {};
-  req.appData.title = "Stock-Man";
+  req.appData.title = appName;
   return next();
 }
 
@@ -329,11 +330,9 @@ var appCheckAuthentication = function(req,res,next) {
     logThis(myName + ": session is NOT authenticated");
     logThis(myName + ": header status: " + (res.headersSent));
     return res.redirect('/login');
-    // return;
   }
   logThis(myName + ": Found session for: " + JSON.stringify(req.user));
   logThis(myName + ": session is authenticated");
-  // req.appData.user = req.user ? req.user : "Hi!";
   return next();
 }
 
@@ -344,23 +343,23 @@ var timeStart = function(req,res,next) {
   return next();
 }
 
-var appMenu = function(req,res,next) {
-  let makeMenuItem = function(menuItem) {
-    return "<li><a href='" + menuItem.link + "'>" + menuItem.text + "</a></li>";
-  }
-  let myName = "appMenu";
-  responseString += "<ul>";
-  menu.forEach(function(v,i,a) {
-    if(!v.hasOwnProperty("secured")) {
-      responseString += makeMenuItem(v);
-    } else {
-      if(v.secured && req.user) responseString += makeMenuItem(v);
-      if(!v.secured && !req.user) responseString += makeMenuItem(v);
-    }
-  });
-  responseString += "</ul>";
-  return next();
-}
+// var appMenu = function(req,res,next) {
+//   let makeMenuItem = function(menuItem) {
+//     return "<li><a href='" + menuItem.link + "'>" + menuItem.text + "</a></li>";
+//   }
+//   let myName = "appMenu";
+//   responseString += "<ul>";
+//   menu.forEach(function(v,i,a) {
+//     if(!v.hasOwnProperty("secured")) {
+//       responseString += makeMenuItem(v);
+//     } else {
+//       if(v.secured && req.user) responseString += makeMenuItem(v);
+//       if(!v.secured && !req.user) responseString += makeMenuItem(v);
+//     }
+//   });
+//   responseString += "</ul>";
+//   return next();
+// }
 
 var appGetMenu = function(req,res,next) {
   let myName = "appGetMenu";
@@ -377,38 +376,38 @@ var appGetMenu = function(req,res,next) {
   return next();
 }
 
-var appGetMenuJson = function(req,res,next) {
-  let myName = "appGetMenuJson";
-  let objMenu = {"menu":[]};
-  let makeMenuItem = function(menuItem) {
-    return {"link":menuItem.link,"text":menuItem.text,"icon":menuItem.icon};
-  };
-  menu.forEach(function(v) {
-    if(!v.hasOwnProperty("secured")) {
-      objMenu.menu.push(makeMenuItem(v));
-    } else {
-      if(v.secured && req.user) objMenu.menu.push(makeMenuItem(v));
-      if(!v.secured && !req.user) objMenu.menu.push(makeMenuItem(v));
-    }
-  });
-  return res.json(objMenu);
-}
+// var appGetMenuJson = function(req,res,next) {
+//   let myName = "appGetMenuJson";
+//   let objMenu = {"menu":[]};
+//   let makeMenuItem = function(menuItem) {
+//     return {"link":menuItem.link,"text":menuItem.text,"icon":menuItem.icon};
+//   };
+//   menu.forEach(function(v) {
+//     if(!v.hasOwnProperty("secured")) {
+//       objMenu.menu.push(makeMenuItem(v));
+//     } else {
+//       if(v.secured && req.user) objMenu.menu.push(makeMenuItem(v));
+//       if(!v.secured && !req.user) objMenu.menu.push(makeMenuItem(v));
+//     }
+//   });
+//   return res.json(objMenu);
+// }
 
-var helloWorld = function(req,res,next) {
+var appHello = function(req,res,next) {
   var myName = "root";
   logThis(myName + ": User: " + req.user);
   let audience = req.user || "World";
-  responseString += "Hello " + audience;
-  req.appData.user = req.user;
+  // responseString += "Hello " + audience;
+  req.appData.account = req.user;
   return next();
 }
 
-var updateApp = function(req,res,next) {
-  var myName = "update";
-  logThis(myName);
-  responseString += "<br>\nI'm going to update my records";
-  return next();
-}
+// var updateApp = function(req,res,next) {
+//   var myName = "update";
+//   logThis(myName);
+//   responseString += "<br>\nI'm going to update my records";
+//   return next();
+// }
 
 var secureApp = function(req,res,next) {
   var myName = "secureApp";
@@ -417,16 +416,20 @@ var secureApp = function(req,res,next) {
   return next();
 }
 
-var getSessionData = function(req,res,next) {
-  let myName = "getSessionData";
-  if(req.session.views) responseString += "<br>\nViews: " + req.session.views;
-  return next();
-}
+// var getSessionData = function(req,res,next) {
+//   let myName = "getSessionData";
+//   logThis(myName + ": Setting views to " + req.session.views);
+//   if(req.session.views) req.appData.views = req.session.views;
+//   return next();
+// }
 
 var setSessionData = function(req,res,next) {
   let myName = "setSessionData";
-  if(!req.session.views) req.session.views = 0;
-  req.session.views++;
+  if(!req.appData.views) {
+    req.appData.views = 0;
+  } else {
+    req.appData.views++;
+  }
   return next();
 }
 
@@ -437,12 +440,12 @@ var timeEnd = function(req,res,next) {
   return next();
 }
 
-var resEnd = function(req,res) {
-  let myName = "resEnd";
-  logThis(myName + ": ^^^^^^^^^^");
-  return res.send(req.startTime + "<br>\n" + responseString + "<br>\n" + req.stopTime);
-  // return;
-}
+// var resEnd = function(req,res) {
+//   let myName = "resEnd";
+//   logThis(myName + ": ^^^^^^^^^^");
+//   return res.send(req.startTime + "<br>\n" + responseString + "<br>\n" + req.stopTime);
+//   // return;
+// }
 
 var appRender = function(req,res) {
   let myName = "appRender";
@@ -468,12 +471,12 @@ var appLogout = function(req,res,next) {
   logThis(myName);
   req.logout();
   return res.redirect('/');
-  //return;
 }
 
 var appRedirectToOriginalReq = function(req,res) {
   let myName = "appRedirectToOriginalReq";
   let redirectTo = req.session.originalReq || '/';
+  logThis(myName + ": Redirecting to: " + redirectTo);
   res.redirect(redirectTo);
   return;
 }
@@ -494,25 +497,32 @@ let makeUserJson = function(user) {
   return {"id":user.id,"username":user.username};
 }
 
-var appGetUsersJson = function(req,res,next) {
-  let myName = "appGetUsersJson";
-  let objUsers = {"users":[]};
-  users.db.forEach(function(v) {
-    objUsers.users.push(makeUserJson(v));
-  });
-  return res.json(objUsers);
-}
+// var appGetUsersJson = function(req,res,next) {
+//   let myName = "appGetUsersJson";
+//   let objUsers = {"users":[]};
+//   users.db.forEach(function(v) {
+//     objUsers.users.push(makeUserJson(v));
+//   });
+//   return res.json(objUsers);
+// }
 
 var appGetUser = function(req,res,next) {
   let myName = "appGetUser";
-  let user;
+  // let user;
   let userId = req.params.userId;
   logThis(myName + ": Getting user with ID: " + userId);
-  responseString += "<ul>";
+  req.appData.mode = "user";
+
+  // responseString += "<ul>";
   users.findById(userId,function(err,user) {
-    if(!err) responseString += "<li><div>Username: " + user.username + "</div> <div>PW: " + user.password + "</div> <div>ID: " + user.id + "</div></li>";
+    if(!err) {
+      delete user.password;
+      req.appData.user = user;
+    } else {
+      req.appData.user = {err:"Error getting user"};
+    }
   });
-  responseString += "</ul>";
+  // responseString += "</ul>";
   return next();
 }
 
@@ -550,9 +560,14 @@ var appCreateUser = function(req,res,next) {
 var appGetParts = function(req,res,next) {
   let myName = "appGetParts";
   logThis(myName + ": Request to get ALL PARTS: " + JSON.stringify(req.body));
-  responseString += "Parts";
-  responseString += "<br>" + parts.db.length + " Parts found";
-  responseString += "<ul>";
+
+  req.appData.parts = parts.db;
+  req.appData.mode = "parts";
+  /*
+  users.db.forEach(function(user,i,a) {
+    logThis(myName + ": " + user.id + " " + user.username);
+    req.appData.users.push({id:user.id,username:user.username});
+  });
   parts.db.forEach(function(part,i,a) {
     logThis(myName + ": Examining part: " + part.id);
     let message = '';
@@ -562,6 +577,7 @@ var appGetParts = function(req,res,next) {
     responseString += "<li><a href='/part/" + part.id + "'>" + part.make + ": " + part.partnum + ": " + part.description + " (Available:" + freeParts + " checked-out:" + usedParts + " Total stock:" + part.count + ")</a> " + message + "</li>";
   });
   responseString += "</ul>";
+  */
   return next();
 }
 
@@ -578,7 +594,7 @@ var appGetPartsJson = function(req,res,next) {
 var appGetPartsByCaseJson = function(req,res,next) {
   let myName = "appGetPartsByCaseJson";
   let caseId = req.params.caseId;
-  let objParts = {"parts":[]};  
+  let objParts = {"parts":[]};
   logThis(myName + ": Getting parts with case #: " + caseId);
   parts.findByCase(caseId).forEach(function(v) {
     objParts.parts.push(v);
@@ -590,32 +606,37 @@ var appGetPart = function(req,res,next) {
   let myName = "appGetPart";
   let partId = req.params.partId;
   logThis(myName + ": Getting part with ID: " + partId);
-  responseString += "<ul>";
-  let partList = parts.find("id",partId);
-  partList.forEach(function(part,i,a) {
-    logThis(myName + ": " + JSON.stringify(part));
-    let message = '';
-    let freeParts = parts.countFree(part.id);
-    let usedParts = parts.countUsed(part.id);
-    if((freeParts + usedParts)!=part.count) message = '<span class="error">There seems to be a descrepancy in the parts stock amount</span>';
-    responseString += `
-    <li>
-      <div>Description: ${part.description}</div>
-      <div>Make: ${part.make}</div>
-      <div>Manufacturer Part Number: ${part.partnum}</div>
-      <div>ID: ${part.id}</div>
-      <div>Stock:
-        <div>Total: ${part.count}</div>
-        <div>Available: ${freeParts}</div>
-        <div>Used: ${usedParts}</div>
-        <div>${message}</div>
-      </div>
-      <div>`;
-    if(freeParts<part.count) responseString += `<a href="/parts/checkin/${partId}">+</a>`;
-    if(freeParts) responseString += `<a href="/parts/checkout/${partId}">-</a>`;
-    responseString += "</div></li>";
-  })
-  responseString += "</ul>";
+  // responseString += "<ul>";
+  // let partList = parts.find("id",partId);
+  req.appData.part = parts.find("id",partId)[0];
+  req.appData.part.free = parts.countFree(partId);
+  req.appData.part.used = parts.countUsed(partId);
+  req.appData.mode = "part";
+
+
+  // partList.forEach(function(part,i,a) {
+  //   logThis(myName + ": " + JSON.stringify(part));
+  //   let freeParts = parts.countFree(part.id);
+  //   let usedParts = parts.countUsed(part.id);
+    // if((freeParts + usedParts)!=part.count) message = '<span class="error">There seems to be a descrepancy in the parts stock amount</span>';
+    // responseString += `
+    // <li>
+    //   <div>Description: ${part.description}</div>
+    //   <div>Make: ${part.make}</div>
+    //   <div>Manufacturer Part Number: ${part.partnum}</div>
+    //   <div>ID: ${part.id}</div>
+    //   <div>Stock:
+    //     <div>Total: ${part.count}</div>
+    //     <div>Available: ${freeParts}</div>
+    //     <div>Used: ${usedParts}</div>
+    //     <div>${message}</div>
+    //   </div>
+    //   <div>`;
+    // if(freeParts<part.count) responseString += `<a href="/parts/checkin/${partId}">+</a>`;
+    // if(freeParts) responseString += `<a href="/parts/checkout/${partId}">-</a>`;
+    // responseString += "</div></li>";
+  // })
+  // responseString += "</ul>";
   return next();
 }
 
@@ -785,7 +806,11 @@ var appCheckoutPart = function(req,res,next) {
 
 var appGetCases = function(req,res,next) {
   let myName = 'appGetCases';
-  let caseList = parts.getCases();
+  logThis(myName + ": Getting all cases");
+  req.appData.cases = parts.getCases();
+  logThis(JSON.stringify(req.appData.cases));
+  req.appData.mode = "cases";
+  /*
   responseString += "Cases";
   responseString += "<br>Opened cases:" + caseList.length + " (cases with parts still checked-out)";
   if(caseList.length==0) return next();
@@ -795,6 +820,7 @@ var appGetCases = function(req,res,next) {
     responseString += "<li><a href='/case/" + v + "'>" + v + "</a> (" + partCount + " part(s) checked-out)</li>";
   });
   responseString += "</ul>";
+  */
   return next();
 }
 
@@ -880,8 +906,8 @@ app.get('/logout',appLogout);
 /**
  * NORMAL ROUTES
  */
-// app.use(setSessionData,helloWorld,appMenu);
-app.use(setSessionData,helloWorld,appGetMenu);
+// app.use(setSessionData,appHello,appMenu);
+app.use(setSessionData,appHello,appGetMenu);
 
 // app.get('/test',appGetMenu,function(req,res) {
 //   console.log("Rendering the template:");
@@ -894,34 +920,35 @@ app.use(setSessionData,helloWorld,appGetMenu);
 app.get('/secure/',appCheckAuthentication,secureApp);
 app.get('/secure/',appTest(1,false),appTest(2,false));
 app.get('/secure/',appTest(3,false));
-app.get('/update/',updateApp);
+// app.get('/update/',updateApp);
 // The HTML response
 // app.get('/users/',appCheckAuthentication,appGetUsers,appFormCreateUser);
 // The JSON response
 app.get('/users/',appCheckAuthentication,appGetUsers);
 // app.get('/user/:userId',appCheckAuthentication,appGetUser);
-app.get('/user/:userId',appCheckAuthentication,appGetUserJson);
+app.get('/user/:userId',appCheckAuthentication,appGetUser);
 app.post('/user/',appCheckAuthentication,appCreateUser);
 
 // app.get('/parts/',appGetParts,appGetAddPartUi);
-app.get('/parts/',appGetPartsJson);
+app.get('/parts/',appGetParts);
+// app.get('/parts/',appGetPartsJson);
 app.get('/parts/add',appCheckAuthentication,appFormCreatePart,appGetParts);
 app.get('/parts/checkin/:partId',appCheckAuthentication,appCheckinPartVerify,appGetParts);
 app.get('/parts/checkout/:partId',appCheckAuthentication,appCheckoutPartVerify,appGetParts);
 app.post('/parts/checkinverified',appCheckAuthentication,appCheckinPart);
 app.post('/parts/checkoutverified',appCheckAuthentication,appCheckoutPart);
 // app.get('/part/:partId',appCheckAuthentication,appGetPart);
-app.get('/part/:partId',appCheckAuthentication,appGetPartJson);
+app.get('/part/:partId',appCheckAuthentication,appGetPart);
 app.post('/part/',appCheckAuthentication,appCreatePart);
 
-app.get('/cases/',appGetCasesJson);
+app.get('/cases/',appGetCases);
 app.get('/case/:caseId',appCheckAuthentication,appGetPartsByCaseJson);
 
 app.get('/dump/:dbId',appDump);
 
 // app.use(appTest("end",false));
 //app.use(getSessionData,timeEnd,resEnd);
-app.use(getSessionData,timeEnd,appRender);
+app.use(timeEnd,appRender);
 
 /**
  * Error-handling route

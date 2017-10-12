@@ -1,0 +1,15 @@
+extends index.pug
+
+block content
+  - let p = parts;
+  ul
+    each item in p
+      - let id = item.id;
+      - let description = item.description;
+      - let partnum = item.partnum;
+      - let make = item.make;
+      - let count = item.count;
+      - let cases = item.cases;
+      li
+        a(href="/part/" + id) #{make} #{partnum} #{description} (#{id})
+        span Stock level: #{count}
