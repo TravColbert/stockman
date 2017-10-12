@@ -67,7 +67,7 @@ let parts = {
       count:part.count,
       cases:[]
     });
-    return;
+    return x;
   },
   find:function(field,val) {
     let methodName = "find";
@@ -677,12 +677,36 @@ var appFormCreatePart = function(req,res,next) {
   return next();
 }
 
-var appCreatePart = function(req,res,next) {
-  let myName = "appCreatePart";
-  logThis(myName + ": Request to create part: " + JSON.stringify(req.body));
-  parts.add(req.body);
-  res.redirect('/parts/add');
-  return;
+// var appCreatePart = function(req,res,next) {
+//   let myName = "appCreatePart";
+//   logThis(myName + ": Request to create part: " + JSON.stringify(req.body));
+//   parts.add(req.body);
+//   res.redirect('/parts/add');
+//   return;
+// }
+
+var appAddPart = function(req,res,next) {
+  let myName = "appAddPart";
+  logThis(myName + ": Request to add new part");
+  req.appData.mode = "addpart";
+  return next();
+}
+
+var appAddPartVerified = function(req,res,next) {
+  let myName = "appAddPartVerified";
+  logThis(myName + ": Attempting to add part " + req.data.partnum);
+  // Maybe just check to ensure that the manufacturer's number is not a dupliacate
+  let duplicatePartNumber = parts.db.findIndex(function(partRecord) {
+    return partRecord.partnum==req.data.partnum;
+  });
+  if(duplicatePartNumber.length>0) return next(new Error("Attempting to add part with duplicate manufacturer's number"));
+  let partid = parts.add({
+    partnum:req.data.partnum,
+    description:req.data.description,
+    make:req.data.make,
+    count:req.data.count
+  });
+  return res.redirect('/part/' + partid);
 }
 
 // var appFormEditPart = function(req,res,next) {
@@ -901,16 +925,17 @@ app.get('/users/',appCheckAuthentication,appGetUsers);
 app.get('/user/:userId',appCheckAuthentication,appGetUser);
 app.post('/user/',appCheckAuthentication,appCreateUser);
 
+app.get('/parts/add',appCheckAuthentication,appAddPart);
 app.get('/parts/',appGetParts);
-app.get('/parts/add',appCheckAuthentication,appFormCreatePart,appGetParts);
 app.get('/part/checkin/:partId/case/:caseId',appCheckAuthentication,appCheckinPartVerify);
 app.get('/part/checkout/:partId',appCheckAuthentication,appCheckoutPartVerify);
 app.post('/part/checkinverified',appCheckAuthentication,appCheckinPart);
 app.post('/part/checkoutverified',appCheckAuthentication,appCheckoutPart);
 app.get('/part/edit/:partId',appCheckAuthentication,appEditPartVerify);
+app.post('/part/add',appCheckAuthentication,appAddPartVerified);
 app.post('/part/edit',appCheckAuthentication,appEditPart);
 app.get('/part/:partId',appCheckAuthentication,appGetPart);
-app.post('/part/',appCheckAuthentication,appCreatePart);
+// app.post('/part/',appCheckAuthentication,appCreatePart);
 
 app.get('/cases/',appGetCases);
 app.get('/case/:caseId',appCheckAuthentication,appGetCase);
