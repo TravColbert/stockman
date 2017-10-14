@@ -1,0 +1,22 @@
+extends index.pug
+
+block content
+  div.layout-col
+    .part-listing.layout-col
+      form(action="/part/add" method="post")
+        .partnum.layout-row
+          div Part Number: 
+          input(id="partnum" type="text" name="partnum" placeholder="part number" required)
+        .partdescription.layout-row
+          div Description: 
+          input(id="description" type="text" name="description" placeholder="description" required)
+        .partmake.layout-row
+          div Make: 
+          input(id="make" type="text" name="make" placeholder="manufacturer")
+        .partcount.layout-row
+          div Stock Level: 
+          input(id="count" type="number" name="count" placeholder="desired amount of parts" required)
+        .layout-row
+          input.buttonconfirm(type="submit" id="submit" value="Confirm")
+          a.buttoncancel(href="/parts/") Cancel
+
