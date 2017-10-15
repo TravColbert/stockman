@@ -3,7 +3,8 @@ html
   include head.pug
   body.header-static.footer-static
     include navigation.pug
-    #main.content.layout-height-1-1.layout-width-1-1
+    #main.content.layout-height-1-1.layout-width-1-1.layout-col
+      include messages.pug
       block content
     include foot.pug
     block scripts
