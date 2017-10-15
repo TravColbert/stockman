@@ -313,9 +313,9 @@ var appStats = function(req,res,next) {
 var appStart = function(req,res,next) {
   let myName = "appStart";
   logThis(myName + ": Original request: " + req.session.originalReq);
-  // responseString = '';
   req.appData = {};
   req.appData.title = appName;
+  req.appData.messages = [];
   return next();
 }
 
@@ -343,24 +343,6 @@ var timeStart = function(req,res,next) {
   return next();
 }
 
-// var appMenu = function(req,res,next) {
-//   let makeMenuItem = function(menuItem) {
-//     return "<li><a href='" + menuItem.link + "'>" + menuItem.text + "</a></li>";
-//   }
-//   let myName = "appMenu";
-//   responseString += "<ul>";
-//   menu.forEach(function(v,i,a) {
-//     if(!v.hasOwnProperty("secured")) {
-//       responseString += makeMenuItem(v);
-//     } else {
-//       if(v.secured && req.user) responseString += makeMenuItem(v);
-//       if(!v.secured && !req.user) responseString += makeMenuItem(v);
-//     }
-//   });
-//   responseString += "</ul>";
-//   return next();
-// }
-
 var appGetMenu = function(req,res,next) {
   let myName = "appGetMenu";
   logThis(myName + ": Building menu object");
@@ -376,38 +358,13 @@ var appGetMenu = function(req,res,next) {
   return next();
 }
 
-// var appGetMenuJson = function(req,res,next) {
-//   let myName = "appGetMenuJson";
-//   let objMenu = {"menu":[]};
-//   let makeMenuItem = function(menuItem) {
-//     return {"link":menuItem.link,"text":menuItem.text,"icon":menuItem.icon};
-//   };
-//   menu.forEach(function(v) {
-//     if(!v.hasOwnProperty("secured")) {
-//       objMenu.menu.push(makeMenuItem(v));
-//     } else {
-//       if(v.secured && req.user) objMenu.menu.push(makeMenuItem(v));
-//       if(!v.secured && !req.user) objMenu.menu.push(makeMenuItem(v));
-//     }
-//   });
-//   return res.json(objMenu);
-// }
-
 var appHello = function(req,res,next) {
   var myName = "root";
   logThis(myName + ": User: " + req.user);
   let audience = req.user || "World";
-  // responseString += "Hello " + audience;
   req.appData.account = req.user;
   return next();
 }
-
-// var updateApp = function(req,res,next) {
-//   var myName = "update";
-//   logThis(myName);
-//   responseString += "<br>\nI'm going to update my records";
-//   return next();
-// }
 
 var secureApp = function(req,res,next) {
   var myName = "secureApp";
@@ -415,13 +372,6 @@ var secureApp = function(req,res,next) {
   responseString += "<br>\n!!! SUPER SECURE DATA !!!";
   return next();
 }
-
-// var getSessionData = function(req,res,next) {
-//   let myName = "getSessionData";
-//   logThis(myName + ": Setting views to " + req.session.views);
-//   if(req.session.views) req.appData.views = req.session.views;
-//   return next();
-// }
 
 var setSessionData = function(req,res,next) {
   let myName = "setSessionData";
@@ -439,13 +389,6 @@ var timeEnd = function(req,res,next) {
   req.appData.stopTime = Date.now();
   return next();
 }
-
-// var resEnd = function(req,res) {
-//   let myName = "resEnd";
-//   logThis(myName + ": ^^^^^^^^^^");
-//   return res.send(req.startTime + "<br>\n" + responseString + "<br>\n" + req.stopTime);
-//   // return;
-// }
 
 var appRender = function(req,res) {
   let myName = "appRender";
@@ -733,8 +676,8 @@ var appAddPartVerified = function(req,res,next) {
 //   next();
 // }
 
-// var appEditPartVerify = function(req,res,next) {
-//   let myName = "appEditPartVerify";
+// var appEditPartVerified = function(req,res,next) {
+//   let myName = "appEditPartVerified";
 //   logThis(myName + ": Verifying modification of part: " + req.body.partid);
 
 // }
@@ -746,8 +689,8 @@ var appAddPartVerified = function(req,res,next) {
  * @param {*} res
  * @param {*} next
  */
-var appCheckinPartVerify = function(req,res,next) {
-  let myName = "appCheckinPartVerify";
+var appCheckinPartVerified = function(req,res,next) {
+  let myName = "appCheckinPartVerified";
   let partId = req.params.partId;
   req.appData.caseId = req.params.caseId;
   logThis(myName + ": Request to verify check-in of part: " + partId);
@@ -772,8 +715,8 @@ var appCheckinPart = function(req,res,next) {
   return next(new Error('Something went wrong :-('));
 }
 
-var appCheckoutPartVerify = function(req,res,next) {
-  let myName = "appCheckoutPartVerify";
+var appCheckoutPartVerified = function(req,res,next) {
+  let myName = "appCheckoutPartVerified";
   let partId = req.params.partId;
   logThis(myName + ": Request to verify check-out of part: " + partId);
   var part = parts.find("id",partId);
@@ -794,8 +737,8 @@ var appCheckoutPart = function(req,res,next) {
   return next(new Error('Something went wrong :-('));
 }
 
-var appEditPartVerify = function(req,res,next) {
-  let myName = "appEditPartVerify";
+var appEditPartVerified = function(req,res,next) {
+  let myName = "appEditPartVerified";
   logThis(myName + ": Request to edit part #:" + req.params.partId);
   let partId = req.params.partId;
   let partList = parts.find("id",partId);
@@ -844,7 +787,7 @@ var appGetCase = function(req,res,next) {
   let myName = "appCase";
   let caseId = req.params.caseId;
   logThis(myName + ": Getting parts with case #: " + caseId);
-  req.appData.mode = "case";  
+  req.appData.mode = "case";
   req.appData.caseId = caseId;
   req.appData.parts = parts.findByCase(caseId);
   return next();
@@ -927,11 +870,11 @@ app.post('/user/',appCheckAuthentication,appCreateUser);
 
 app.get('/parts/add',appCheckAuthentication,appAddPart);
 app.get('/parts/',appGetParts);
-app.get('/part/checkin/:partId/case/:caseId',appCheckAuthentication,appCheckinPartVerify);
-app.get('/part/checkout/:partId',appCheckAuthentication,appCheckoutPartVerify);
+app.get('/part/checkin/:partId/case/:caseId',appCheckAuthentication,appCheckinPartVerified);
+app.get('/part/checkout/:partId',appCheckAuthentication,appCheckoutPartVerified);
 app.post('/part/checkinverified',appCheckAuthentication,appCheckinPart);
 app.post('/part/checkoutverified',appCheckAuthentication,appCheckoutPart);
-app.get('/part/edit/:partId',appCheckAuthentication,appEditPartVerify);
+app.get('/part/edit/:partId',appCheckAuthentication,appEditPartVerified);
 app.post('/part/add',appCheckAuthentication,appAddPartVerified);
 app.post('/part/edit',appCheckAuthentication,appEditPart);
 app.get('/part/:partId',appCheckAuthentication,appGetPart);
