@@ -1,9 +1,10 @@
 footer.layout-row.layout-width-1-1.layout-align-center
   .layout-col
-    .copyright 2017 Travis Colbert
+    .copyright &copy;2017 Travis Colbert
     .madewith Made with Laminar
+  .layout-col.layout-align-center.layout-size-x1
+    div Hi #{account}
   .layout-col
-    div #{startTime}
-  .layout-col
-    div Hi #{account}!
+    - let totalTime = stopTime - startTime;
+    div Generated in #{totalTime}ms
 script(src='/js/stockman.js')
