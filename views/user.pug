@@ -2,5 +2,6 @@ extends index.pug
 
 block content
   div.layout-col
-    div.username Username: #{user.username}
-    div.userid User ID: #{user.id}
+    if user
+      div.username Username: #{user.username}
+      div.userid User ID: #{user.id}
