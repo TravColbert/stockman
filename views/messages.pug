@@ -1,5 +1,8 @@
 .messages.layout-width-1-1.layout-col
-  .message.layout-width-1-1 Messages
+  - let numMessages = messages.length;
+  .layout-width-1-1 Messages: #{numMessages}
   .message.layout-width-1-1 This is another message
   each message in messages
-    .message.layout-width-1-1 #{message}
+    - let messageClass = "type-" + message.type;
+    - let messageText = message.text;
+    div(class=messageClass).message.layout-width-1-1 #{messageText}

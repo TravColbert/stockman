@@ -377,9 +377,8 @@ var setSessionData = function(req,res,next) {
   let myName = "setSessionData";
   if(!req.appData.views) {
     req.appData.views = 0;
-  } else {
-    req.appData.views++;
   }
+  req.appData.views++;
   return next();
 }
 
@@ -451,21 +450,20 @@ let makeUserJson = function(user) {
 
 var appGetUser = function(req,res,next) {
   let myName = "appGetUser";
-  // let user;
   let userId = req.params.userId;
-  logThis(myName + ": Getting user with ID: " + userId);
   req.appData.mode = "user";
-
-  // responseString += "<ul>";
+  logThis(myName + ": Getting user with ID: " + userId);
   users.findById(userId,function(err,user) {
-    if(!err) {
+    if(err) {
+      req.appData.messages.push({type:"warn",text:"Error getting user with ID:" + userId});
+    } else if(!user) {
+      req.appData.messages.push({type:"warn",text:"No user found with ID:" + userId});
+    } else {
+      req.appData.messages.push({type:"succ",text:"Found user ID:" + userId + " " + JSON.stringify(user)});
       delete user.password;
       req.appData.user = user;
-    } else {
-      req.appData.user = {err:"Error getting user"};
     }
   });
-  // responseString += "</ul>";
   return next();
 }
 
