@@ -1,0 +1,8 @@
+.messages {
+  padding: 0.5em;
+}
+.message {
+  border: 1px solid silver;
+  border-radius: 0.5em;
+  padding: 0.5em;
+}
