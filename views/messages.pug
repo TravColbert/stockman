@@ -1,8 +1,11 @@
 .messages.layout-width-1-1.layout-col
   - let numMessages = messages.length;
-  .layout-width-1-1 Messages: #{numMessages}
-  .message.layout-width-1-1 This is another message
-  each message in messages
-    - let messageClass = "type-" + message.type;
-    - let messageText = message.text;
-    div(class=messageClass).message.layout-width-1-1 #{messageText}
+  if numMessages>0
+    .layout-width-1-1 Messages: #{numMessages}
+    each message,index in messages
+      - let messageClass = "type-" + message.type;
+      - let messageText = message.text;
+      div(id="message" + index class=messageClass).message.layout-row.layout-width-1-1.layout-justify-between
+        .messageindex #{index}:&nbsp;
+        .messagetext.layout-size-x1 #{messageText}
+        .messageack ok

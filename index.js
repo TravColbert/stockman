@@ -5,7 +5,10 @@ const app = express();
 const port = 3000;
 const passport = require('passport');
 const LocalStrategy = require('passport-local').Strategy;
-const appName = "Stock-Man";
+const appName = "Stockr";
+const fs = require('fs');
+const usersDbFile = "db/users.db";
+const partsDbFile = "db/parts.db";
 let sessionConfig = {
   secret:'yoyo!',
   resave:false,
@@ -24,8 +27,6 @@ app.use(bodyParser.urlencoded({extended:true}));
 app.use(session(sessionConfig));
 app.use(passport.initialize());
 app.use(passport.session());
-
-let responseString = '';
 
 /**
  * The app's menu
@@ -183,12 +184,32 @@ let parts = {
     }
     return true;
   },
-  db:[
-    {id:0,partnum:"NB.G5511.00H",description:"MAINBOARD C738T",make:"Acer",count:2,cases:["999"]},
-    {id:1,partnum:"6M.G55N7.002",description:"R11 LCD Panel",make:"Acer",count:3,cases:["999","998"]},
-    {id:2,partnum:"50.G55N7.007",description:"R11 LCD Cable",make:"Acer",count:3,cases:[]}
-  ]
+  readDb:function() {
+    let methodName = "readDb";
+    console.log(this.myName + ": " + methodName + ": Attempting read of stored parts data...");
+    fs.readFile(partsDbFile,'utf8',function(err,data) {
+      if(err) throw err;
+      this.db = JSON.parse(data);
+      console.log(JSON.stringify(this.db));
+      return true;
+    }.bind(this));
+    return;
+  },
+  writeDb:function() {
+    let methodName = "writeDb";
+    console.log(this.myName + ": " + methodName + ": Attempting write of in-memory data...");
+    fs.writeFile(partsDbFile,JSON.stringify(this.db),function(err) {
+      if(err) {
+        console.log(this.myName + ": " + methodName + ": Seems there was an error!");
+        throw err;
+      }
+      console.log(this.myName + ": " + methodName + ": Write success!");
+    }.bind(this));
+    return;
+  }
 };
+
+parts.readDb();
 
 /**
  * The Users DB with functions that hook into Passport
@@ -241,10 +262,32 @@ let users = {
     });
     return;
   },
-  db:[
-    {id:0,username:'admin',password:'test123!'}
-  ]
+  readDb:function() {
+    let methodName = "readDb";
+    console.log(this.myName + ": " + methodName + ": Attempting read of stored users data...");
+    fs.readFile(usersDbFile,'utf8',function(err,data) {
+      if(err) throw err;
+      this.db = JSON.parse(data);
+      console.log(JSON.stringify(this.db));
+      return true;
+    }.bind(this));
+    return;
+  },
+  writeDb:function() {
+    let methodName = "writeDb";
+    console.log(this.myName + ": " + methodName + ": Attempting write of in-memory user data...");
+    fs.writeFile(usersDbFile,JSON.stringify(this.db),function(err) {
+      if(err) {
+        console.log(this.myName + ": " + methodName + ": Seems there was an error!");
+        throw err;
+      }
+      console.log(this.myName + ": " + methodName + ": Write success!");
+    }.bind(this));
+    return;
+  }
 };
+
+users.readDb();
 
 passport.use(new LocalStrategy(
   function(username,password,done) {    // Passport Local Verification function
@@ -313,9 +356,27 @@ var appStats = function(req,res,next) {
 var appStart = function(req,res,next) {
   let myName = "appStart";
   logThis(myName + ": Original request: " + req.session.originalReq);
+  logThis(myName + ": Clearing appData");
   req.appData = {};
+  logThis(myName + ": Setting app name");
   req.appData.title = appName;
+  // logThis(myName + ": Clearing appData/session messages");
   req.appData.messages = [];
+  // req.session.messages = [];
+  return next();
+}
+
+var appMessages = function(req,res,next) {
+  let myName = "appMessages";
+  logThis(myName + ": Setting up messages");
+  if(req.session.hasOwnProperty("messages")) {
+    if(req.session.messages.length>0) {
+      logThis(JSON.stringify(req.session.messages));
+      req.appData.messages = req.session.messages;
+    }
+  } else {
+    req.session.messages = [];
+  }
   return next();
 }
 
@@ -392,6 +453,9 @@ var timeEnd = function(req,res,next) {
 var appRender = function(req,res) {
   let myName = "appRender";
   let templateFile = req.appData.mode || "index";
+  if(req.session.hasOwnProperty("messages")) {
+    if(req.session.messages.length>0) req.appData.messages = req.session.messages;
+  }
   logThis(myName + ": Sending off to template: " + templateFile + " (" + req.appData.mode + ")");
   logThis(myName + ": " + JSON.stringify(req.appData));
   res.render(templateFile,req.appData);
@@ -455,11 +519,12 @@ var appGetUser = function(req,res,next) {
   logThis(myName + ": Getting user with ID: " + userId);
   users.findById(userId,function(err,user) {
     if(err) {
-      req.appData.messages.push({type:"warn",text:"Error getting user with ID:" + userId});
+      req.session.messages.push({type:"err",text:"Error getting user with ID:" + userId});
     } else if(!user) {
-      req.appData.messages.push({type:"warn",text:"No user found with ID:" + userId});
+      req.session.messages.push({type:"warn",text:"No user found with ID:" + userId});
     } else {
-      req.appData.messages.push({type:"succ",text:"Found user ID:" + userId + " " + JSON.stringify(user)});
+      req.session.messages.push({type:"succ",text:"Found user ID:" + userId + " " + JSON.stringify(user)});
+      req.session.messages.push({type:"succ",text:"Found user ID:" + userId + " " + JSON.stringify(user)});
       delete user.password;
       req.appData.user = user;
     }
@@ -478,22 +543,23 @@ var appGetUser = function(req,res,next) {
 //   return res.json(objUsers);
 // }
 
-var appFormCreateUser = function(req,res,next) {
-  let myName = "appFormCreateUser";
-  responseString +=`
-<form action="/user" method="post">
-<div id="prompt">New User</div>
-<div><input type="text" name="username" id="username" placeholder="Username" /></div>
-<div><input type="password" name="password" id="password" placeholder="Passphrase" /></div>
-<input type="submit" id="submit" value="Create User" />
-</form>`;
-  return next();
-}
+// var appFormCreateUser = function(req,res,next) {
+//   let myName = "appFormCreateUser";
+//   responseString +=`
+// <form action="/user" method="post">
+// <div id="prompt">New User</div>
+// <div><input type="text" name="username" id="username" placeholder="Username" /></div>
+// <div><input type="password" name="password" id="password" placeholder="Passphrase" /></div>
+// <input type="submit" id="submit" value="Create User" />
+// </form>`;
+//   return next();
+// }
 
 var appCreateUser = function(req,res,next) {
   let myName = "appCreateUser";
   logThis(myName + ": Request to create user: " + JSON.stringify(req.body));
   users.add(req.body);
+  req.session.messages.push({type:"info",text:"User created"});
   res.redirect('/users');
   return;
 }
@@ -542,31 +608,6 @@ var appGetPart = function(req,res,next) {
   req.appData.part.free = parts.countFree(partId);
   req.appData.part.used = parts.countUsed(partId);
   req.appData.mode = "part";
-
-
-  // partList.forEach(function(part,i,a) {
-  //   logThis(myName + ": " + JSON.stringify(part));
-  //   let freeParts = parts.countFree(part.id);
-  //   let usedParts = parts.countUsed(part.id);
-    // if((freeParts + usedParts)!=part.count) message = '<span class="error">There seems to be a descrepancy in the parts stock amount</span>';
-    // responseString += `
-    // <li>
-    //   <div>Description: ${part.description}</div>
-    //   <div>Make: ${part.make}</div>
-    //   <div>Manufacturer Part Number: ${part.partnum}</div>
-    //   <div>ID: ${part.id}</div>
-    //   <div>Stock:
-    //     <div>Total: ${part.count}</div>
-    //     <div>Available: ${freeParts}</div>
-    //     <div>Used: ${usedParts}</div>
-    //     <div>${message}</div>
-    //   </div>
-    //   <div>`;
-    // if(freeParts<part.count) responseString += `<a href="/parts/checkin/${partId}">+</a>`;
-    // if(freeParts) responseString += `<a href="/parts/checkout/${partId}">-</a>`;
-    // responseString += "</div></li>";
-  // })
-  // responseString += "</ul>";
   return next();
 }
 
@@ -635,19 +676,31 @@ var appAddPart = function(req,res,next) {
 
 var appAddPartVerified = function(req,res,next) {
   let myName = "appAddPartVerified";
-  logThis(myName + ": Attempting to add part " + req.data.partnum);
+  logThis(myName + ": Attempting to add part " + req.body.partnum);
   // Maybe just check to ensure that the manufacturer's number is not a dupliacate
   let duplicatePartNumber = parts.db.findIndex(function(partRecord) {
-    return partRecord.partnum==req.data.partnum;
+    console.log(myName + ": " + partRecord.partnum + " : " + req.body.partnum);
+    return partRecord.partnum==req.body.partnum;
   });
-  if(duplicatePartNumber.length>0) return next(new Error("Attempting to add part with duplicate manufacturer's number"));
-  let partid = parts.add({
-    partnum:req.data.partnum,
-    description:req.data.description,
-    make:req.data.make,
-    count:req.data.count
+  console.log(myName + ": " + duplicatePartNumber);
+  if(duplicatePartNumber>-1) {
+    req.session.messages.push({type:"err",text:"Can't add part with duplicate manufacturer's number"});
+    // return next(new Error("Attempting to add part with duplicate manufacturer's number"));
+    return res.redirect('/parts/');
+  }
+  let partId = parts.add({
+    partnum:req.body.partnum,
+    description:req.body.description,
+    make:req.body.make,
+    count:req.body.count
   });
-  return res.redirect('/part/' + partid);
+  if(!partId) {
+    req.session.messages.push({type:"warn",text:"Could not create new part"});
+    return req.redirect("/part/");
+  }
+  parts.writeDb();
+  req.session.messages.push({type:"success",text:"New part added"});
+  return res.redirect('/part/' + partId);
 }
 
 // var appFormEditPart = function(req,res,next) {
@@ -707,6 +760,7 @@ var appCheckinPart = function(req,res,next) {
   let myName = "appCheckinPart";
   logThis(myName + ": Request to check in part: " + req.body.partid + " in case #: " + req.body.casenum);
   if(parts.checkin(req.body.partid,req.body.caseid)) {
+    parts.writeDb();
     logThis(myName + ": Redirecting to: /part/" + req.body.partid);
     return res.redirect('/part/' + req.body.partid);
   }
@@ -730,6 +784,7 @@ var appCheckoutPart = function(req,res,next) {
   let myName = "appCheckoutPart";
   logThis(myName + ": Request to check out part: " + req.body.partid);
   if(parts.checkout(req.body.partid,req.body.caseid)) {
+    parts.writeDb();
     return res.redirect('/part/' + req.body.partid);
   }
   return next(new Error('Something went wrong :-('));
@@ -762,6 +817,7 @@ var appEditPart = function(req,res,next) {
   parts.db[partIndex].description = req.body.description;
   parts.db[partIndex].make = req.body.make;
   parts.db[partIndex].count = req.body.count;
+  parts.writeDb();
   return res.redirect('/part/' + req.body.partid);
 }
 
@@ -794,7 +850,7 @@ var appGetCase = function(req,res,next) {
 var errorHandler = function(err,req,res,next) {
   let myName = "errorHandler";
   logThis(myName + ":!!" + err);
-  responseString += "!!" + err;
+  // responseString += "!!" + err;
   return res.redirect('/');
 }
 
@@ -803,7 +859,7 @@ var appTest = function(count,skip) {
     console.log("appTest: " + count + ", SKIP: " + (skip));
     let skp = (skip) ? 'true' : 'false';
     let skpResponse = (skip) ? 'route' : null;
-    responseString += "<br>This is APPTEST: " + count + " (SKIP=" + skp + " RESPONSE: " + skpResponse + ")";
+    // responseString += "<br>This is APPTEST: " + count + " (SKIP=" + skp + " RESPONSE: " + skpResponse + ")";
     return next(skpResponse);
   }
 }
@@ -812,14 +868,14 @@ var appDump = function(req,res,next) {
   myName = 'appDump';
   let dbId = req.params.dbId;
   logThis(myName + ":~~~DUMP~~~");
-  responseString += "DUMP:";
+  // responseString += "DUMP:";
   //responseString += "<pre>";
   if(dbId=="users") {
     logThis(JSON.stringify(users));
-    responseString += JSON.stringify(users);
+    // responseString += JSON.stringify(users);
   } else if(dbId=="parts") {
     logThis(JSON.stringify(parts));
-    responseString += JSON.stringify(parts);
+    // responseString += JSON.stringify(parts);
   }
   //responseString += "</pre>";
   logThis(myName + ":~~~~~~~~~~");
@@ -845,7 +901,7 @@ app.get('/logout',appLogout);
  * NORMAL ROUTES
  */
 // app.use(setSessionData,appHello,appMenu);
-app.use(setSessionData,appHello,appGetMenu);
+app.use(setSessionData,appMessages,appHello,appGetMenu);
 
 // app.get('/test',appGetMenu,function(req,res) {
 //   console.log("Rendering the template:");
