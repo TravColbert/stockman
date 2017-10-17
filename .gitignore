@@ -1,2 +1,5 @@
 node_modules/
+public/js/*.zip
+public/js/bcrypt.js-master
+public/js/davidshimjs-qrcodejs-04f46c6
 public/index.html.bak
