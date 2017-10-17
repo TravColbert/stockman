@@ -1,3 +1,1 @@
-[
-  {"id":0,"username":"admin","password":"test123!"}
-]
+[{"id":0,"username":"admin","password":"test123!"},{"id":1,"username":"travis","password":"$2a$10$8w976WzV0qVRZrwpCKSVvu9ju.q/eYkY3/fwLwzKvilGUN/1nIeXm"}]

@@ -1,12 +1,18 @@
+const fs = require('fs');
+const https = require('https');
 const express = require('express');
 const session = require('express-session');
 const bodyParser = require('body-parser');
 const app = express();
+const options = {
+  key: fs.readFileSync('tls/stockr-key.pem'),
+  cert: fs.readFileSync('tls/stockr.crt')
+}
 const port = 3000;
 const passport = require('passport');
 const LocalStrategy = require('passport-local').Strategy;
+const bcrypt = require('bcryptjs');
 const appName = "Stockr";
-const fs = require('fs');
 const usersDbFile = "db/users.db";
 const partsDbFile = "db/parts.db";
 let sessionConfig = {
@@ -46,6 +52,7 @@ let menu = [
   {link:"/cases",text:"Cases",icon:"assignment"},
   /*{link:"/update",text:"Update Database",icon:"update",secured:true},*/
   {link:"/users",text:"Users",icon:"people_outline",secured:true},
+  {link:"/about",text:"About",icon:"info_outline"},
   {link:"/login",text:"Log In",icon:"verified_user",secured:false},
   {link:"/logout",text:"Log Out",icon:"highlight_off",secured:true},
 ];
@@ -251,16 +258,38 @@ let users = {
     return user;
   },
   add:function(userObj) {
-    let x=this.db.length;
-    while(this.find("id",x).length>0) {
-      x++;
+    let checkPw = function(user) {
+      if(user.password!=user.passwordv) {
+        req.session.messages.push({type:"warn",text:"Passwords do not match"});
+        return false;
+      }
+      return true;
     }
-    this.db.push({
-      id:x,
+    let getNextIndex = function(userDb) {
+      let x=userDb.db.length;
+      while(userDb.find("id",x).length>0) {
+        x++;
+      }
+      return x;      
+    }
+    let hashPw = function(user,db) {
+      if(!user.hasOwnProperty('password')) return false;
+      bcrypt.genSalt(10,function(err,salt) {
+        bcrypt.hash(user.password,salt,function(err,hash) {
+          user.password = hash;
+          console.log("user: add: hashPw: User to save: " + JSON.stringify(user));
+          db.db.push(user);
+          db.writeDb();
+        });
+      });
+    }
+    if(!checkPw(userObj)) return false;
+    hashPw({
+      id:getNextIndex(this),
       username:userObj.username,
       password:userObj.password
-    });
-    return;
+    },this);
+    return true;
   },
   readDb:function() {
     let methodName = "readDb";
@@ -461,15 +490,12 @@ var appRender = function(req,res) {
   res.render(templateFile,req.appData);
 }
 
-var appLoginPage = function(req,res) {
+var appLoginPage = function(req,res,next) {
   logThis("...(sending login page)...");
-  if(process.platform=="win32") {
-    // Windows:
-    return res.sendFile('/public/login.html',{root:'C:/Users/Travis/Downloads/Node/'});
-  } else {
-    // Linux:
-    return res.sendFile('/public/login.html',{root:'/home/travis/Downloads/Projects/stockman/'});
-  }
+  // let salt = bcrypt.genSaltSync(10);
+  req.appData.mode = "login";
+  req.appData.secretSauce = "blahblahblah";
+  return next();
 }
 
 var appLogout = function(req,res,next) {
@@ -499,19 +525,6 @@ var appGetUsers = function(req,res,next) {
   return next();
 }
 
-let makeUserJson = function(user) {
-  return {"id":user.id,"username":user.username};
-}
-
-// var appGetUsersJson = function(req,res,next) {
-//   let myName = "appGetUsersJson";
-//   let objUsers = {"users":[]};
-//   users.db.forEach(function(v) {
-//     objUsers.users.push(makeUserJson(v));
-//   });
-//   return res.json(objUsers);
-// }
-
 var appGetUser = function(req,res,next) {
   let myName = "appGetUser";
   let userId = req.params.userId;
@@ -532,36 +545,18 @@ var appGetUser = function(req,res,next) {
   return next();
 }
 
-// var appGetUserJson = function(req,res,next) {
-//   let myName = "appGetUserJson";
-//   let userId = req.params.userId;
-//   let objUsers = {"users":[]};
-//   logThis(myName + ": Getting user with id: " + userId);
-//   users.findById(userId,function(err,user) {
-//     if(!err) objUsers.users.push(makeUserJson(user));
-//   });
-//   return res.json(objUsers);
-// }
-
-// var appFormCreateUser = function(req,res,next) {
-//   let myName = "appFormCreateUser";
-//   responseString +=`
-// <form action="/user" method="post">
-// <div id="prompt">New User</div>
-// <div><input type="text" name="username" id="username" placeholder="Username" /></div>
-// <div><input type="password" name="password" id="password" placeholder="Passphrase" /></div>
-// <input type="submit" id="submit" value="Create User" />
-// </form>`;
-//   return next();
-// }
+var appAddUser = function(req,res,next) {
+  let myName = "appAddUser";
+  logThis(myName + ": Request to add new user");
+  req.appData.mode = "adduser";
+  return next();
+}
 
 var appCreateUser = function(req,res,next) {
   let myName = "appCreateUser";
   logThis(myName + ": Request to create user: " + JSON.stringify(req.body));
   users.add(req.body);
-  req.session.messages.push({type:"info",text:"User created"});
-  res.redirect('/users');
-  return;
+  return res.redirect('/users');
 }
 
 var appGetParts = function(req,res,next) {
@@ -702,36 +697,6 @@ var appAddPartVerified = function(req,res,next) {
   req.session.messages.push({type:"success",text:"New part added"});
   return res.redirect('/part/' + partId);
 }
-
-// var appFormEditPart = function(req,res,next) {
-//   let myName = "appFormEditPart";
-//   let partId = req.params.partId;
-//   logThis(myName + ": Request to edit part: " + req.params.partId + " " + JSON.stringify(req.body));
-//   let part = parts.find('id',partId);
-//   if(part.length<1) return next(new Error("Could not find part for editing"));
-//   part = part[0];
-//   logThis(myName + ": " + JSON.stringify(part));
-//   let dateNow = Date.now();
-//   // We need to build a new form here to verify
-//   // /parts/checkinverify/:partId
-//   responseString +=`
-//   <form action="/parts/editverified" method="post">
-//   <input type="hidden" name="partid" id="partid" value="${partId}" />
-//   <div id="prompt">Edit Part</div>
-//   <div><input type="text" name="partnum" id="partnum" placeholder="Manufacturer Part Number" value="${part.partnum}" />${part.partnum}</div>
-//   <div><input type="text" name="description" id="description" placeholder="Description" value="${part.description}" />${part.description}</div>
-//   <div><input type="text" name="make" id="make" placeholder="Manufacturer" value="${part.make}" />${part.make}</div>
-//   <div><input type="text" name="count" id="count" placeholder="Current Count" value="${part.count}" />${part.count}</div>
-//   <input type="submit" id="submit" value="Submit" />
-//   </form>`;
-//   next();
-// }
-
-// var appEditPartVerified = function(req,res,next) {
-//   let myName = "appEditPartVerified";
-//   logThis(myName + ": Verifying modification of part: " + req.body.partid);
-
-// }
 
 /**
  * Perform basic checks on part check-in. Then proceed
@@ -891,17 +856,17 @@ var appDump = function(req,res,next) {
 app.use(appIgnoreFavicon,appStats,appStart,timeStart);
 
 /**
+ * NORMAL ROUTES
+ */
+// app.use(setSessionData,appHello,appMenu);
+app.use(setSessionData,appMessages,appHello,appGetMenu);
+
+/**
  * AUTHENTICATION ROUTES
  */
 app.get('/login',appLoginPage);
 app.post('/login',passport.authenticate('local'),appRedirectToOriginalReq);
 app.get('/logout',appLogout);
-
-/**
- * NORMAL ROUTES
- */
-// app.use(setSessionData,appHello,appMenu);
-app.use(setSessionData,appMessages,appHello,appGetMenu);
 
 // app.get('/test',appGetMenu,function(req,res) {
 //   console.log("Rendering the template:");
@@ -918,9 +883,10 @@ app.get('/secure/',appTest(3,false));
 // The HTML response
 // app.get('/users/',appCheckAuthentication,appGetUsers,appFormCreateUser);
 // The JSON response
+app.get('/users/add',appCheckAuthentication,appAddUser)
 app.get('/users/',appCheckAuthentication,appGetUsers);
-app.get('/user/:userId',appCheckAuthentication,appGetUser);
 app.post('/user/',appCheckAuthentication,appCreateUser);
+app.get('/user/:userId',appCheckAuthentication,appGetUser);
 
 app.get('/parts/add',appCheckAuthentication,appAddPart);
 app.get('/parts/',appGetParts);
@@ -932,7 +898,6 @@ app.get('/part/edit/:partId',appCheckAuthentication,appEditPartVerified);
 app.post('/part/add',appCheckAuthentication,appAddPartVerified);
 app.post('/part/edit',appCheckAuthentication,appEditPart);
 app.get('/part/:partId',appCheckAuthentication,appGetPart);
-// app.post('/part/',appCheckAuthentication,appCreatePart);
 
 app.get('/cases/',appGetCases);
 app.get('/case/:caseId',appCheckAuthentication,appGetCase);
@@ -951,6 +916,9 @@ app.use(errorHandler);
 /**
  * Start the server
  */
-app.listen(port, function() {
+https.createServer(options,app).listen(port,function() {
   console.log("Server listening on port",port);
 });
+
+// app.listen(port, function() {
+// });

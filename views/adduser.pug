@@ -1,0 +1,18 @@
+extends index.pug
+
+block content
+  div.layout-col
+    .user-listing.layout-col
+      form(action="/user" method="post")
+        .username.layout-row
+          div User Name: 
+          input(id="username" type="text" name="username" placeholder="user name" required)
+        .userpassword.layout-row
+          div Password: 
+          input(id="password" type="password" name="password" placeholder="password" required)
+        .userpasswordverify.layout-row
+          div Password (verification): 
+          input(id="passwordv" type="password" name="passwordv" placeholder="password" required)
+        .layout-row
+          input.buttonconfirm(type="submit" id="submit" value="Confirm")
+          a.buttoncancel(href="/users/") Cancel

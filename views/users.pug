@@ -1,6 +1,8 @@
 extends index.pug
 
 block content
+  .adduser
+    a(href="/users/add") Add User
   - let u = users;
   ul
     each item in u
