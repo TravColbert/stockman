@@ -12,7 +12,8 @@ const port = 3000;
 const passport = require('passport');
 const LocalStrategy = require('passport-local').Strategy;
 const bcrypt = require('bcryptjs');
-const appName = "Stockr";
+const appName = "stockr";
+const appUrl = "https://10.175.9.145:" + port;
 const usersDbFile = "db/users.db";
 const partsDbFile = "db/parts.db";
 let sessionConfig = {
@@ -602,6 +603,7 @@ var appGetPart = function(req,res,next) {
   req.appData.part = parts.find("id",partId)[0];
   req.appData.part.free = parts.countFree(partId);
   req.appData.part.used = parts.countUsed(partId);
+  req.appData.appUrl = appUrl;
   req.appData.mode = "part";
   return next();
 }
@@ -786,6 +788,18 @@ var appEditPart = function(req,res,next) {
   return res.redirect('/part/' + req.body.partid);
 }
 
+var appPrintPart = function(req,res,next) {
+  let myName = "appPrintPart";
+  let partId = req.params.partId;
+  logThis(myName + ": Printing part #:" + partId);
+  req.appData.part = parts.find("id",partId)[0];
+  req.appData.part.free = parts.countFree(partId);
+  req.appData.part.used = parts.countUsed(partId);
+  req.appData.appUrl = appUrl;
+  req.appData.mode = "printpart";
+  return next();
+}
+
 var appGetCases = function(req,res,next) {
   let myName = 'appGetCases';
   logThis(myName + ": Getting all cases");
@@ -890,6 +904,7 @@ app.get('/user/:userId',appCheckAuthentication,appGetUser);
 
 app.get('/parts/add',appCheckAuthentication,appAddPart);
 app.get('/parts/',appGetParts);
+app.get('/part/print/:partId',appCheckAuthentication,appPrintPart);
 app.get('/part/checkin/:partId/case/:caseId',appCheckAuthentication,appCheckinPartVerified);
 app.get('/part/checkout/:partId',appCheckAuthentication,appCheckoutPartVerified);
 app.post('/part/checkinverified',appCheckAuthentication,appCheckinPart);

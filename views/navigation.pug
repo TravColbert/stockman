@@ -1,9 +1,9 @@
 header.layout-row.layout-width-1-1
   nav#topmenu.nav.layout-xs-col.layout-width-1-1.layout-sm-justify-end(role=navigation)
     #menu-title.layout-row.layout-justify-between
-      .textshadow
+      div#app-title
         a(href="/")= title
-      label.layout-justify-end(for="show-menu") &#9776;
+      label#menu-hamburger.layout-justify-end(for="show-menu") &#9776;
     input#show-menu(type="checkbox" role="button")
     ul.layout-xs-hidden.layout-xs-col.layout-row.layout-sm-size-x2.layout-size-x1.layout-justify-around
       - let m = menu;

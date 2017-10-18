@@ -1,0 +1,26 @@
+extends index.pug
+
+block content
+  .layout-col.layout-align-center
+    .layout-row
+      .part-qrcode.layout-col
+        #qrcode-box.layout-col(style="width:100px; height:100px;")
+        .qrcode-url.layout-col.layout-hidden
+          - let url = appUrl + "/part/" + part.id;
+          #qrcode-url #{url}
+      .part-listing-print.layout-col.layout-justify-center
+        //- .partid Part ID: #{part.id}
+        .partnum.layout-row
+          div Part Number: #{part.partnum} 
+        .partdescription Description: #{part.description}
+        .partmake Make: #{part.make}
+        .partcount Stock Level: #{part.count}
+        //- .stock-control.layout-col Stock Control
+    #print-prompt.layout-col.layout-align-center 
+      h1 Print This
+      .info.layout-col
+        p Use your browser's print command (Ctrl-p) to print this QR code.
+        p None of this extra stuff will be printed.
+
+block scripts
+  script(src='/js/qrcode.min.js')

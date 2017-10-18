@@ -1,11 +1,26 @@
 extends index.pug
 
 block content
-  a(href="/parts/add") Add Part
-  ul
-    li This is the beginning.
+  - let numParts = parts.length
+  .section-hdg.section-hdg-1 Parts (#{numParts})
+  ul.itemlist
+    //- li This is the beginning.
     each item in parts
-      li
-        a(href="/part/" + item.id) #{item.make} #{item.partnum} #{item.description} (#{item.id})
-        span Stock level: #{item.count}
-    li This is the end.
+      li.layout-col
+        .itemhead #{item.make} #{item.description}
+        .itemdetail
+          .label.nobreak Part Num:
+          .data #{item.partnum}
+        .itemdetail
+          .label Description:
+          .data #{item.description}
+        .itemdetail
+          .label Stock level:
+          .data #{item.count}
+        .itemdetail
+          .label Actions:
+          .data.layout-col
+            a.btn.btn-small.btn-primary(href="/part/" + item.id) inspect
+    //- li This is the end.
+  div.layout-row.layout-justify-between
+    a.btn.btn-normal(href="/parts/add") Add Part

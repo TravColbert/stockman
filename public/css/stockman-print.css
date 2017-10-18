@@ -1,0 +1,4 @@
+header, footer, #print-prompt {
+  display: none;
+  visibility: hidden;
+}
