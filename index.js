@@ -270,7 +270,7 @@ let users = {
       while(userDb.find("id",x).length>0) {
         x++;
       }
-      return x;      
+      return x;
     }
     let hashPw = function(user,db) {
       if(!user.hasOwnProperty('password')) return false;
@@ -329,7 +329,7 @@ passport.use(new LocalStrategy(
         console.log("No user");
         return done(null,false,{message:"Invalid account"});
       }
-      if(user.password!=password) {
+      if(!bcrypt.compareSync(password,user.password)) {
         console.log("Wrong password");
         return done(null,false,{message:"Invalid password"});
       }
