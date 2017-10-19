@@ -4,20 +4,18 @@ const express = require('express');
 const session = require('express-session');
 const bodyParser = require('body-parser');
 const app = express();
+app.locals = JSON.parse(fs.readFileSync('config.json'));
+app.locals.url = app.locals.addr + ":" + app.locals.port;
+
 const options = {
-  key: fs.readFileSync('tls/stockr-key.pem'),
-  cert: fs.readFileSync('tls/stockr.crt')
+  key: fs.readFileSync(app.locals.keyFile),
+  cert: fs.readFileSync(app.locals.certFile)
 }
-const port = 3000;
 const passport = require('passport');
 const LocalStrategy = require('passport-local').Strategy;
 const bcrypt = require('bcryptjs');
-const appName = "stockr";
-const appUrl = "https://10.175.9.145:" + port;
-const usersDbFile = "db/users.db";
-const partsDbFile = "db/parts.db";
 let sessionConfig = {
-  secret:'yoyo!',
+  secret:app.locals.sessionSecret,
   resave:false,
   saveUninitialized:false
 };
@@ -26,9 +24,9 @@ let sessionConfig = {
  * Configuration
  */
 // Template Engine setup:
-app.set('views','./views');
+app.set('views',app.locals.viewsDir);
 app.set('view engine','pug');
-app.use(express.static('public'));
+app.use(express.static(app.locals.staticDir));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended:true}));
 app.use(session(sessionConfig));
@@ -195,7 +193,7 @@ let parts = {
   readDb:function() {
     let methodName = "readDb";
     console.log(this.myName + ": " + methodName + ": Attempting read of stored parts data...");
-    fs.readFile(partsDbFile,'utf8',function(err,data) {
+    fs.readFile(app.locals.partsDbFile,'utf8',function(err,data) {
       if(err) throw err;
       this.db = JSON.parse(data);
       console.log(JSON.stringify(this.db));
@@ -206,7 +204,7 @@ let parts = {
   writeDb:function() {
     let methodName = "writeDb";
     console.log(this.myName + ": " + methodName + ": Attempting write of in-memory data...");
-    fs.writeFile(partsDbFile,JSON.stringify(this.db),function(err) {
+    fs.writeFile(app.locals.partsDbFile,JSON.stringify(this.db),function(err) {
       if(err) {
         console.log(this.myName + ": " + methodName + ": Seems there was an error!");
         throw err;
@@ -295,7 +293,7 @@ let users = {
   readDb:function() {
     let methodName = "readDb";
     console.log(this.myName + ": " + methodName + ": Attempting read of stored users data...");
-    fs.readFile(usersDbFile,'utf8',function(err,data) {
+    fs.readFile(app.locals.usersDbFile,'utf8',function(err,data) {
       if(err) throw err;
       this.db = JSON.parse(data);
       console.log(JSON.stringify(this.db));
@@ -306,7 +304,7 @@ let users = {
   writeDb:function() {
     let methodName = "writeDb";
     console.log(this.myName + ": " + methodName + ": Attempting write of in-memory user data...");
-    fs.writeFile(usersDbFile,JSON.stringify(this.db),function(err) {
+    fs.writeFile(app.locals.usersDbFile,JSON.stringify(this.db),function(err) {
       if(err) {
         console.log(this.myName + ": " + methodName + ": Seems there was an error!");
         throw err;
@@ -389,7 +387,7 @@ var appStart = function(req,res,next) {
   logThis(myName + ": Clearing appData");
   req.appData = {};
   logThis(myName + ": Setting app name");
-  req.appData.title = appName;
+  req.appData.title = app.locals.appName;
   // logThis(myName + ": Clearing appData/session messages");
   req.appData.messages = [];
   // req.session.messages = [];
@@ -603,7 +601,7 @@ var appGetPart = function(req,res,next) {
   req.appData.part = parts.find("id",partId)[0];
   req.appData.part.free = parts.countFree(partId);
   req.appData.part.used = parts.countUsed(partId);
-  req.appData.appUrl = appUrl;
+  req.appData.appUrl = app.locals.url;
   req.appData.mode = "part";
   return next();
 }
@@ -795,7 +793,7 @@ var appPrintPart = function(req,res,next) {
   req.appData.part = parts.find("id",partId)[0];
   req.appData.part.free = parts.countFree(partId);
   req.appData.part.used = parts.countUsed(partId);
-  req.appData.appUrl = appUrl;
+  req.appData.appUrl = app.locals.url;
   req.appData.mode = "printpart";
   return next();
 }
@@ -931,8 +929,8 @@ app.use(errorHandler);
 /**
  * Start the server
  */
-https.createServer(options,app).listen(port,function() {
-  console.log("Server listening on port",port);
+https.createServer(options,app).listen(app.locals.port,function() {
+  console.log(app.locals.appName + " server listening on port " + app.locals.port);
 });
 
 // app.listen(port, function() {
