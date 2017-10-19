@@ -10,5 +10,7 @@ header.layout-row.layout-width-1-1
       each item in m
         - var link = item.link;
         - var text = item.text;
-        li
-          a(href=link) #{text}
+        li.layout-size-x1
+          a(href=link).layout-width-1-1.layout-xs-row.layout-md-row.layout-col.layout-align-center.layout-xs-justify-start.layout-justify-center.text-xs-grow-x2
+            i.material-icons.menu-icon #{item.icon}
+            .nobreak.text-sm-shrink-x3 #{text}

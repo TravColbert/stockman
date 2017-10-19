@@ -2,7 +2,6 @@ extends index.pug
 
 block content
   .section-hdg.section-hdg-1 Case Detail #{caseId}
-  //- .part-listing.layout-col
   .section-hdg.section-hdg-3 Parts Checked-Out: #{parts.length}
   ul.itemlist
     each part in parts
@@ -20,7 +19,7 @@ block content
           .label Checked-Out:
           .data #{part.used}
         - let cases = part.cases;
-        #caselist.data.layout-col.layout-justify-between.layout-width-1-1
+        #caselist.layout-col.layout-justify-between.layout-width-1-1
           each c in cases
             .itemdetail.caseitem.layout-width-1-1
               if caseId==c
