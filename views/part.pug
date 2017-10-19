@@ -20,7 +20,7 @@ block content
       .stock-control.layout-col
         .section-hdg.section-hdg-3 Current Stock: #{part.free} out of #{part.count}
         .itemdetail.partfree.layout-row
-          .label Available: 
+          .label Available:
           .data #{part.free}
         .itemdetail.partfree.layout-col
           if part.free
@@ -28,12 +28,12 @@ block content
             .layout-width-1-1
               a.btn.btn-small.btn-normal.layout-size-x1.buttonpartcheckout(href="/part/checkout/" + part.id) Check Out
         .itemdetail.partused.layout-row
-          .label Checked-Out: 
+          .label Checked-Out:
           .data #{part.used}
           - let cases = part.cases;
-        #caselist.data.layout-row.layout-justify-between.layout-width-1-1
+        #caselist.data.layout-col.layout-justify-between.layout-width-1-1
           each c in cases
-            .caseitem.layout-width-1-1
+            .itemdetail.caseitem.layout-width-1-1
               a.btn.btn-small.btn-cancel.layout-size-x1.buttonpartcheckin(href="/part/checkin/" + part.id + "/case/" + c) Check In
               a.btn.btn-small.btn-primary(href="/case/" + c) #{c}
       .part-qrcode.layout-col
