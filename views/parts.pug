@@ -5,19 +5,20 @@ block content
   .section-hdg.section-hdg-1 Parts (#{numParts})
   ul.itemlist
     //- li This is the beginning.
-    each item in parts
-      li.layout-col
-        .itemhead #{item.make} #{item.description}
+    each part in parts
+      - let targetLoc = "/part/" + part.id;
+      li.layout-col(onclick="goTo('" + targetLoc + "')")
+        .itemhead #{part.make} #{part.description}
         .itemdetail
           .label.nobreak Part Num:
-          .data #{item.partnum}
+          .data #{part.partnum}
         .itemdetail
           .label Description:
-          .data #{item.description}
-        .itemdetail
-          .label Actions:
-          .data.layout-col
-            a.btn.btn-small.btn-primary(href="/part/" + item.id) inspect
+          .data #{part.description}
+        //- .itemdetail
+        //-   .label Actions:
+        //-   .data.layout-col
+        //-     a.btn.btn-small.btn-primary(href="/part/" + part.id) inspect
     //- li This is the end.
-  div.layout-row.layout-justify-between
+  .layout-row.layout-justify-between
     a.btn.btn-normal(href="/parts/add") Add Part

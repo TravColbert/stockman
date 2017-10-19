@@ -1,12 +1,15 @@
 extends index.pug
 
 block content
-  .adduser
-    a(href="/users/add") Add User
-  - let u = users;
-  ul
-    each item in u
+  //- - let u = users;
+  ul.itemlist
+    each item in users
       - var id = item.id;
       - var username = item.username;
-      li
-        a(href="/user/" + id) #{username} (#{id})
+      - let targetLoc = "/user/" + item.id;
+      li.layout-col(onclick="goTo('" + targetLoc + "')")
+        .itemdetail
+          .label User:
+          .data #{username}
+  .adduser.layout-row.layout-justify-between
+    a.btn.btn-normal(href="/users/add") Add User

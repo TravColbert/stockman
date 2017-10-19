@@ -5,19 +5,24 @@ block content
     .part-listing.layout-col
       form(action="/part/edit" method="post")
         input(id="partid" type="hidden" name="partid" value=part.id)
-        .partnum.layout-row
-          div Part Number: 
-          input#partnum(type="text" name="partnum" placeholder="part number" value=part.partnum required)
-        .partdescription.layout-row
-          div Description: 
-          input#description(type="text" name="description" placeholder="description" value=part.description)
-        .partmake.layout-row
-          div Make: 
-          input#make(type="text" name="make" placeholder="manufacturer" value=part.make)
-        .partcount.layout-row
-          div Stock Level: 
-          input#count(type="number" name="count" value=part.count)
-        .layout-row
-          input.buttonconfirm(type="submit" id="submit" value="Confirm")
-          a.buttoncancel(href="/part/" + part.id) Cancel
-
+        .partnum.itemdetail.layout-row
+          .label Part Number: 
+          .data
+            input#partnum(type="text" name="partnum" placeholder="part number" value=part.partnum required)
+        .partdescription.itemdetail.layout-row
+          .label Description: 
+          .data
+            input#description(type="text" name="description" placeholder="description" value=part.description)
+        .partmake.itemdetail.layout-row
+          .label Make: 
+          .data
+            input#make(type="text" name="make" placeholder="manufacturer" value=part.make)
+        .partcount.itemdetail.layout-row
+          .label Stock Level: 
+          .data
+            input#count(type="number" name="count" value=part.count)
+        .partsubmit.itemdetail.layout-row
+          .label Actions:
+          .data.layout-row
+            input.btn.btn-primary.buttonconfirm(type="submit" id="submit" value="Confirm")
+            a.btn.btn-cancel(href="/part/" + part.id) Cancel              

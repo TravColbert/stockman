@@ -1,16 +1,26 @@
 extends index.pug
 
 block content
-  .layout-col
+  .section-hdg.section-hdg-1 Check-Out Part
+  .part-listing.layout-col
     form(action="/part/checkoutverified" method="post")
       input(type="hidden" name="partid" id="partid" value=part.id)
-      #prompt Confirm check-out of part #{part.id}
-      .layout-col
-        .layout-row #{part.make}
-        .layout-row #{part.description}
-        .layout-row #{part.partnum}
-        .layout-row
+      #prompt.section-hdg.section-hdg-3 Confirm check-out of part #{part.id}
+      .itemdetail
+        .label Manufacturer:
+        .data #{part.make}
+      .itemdetail
+        .label Part Num:
+        .data #{part.partnum}
+      .itemdetail
+        .label Description:
+        .data #{part.description}
+      .itemdetail
+        .label Case:
+        .data
           input(type="text" name="caseid" id="caseid" placeholder="Case #" value=caseId)
-        .layout-row
-          input.buttonconfirm(type="submit" id="submit" value="Confirm")
-          a.buttoncancel(href="/part/" + part.id) Cancel
+      .itemdetail
+        .label Actions:
+        .data
+          input.btn.btn-primary.buttonconfirm(type="submit" id="submit" value="Confirm")
+          a.btn.btn-cancel.buttoncancel(href="/part/" + part.id) Cancel

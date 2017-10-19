@@ -1,11 +1,13 @@
 .messages.layout-width-1-1.layout-col
   - let numMessages = messages.length;
   if numMessages>0
-    .layout-width-1-1 Messages: #{numMessages}
+    .section-hdg.section-hdg-1.layout-width-1-1 Messages: #{numMessages}
     each message,index in messages
-      - let messageClass = "type-" + message.type;
+      - let messageClass = "msg-" + message.type;
       - let messageText = message.text;
-      div(id="message" + index class=messageClass).message.layout-row.layout-width-1-1.layout-justify-between
-        .messageindex #{index}:&nbsp;
+      div(id="msg" + message.msgId class=messageClass onclick="ackMessage('" + message.msgId + "')").msg.layout-row.layout-width-1-1.layout-justify-between.layout-align-center
+        .msg-icon
+          i.material-icons info_outline
+        //- .messageindex #{index}:&nbsp;
         .messagetext.layout-size-x1 #{messageText}
         .messageack ok

@@ -1,8 +1,11 @@
 extends index.pug
 
 block content
-  - let c = cases;
-  ul
-    each item in c
-      li
-        a(href="/case/" + item) #{item}
+  .section-hdg.section-hdg-1 Cases (#{cases.length})
+  ul.itemlist
+    each item in cases
+      - let targetLoc = "/case/" + item;
+      li.layout-col(onclick="goTo('" + targetLoc + "')")
+        .itemdetail
+          .label Case #:
+          .datal #{item}

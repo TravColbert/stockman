@@ -1,11 +1,10 @@
 extends index.pug
 
 block content
-  div.layout-col
+  .layout-col
     .section-hdg.section-hdg-1 Part Detail
     .part-listing.layout-col
       .section-hdg.section-hdg-3 Info:
-      //- .partid Part ID: #{part.id}
       .partmake.itemdetail
           .label Manufacturer:
           .data #{part.make}
@@ -31,7 +30,7 @@ block content
           .label Checked-Out:
           .data #{part.used}
           - let cases = part.cases;
-        #caselist.data.layout-col.layout-justify-between.layout-width-1-1
+        #caselist.layout-col.layout-justify-between.layout-width-1-1
           each c in cases
             .itemdetail.caseitem.layout-width-1-1
               a.btn.btn-small.btn-cancel.layout-size-x1.buttonpartcheckin(href="/part/checkin/" + part.id + "/case/" + c) Check In

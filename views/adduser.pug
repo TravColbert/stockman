@@ -1,18 +1,24 @@
 extends index.pug
 
 block content
-  div.layout-col
+  .layout-col
+    .section-hdg.section-hdg-1 Add User
     .user-listing.layout-col
       form(action="/user" method="post")
-        .username.layout-row
-          div User Name: 
-          input(id="username" type="text" name="username" placeholder="user name" required)
-        .userpassword.layout-row
-          div Password: 
-          input(id="password" type="password" name="password" placeholder="password" required)
-        .userpasswordverify.layout-row
-          div Password (verification): 
-          input(id="passwordv" type="password" name="passwordv" placeholder="password" required)
-        .layout-row
-          input.buttonconfirm(type="submit" id="submit" value="Confirm")
-          a.buttoncancel(href="/users/") Cancel
+        .username.itemdetail.layout-row
+          .label User Name: 
+          .data
+            input(id="username" type="text" name="username" placeholder="user name" required)
+        .userpassword.itemdetail.layout-row
+          .label Password: 
+          .data
+            input(id="password" type="password" name="password" placeholder="password" required)
+        .userpasswordverify.itemdetail.layout-row
+          .label Verification: 
+          .data
+            input(id="passwordv" type="password" name="passwordv" placeholder="password" required)
+        .usersubmit.itemdetail.layout-row
+          .label Actions:
+          .data
+            input.btn.btn-normal.buttonconfirm(type="submit" id="submit" value="Confirm")
+            a.btn.btn-cancel.buttoncancel(href="/users/") Cancel

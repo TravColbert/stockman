@@ -1,33 +1,26 @@
-// let testHash;
-// let bcrypt = dcodeIO.bcrypt;
 let qrCodeBox;
 
-// function authCheck() {
-//   let ss = document.getElementById("secretsauce").value;
-//   let pw = document.getElementById("password").value;
-//   // window.alert(ss + " + " + pw);
-//   console.log("PW:" + pw);
-//   bcrypt.genSalt(10,function(err,salt) {
-//     console.log("Salt:" + salt);
-//     bcrypt.hash(pw,salt,function(err,hash) {
-//       console.log("Hash 1:" + hash);
-//       testHash = hash;
-//     });
-//   });
-// }
+function ackMessage(messageNum) {
+  fetch('/messages/ack/' + messageNum,{
+    method:'GET',
+    credentials:'include'
+  }).
+    then(function(response) {
+      return response.json();
+    }).
+    then(function(json){
+      console.log(JSON.stringify(json));
+      doMessage(json);
+    });
+}
 
-// function authTest() {
-//   let pw = document.getElementById("password").value;
-//   let rounds = bcrypt.getRounds(testHash);
-//   console.log("Rounds of encryption:" + rounds);
-//   bcrypt.compare(pw,testHash,function(err,result) {
-//     if(err) {
-//       console.log("!! Some kind of error !!");
-//       return;
-//     }
-//     console.log("Result:" + result);
-//   });
-// }
+function doMessage(json) {
+  document.getElementById("msg" + json.msgId).remove();
+}
+
+function goTo(target) {
+  window.location = target;
+}
 
 function qrCodeBoxExists() {
   console.log("Checking for QrCode boxes...");

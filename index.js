@@ -259,7 +259,7 @@ let users = {
   add:function(userObj) {
     let checkPw = function(user) {
       if(user.password!=user.passwordv) {
-        req.session.messages.push({type:"warn",text:"Passwords do not match"});
+        req.session.messages.push(makeMessage({type:"warn",text:"Passwords do not match"}));
         return false;
       }
       return true;
@@ -531,12 +531,11 @@ var appGetUser = function(req,res,next) {
   logThis(myName + ": Getting user with ID: " + userId);
   users.findById(userId,function(err,user) {
     if(err) {
-      req.session.messages.push({type:"err",text:"Error getting user with ID:" + userId});
+      req.session.messages.push(makeMessage({type:"err",text:"Error getting user with ID:" + userId}));
     } else if(!user) {
-      req.session.messages.push({type:"warn",text:"No user found with ID:" + userId});
+      req.session.messages.push(makeMessage({type:"warn",text:"No user found with ID:" + userId}));
     } else {
-      req.session.messages.push({type:"succ",text:"Found user ID:" + userId + " " + JSON.stringify(user)});
-      req.session.messages.push({type:"succ",text:"Found user ID:" + userId + " " + JSON.stringify(user)});
+      req.session.messages.push(makeMessage({type:"succ",text:"Found user ID:" + userId + " " + JSON.stringify(user)}));
       delete user.password;
       req.appData.user = user;
     }
@@ -679,7 +678,7 @@ var appAddPartVerified = function(req,res,next) {
   });
   console.log(myName + ": " + duplicatePartNumber);
   if(duplicatePartNumber>-1) {
-    req.session.messages.push({type:"err",text:"Can't add part with duplicate manufacturer's number"});
+    req.session.messages.push(makeMessage({type:"err",text:"Can't add part with duplicate manufacturer's number"}));
     // return next(new Error("Attempting to add part with duplicate manufacturer's number"));
     return res.redirect('/parts/');
   }
@@ -690,11 +689,11 @@ var appAddPartVerified = function(req,res,next) {
     count:req.body.count
   });
   if(!partId) {
-    req.session.messages.push({type:"warn",text:"Could not create new part"});
+    req.session.messages.push(makeMessage({type:"warn",text:"Could not create new part"}));
     return req.redirect("/part/");
   }
   parts.writeDb();
-  req.session.messages.push({type:"success",text:"New part added"});
+  req.session.messages.push(makeMessage({type:"success",text:"New part added"}));
   return res.redirect('/part/' + partId);
 }
 
@@ -824,6 +823,32 @@ var appGetCase = function(req,res,next) {
   return next();
 }
 
+var appAckMsg = function(req,res,next) {
+  let myName = 'appAckMsg';
+  let msgId = req.params.msgId;
+  logThis(myName + ": Ack'ing message: " + msgId);
+  let index = req.session.messages.findIndex(function(message) {
+    return message.msgId==msgId;
+  });
+  if(index==-1) return res.json({'msgId':false});
+  if(req.session.messages.splice(index,1).length!=1) return res.json({'msgId':false});
+  return res.json({'msgId':msgId});
+  /*
+  console.log(JSON.stringify(req.session.messages));
+  console.log("FETCHING MSG:",req.params.msgId);
+  console.log(JSON.stringify(req.session.messages[req.params.msgId]));
+  */
+  // return next();
+}
+
+let makeMessage = function(obj) {
+  let myName = "makeMessage";
+  logThis(myName + ": Making a message for: " + JSON.stringify(obj));
+  // obj.usr = req.user;
+  obj.msgId = Date.now();
+  return obj;
+}
+
 var errorHandler = function(err,req,res,next) {
   let myName = "errorHandler";
   logThis(myName + ":!!" + err);
@@ -914,6 +939,8 @@ app.get('/part/:partId',appCheckAuthentication,appGetPart);
 
 app.get('/cases/',appGetCases);
 app.get('/case/:caseId',appCheckAuthentication,appGetCase);
+
+app.get('/messages/ack/:msgId',appCheckAuthentication,appAckMsg);
 
 app.get('/dump/:dbId',appDump);
 

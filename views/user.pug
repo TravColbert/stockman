@@ -1,7 +1,12 @@
 extends index.pug
 
 block content
-  div.layout-col
+  .section-hdg.section-hdg-1 User Detail
+  .user-listing.layout-col
     if user
-      div.username Username: #{user.username}
-      div.userid User ID: #{user.id}
+      .itemdetail
+        .label Username:
+        .data #{user.username}
+      .itemdetail
+        .label User Num:
+        .data #{user.id}
