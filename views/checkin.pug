@@ -6,17 +6,17 @@ block content
     form(action="/part/checkinverified" method="post")
       input(type="hidden" name="partid" id="partid" value=part.id)
       #prompt.section-hdg.section-hdg-3 Confirm check-in from case: #{caseId}
-      .itemdetail
+      .itemdetail.layout-col
         .label Manufacturer:
         .data #{part.make}
-      .itemdetail
+      .itemdetail.layout-col
         .label Part Num:
         .data #{part.partnum}
-      .itemdetail
-        .label Description:
+      .itemdetail.layout-col
+        label.label Description:
         .data #{part.description}
       input(type="hidden" name="caseid" id="caseid" placeholder="Case #" value=caseId)
-      .itemdetail
+      .itemdetail.layout-col
         .label Actions:
         .data
           input.btn.btn-primary.buttonconfirm(type="submit" id="submit" value="Confirm")

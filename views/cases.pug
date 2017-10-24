@@ -6,6 +6,6 @@ block content
     each item in cases
       - let targetLoc = "/case/" + item;
       li.layout-col(onclick="goTo('" + targetLoc + "')")
-        .itemdetail
+        .itemdetail.layout-col
           .label Case #:
           .datal #{item}

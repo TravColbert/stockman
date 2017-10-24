@@ -5,24 +5,24 @@ block content
     .part-listing.layout-col
       form(action="/part/edit" method="post")
         input(id="partid" type="hidden" name="partid" value=part.id)
-        .partnum.itemdetail.layout-row
-          .label Part Number: 
+        .partnum.itemdetail.layout-col
+          label.label(for="partnum") Part Number: 
           .data
             input#partnum(type="text" name="partnum" placeholder="part number" value=part.partnum required)
-        .partdescription.itemdetail.layout-row
-          .label Description: 
+        .partdescription.itemdetail.layout-col
+          label.label(for="description") Description: 
           .data
             input#description(type="text" name="description" placeholder="description" value=part.description)
-        .partmake.itemdetail.layout-row
-          .label Make: 
+        .partmake.itemdetail.layout-col
+          label.label(for="make") Make: 
           .data
             input#make(type="text" name="make" placeholder="manufacturer" value=part.make)
-        .partcount.itemdetail.layout-row
-          .label Stock Level: 
+        .partcount.itemdetail.layout-col
+          label.label(for="count") Stock Level: 
           .data
             input#count(type="number" name="count" value=part.count)
-        .partsubmit.itemdetail.layout-row
-          .label Actions:
+        .partsubmit.itemdetail.layout-col
+          label.label Actions:
           .data.layout-row
             input.btn.btn-primary.buttonconfirm(type="submit" id="submit" value="Confirm")
             a.btn.btn-cancel(href="/part/" + part.id) Cancel              

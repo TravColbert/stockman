@@ -4,14 +4,14 @@ body {
   /* font-family: sans-serif; */
   font-family: 'Nunito', sans-serif;
   font-size: 17px;
-  background: #eee;
+  /*background: #eee;*/
 }
 /* Link and Button styles */
 a {
   text-decoration: none;
 }
 .btn {
-  border: 1px solid #ddd;
+/*   border: 1px solid #ddd; */
   border-radius: 3px;
   padding: 0.5em 1em;
   min-width: fit-content;
@@ -26,7 +26,7 @@ a {
   padding: 0.25em 0.5em;
 }
 .btn-normal {
-  border-color: #00BFB2;
+  /* border-color: #00BFB2; */
   background: #b9edea;
 }
 .btn-primary {
@@ -46,9 +46,9 @@ a {
   background: #fdc8ca;
 }
 input {
-  /* font-size: 0.8em; */
+  font-size: 0.9em;
   padding: 0.6em;
-  border: 1px solid #ddd;
+  border: 0px solid #ddd;
   border-radius: 0.2em;
 }
 /* Navigation Styles */
@@ -61,32 +61,36 @@ ul {
   padding: 0;
 }
 .itemlist > li, .part-listing, .user-listing, .msg {
-  /* border: 1px solid #ddd; */
+  border-bottom: 1px solid #ddd;
   border-radius: 3px;
   padding: 0.5em;
-  box-shadow: 0px 1px 3px rgba(0,0,0,0.3);
+  /* box-shadow: 0px 1px 3px rgba(0,0,0,0.3); */
   margin-bottom: 0.4em;
-  background-color: #f9f9f9;
+  background-color: rgba(249, 249, 249, 0.8);
   overflow: hidden;
 }
 .itemhead {
   color: #555;
   font-weight: bold;
-  border-bottom: 1px solid silver;
+  /* border-bottom: 1px solid silver; */
   margin-bottom: 0.5em;
 }
 .itemdetail {
   align-items: baseline;
   margin-bottom: 0.5em;
 }
+.itemdetail:last-child {
+  margin: 0;
+}
 .label {
   font-size: 0.8em;
-  width: 35%;
-  justify-content: flex-end;
-  padding-right: 0.5em;
+  color: rgba(51, 51, 51, 0.5);
+  /* width: 35%; */
+  /* justify-content: flex-end; */
+  /* padding-right: 0.5em; */
 }
 .data {
-  width: 65%;
+  font-size: 1.2em;
 }
 .stock-control, .part-qrcode {
   margin-top: 0.5em;
@@ -96,6 +100,7 @@ ul {
 }
 /* Content Styles */
 .content {
+  overflow: hidden;
   padding-left: 0.5em;
   padding-right: 0.5em;
 }
@@ -114,17 +119,17 @@ ul {
   font-size: 1em;
 }
 #login-form {
-  font-size: 1.5em;
+  font-size: 1.2em;
 }
 #login-form div {
   padding: 0.2em;
 }
-#login-form input {
+/* #login-form input {
   font-size: 0.8em;
   padding: 0.6em;
   border: 1px solid #ddd;
   border-radius: 0.2em;
-}
+} */
 .messages {
   /* padding: 0.5em; */
 }

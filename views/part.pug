@@ -2,31 +2,35 @@ extends index.pug
 
 block content
   .layout-col
-    .section-hdg.section-hdg-1 Part Detail
+    .section-hdg.section-hdg-1.layout-row
+      a(href="/parts/")
+        i.material-icons devices
+      i.material-icons keyboard_arrow_left
+      div Part Detail
     .part-listing.layout-col
       .section-hdg.section-hdg-3 Info:
-      .partmake.itemdetail
+      .partmake.itemdetail.layout-col
           .label Manufacturer:
           .data #{part.make}
-      .partnum.layout-row.itemdetail
+      .partnum.itemdetail.layout-col
         .label.nobreak Part Num:
         .data #{part.partnum}
-      .partdescription.itemdetail
+      .partdescription.itemdetail.layout-col
         .label Description:
         .data #{part.description}
       div
         a.btn.btn-small.btn-primary.layout-size-x1.buttonpartedit(href="/part/edit/" + part.id) Edit Part
       .stock-control.layout-col
         .section-hdg.section-hdg-3 Current Stock: #{part.free} out of #{part.count}
-        .itemdetail.partfree.layout-row
+        .itemdetail.partfree.layout-col
           .label Available:
           .data #{part.free}
-        .itemdetail.partfree.layout-col
+        .itemdetail.partfree
           if part.free
             //-div.checkoutpart
             .layout-width-1-1
               a.btn.btn-small.btn-normal.layout-size-x1.buttonpartcheckout(href="/part/checkout/" + part.id) Check Out
-        .itemdetail.partused.layout-row
+        .itemdetail.partused.layout-col
           .label Checked-Out:
           .data #{part.used}
           - let cases = part.cases;

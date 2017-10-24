@@ -1,24 +1,19 @@
 extends index.pug
 
 block content
-  - let numParts = parts.length
-  .section-hdg.section-hdg-1 Parts (#{numParts})
+  .section-hdg.section-hdg-1 Parts (#{parts.length})
   ul.itemlist
     //- li This is the beginning.
     each part in parts
       - let targetLoc = "/part/" + part.id;
       li.layout-col(onclick="goTo('" + targetLoc + "')")
         .itemhead #{part.make} #{part.description}
-        .itemdetail
+        .itemdetail.layout-col
           .label.nobreak Part Num:
           .data #{part.partnum}
-        .itemdetail
+        .itemdetail.layout-col
           .label Description:
           .data #{part.description}
-        //- .itemdetail
-        //-   .label Actions:
-        //-   .data.layout-col
-        //-     a.btn.btn-small.btn-primary(href="/part/" + part.id) inspect
     //- li This is the end.
   .layout-row.layout-justify-between
     a.btn.btn-normal(href="/parts/add") Add Part

@@ -5,19 +5,19 @@ block content
     .section-hdg.section-hdg-1 Add User
     .user-listing.layout-col
       form(action="/user" method="post")
-        .username.itemdetail.layout-row
-          .label User Name: 
+        .username.itemdetail.layout-col
+          label.label(for="username") User Name: 
           .data
             input(id="username" type="text" name="username" placeholder="user name" required)
-        .userpassword.itemdetail.layout-row
-          .label Password: 
+        .userpassword.itemdetail.layout-col
+          label.label(for="password") Password: 
           .data
             input(id="password" type="password" name="password" placeholder="password" required)
-        .userpasswordverify.itemdetail.layout-row
-          .label Verification: 
+        .userpasswordverify.itemdetail.layout-col
+          label.label(for="passwordv") Verification: 
           .data
             input(id="passwordv" type="password" name="passwordv" placeholder="password" required)
-        .usersubmit.itemdetail.layout-row
+        .usersubmit.itemdetail.layout-col
           .label Actions:
           .data
             input.btn.btn-normal.buttonconfirm(type="submit" id="submit" value="Confirm")

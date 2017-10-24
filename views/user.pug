@@ -1,12 +1,16 @@
 extends index.pug
 
 block content
-  .section-hdg.section-hdg-1 User Detail
+  .section-hdg.section-hdg-1.layout-row
+    a(href="/users/")
+      i.material-icons people_outline
+    i.material-icons keyboard_arrow_left
+    div User Detail
   .user-listing.layout-col
     if user
-      .itemdetail
+      .itemdetail.layout-col
         .label Username:
         .data #{user.username}
-      .itemdetail
-        .label User Num:
+      .itemdetail.layout-col
+        .label System User Num:
         .data #{user.id}

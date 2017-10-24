@@ -6,16 +6,16 @@ block content
   ul.itemlist
     each part in parts
       li.layout-col
-        .partmake.itemdetail
+        .partmake.itemdetail.layout-col
             .label Manufacturer:
             .data #{part.make}
-        .partnum.layout-row.itemdetail
+        .partnum.itemdetail.layout-col
           .label.nobreak Part Num:
           .data #{part.partnum}
-        .partdescription.itemdetail
+        .partdescription.itemdetail.layout-col
           .label Description:
           .data #{part.description}
-        .partused.layout-row.itemdetail
+        .partused.itemdetail.layout-col
           .label Checked-Out:
           .data #{part.used}
         - let cases = part.cases;

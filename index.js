@@ -6,7 +6,6 @@ const bodyParser = require('body-parser');
 const app = express();
 app.locals = JSON.parse(fs.readFileSync('config.json'));
 app.locals.url = app.locals.addr + ":" + app.locals.port;
-
 const options = {
   key: fs.readFileSync(app.locals.keyFile),
   cert: fs.readFileSync(app.locals.certFile)
@@ -328,6 +327,8 @@ passport.use(new LocalStrategy(
         console.log("No user");
         return done(null,false,{message:"Invalid account"});
       }
+      console.log(JSON.stringify(user));
+      console.log(password,user.password);
       if(!bcrypt.compareSync(password,user.password)) {
         console.log("Wrong password");
         return done(null,false,{message:"Invalid password"});
@@ -536,8 +537,9 @@ var appGetUser = function(req,res,next) {
       req.session.messages.push(makeMessage({type:"warn",text:"No user found with ID:" + userId}));
     } else {
       req.session.messages.push(makeMessage({type:"succ",text:"Found user ID:" + userId + " " + JSON.stringify(user)}));
-      delete user.password;
-      req.appData.user = user;
+      // delete user.password;
+      req.appData.user = {id:user.id,username:user.username};
+      // delete req.appData.user.password;
     }
   });
   return next();
@@ -920,7 +922,7 @@ app.get('/secure/',appTest(3,false));
 // The HTML response
 // app.get('/users/',appCheckAuthentication,appGetUsers,appFormCreateUser);
 // The JSON response
-app.get('/users/add',appCheckAuthentication,appAddUser)
+app.get('/users/add',appCheckAuthentication,appAddUser);
 app.get('/users/',appCheckAuthentication,appGetUsers);
 app.post('/user/',appCheckAuthentication,appCreateUser);
 app.get('/user/:userId',appCheckAuthentication,appGetUser);
@@ -951,7 +953,7 @@ app.use(timeEnd,appRender);
 /**
  * Error-handling route
  */
-app.use(errorHandler);
+//app.use(errorHandler);
 
 /**
  * Start the server

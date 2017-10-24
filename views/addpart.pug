@@ -5,24 +5,24 @@ block content
     .section-hdg.section-hdg-1 Add Part
     .part-listing.layout-col
       form(action="/part/add" method="post")
-        .partmake.itemdetail.layout-row
-          .label Manufacturer: 
+        .partmake.itemdetail.layout-col
+          label.label(for="make") Manufacturer: 
           .data
             input(id="make" type="text" name="make" placeholder="manufacturer")
-        .partnum.itemdetail.layout-row
-          .label Part Num: 
+        .partnum.itemdetail.layout-col
+          label.label(for="partnum") Part Num: 
           .data
             input(id="partnum" type="text" name="partnum" placeholder="part number" required)
-        .partdescription.itemdetail.layout-row
-          .label Description: 
+        .partdescription.itemdetail.layout-col
+          label.label(for="description") Description: 
           .data
             input(id="description" type="text" name="description" placeholder="description" required)
-        .partcount.itemdetail.layout-row
-          .label Stock Level: 
+        .partcount.itemdetail.layout-col
+          label.label(for="count") Stock Level: 
           .data
             input(id="count" type="number" name="count" placeholder="desired amount of parts" required)
-        .partsubmit.itemdetail.layout-row
-          .label Actions:
+        .partsubmit.itemdetail.layout-col
+          label.label Actions:
           .data
             input.btn.btn-normal.buttonconfirm(type="submit" id="submit" value="Confirm")
             a.btn.btn-cancel.buttoncancel(href="/parts/") Cancel

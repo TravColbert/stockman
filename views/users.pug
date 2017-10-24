@@ -1,15 +1,13 @@
 extends index.pug
 
 block content
-  //- - let u = users;
+  .section-hdg.section-hdg-1 Users (#{users.length})
   ul.itemlist
     each item in users
-      - var id = item.id;
-      - var username = item.username;
       - let targetLoc = "/user/" + item.id;
       li.layout-col(onclick="goTo('" + targetLoc + "')")
-        .itemdetail
+        .itemdetail.layout-col
           .label User:
-          .data #{username}
+          .data #{item.username}
   .adduser.layout-row.layout-justify-between
     a.btn.btn-normal(href="/users/add") Add User
