@@ -4,8 +4,13 @@ block content
   .section-hdg.section-hdg-1 Cases (#{cases.length})
   ul.itemlist
     each item in cases
-      - let targetLoc = "/case/" + item;
+      - let targetLoc = "/case/" + item.id;
+      - let dateTime = new Date(item.time).toLocaleDateString() + " " + new Date(item.time).toLocaleTimeString();
       li.layout-col(onclick="goTo('" + targetLoc + "')")
+        .itemhead Case: #{item.id}
         .itemdetail.layout-col
-          .label Case #:
-          .datal #{item}
+          .label Create Date/Time:
+          .data #{dateTime}
+        .itemdetail.layout-col
+          .label Owner:
+          .data #{item.owner}

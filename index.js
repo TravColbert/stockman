@@ -55,6 +55,74 @@ let menu = [
   {link:"/logout",text:"Log Out",icon:"highlight_off",secured:true},
 ];
 
+let cases = {
+  myName:"casedb",
+  add:function(caseRecord) {
+    let methodName = 'add';
+    if(this.find("id",caseRecord.id).length>0) return false;
+    console.log(methodName + ": Pushing record: " + caseRecord.id + " " + JSON.stringify(caseRecord));
+    this.db.push({
+      id:caseRecord.id,
+      time:caseRecord.time,
+      owner:caseRecord.owner
+    });
+    return caseRecord.id;
+  },
+  write:function(caseRecord) {
+    let methodName = 'write';
+    logThis(methodName + ": " + JSON.stringify(caseRecord));
+    let index = this.findIndex(caseRecord.id);
+    console.log("Cases DB: found existing index " + index);
+    if(index==-1) {
+      this.add(caseRecord);
+    } else {
+      this.db[index].time=caseRecord.time;
+      this.db[index].owner=caseRecord.owner;
+    }
+    return true;
+  },
+  findIndex:function(caseId) {
+    let methodName = 'findIndex';
+    let index = this.db.findIndex(function(record) {
+      return record.id==caseId;
+    });
+    return index;
+  },
+  find:function(field,val) {
+    let methodName = "find";
+    console.log(this.myName + ": " + methodName + ": Searching: " + field + " for: " + val);
+    let part = this.db.filter(function(record) {
+      return record[field]==val;
+    },this);
+    return part;
+  },
+  readDb:function() {
+    let methodName = "readDb";
+    console.log(this.myName + ": " + methodName + ": Attempting read of stored data...");
+    fs.readFile(app.locals.casesDbFile,'utf8',function(err,data) {
+      if(err) throw err;
+      this.db = JSON.parse(data);
+      console.log(JSON.stringify(this.db));
+      return true;
+    }.bind(this));
+    return;
+  },
+  writeDb:function() {
+    let methodName = "writeDb";
+    console.log(this.myName + ": " + methodName + ": Attempting write of in-memory data...");
+    fs.writeFile(app.locals.casesDbFile,JSON.stringify(this.db),function(err) {
+      if(err) {
+        console.log(this.myName + ": " + methodName + ": Seems there was an error!");
+        throw err;
+      }
+      console.log(this.myName + ": " + methodName + ": Write success!");
+    }.bind(this));
+    return;
+  }
+}
+
+cases.readDb();
+
 let parts = {
   myName:"partdb",
   add:function(part) {
@@ -749,11 +817,20 @@ var appCheckoutPartVerified = function(req,res,next) {
 var appCheckoutPart = function(req,res,next) {
   let myName = "appCheckoutPart";
   logThis(myName + ": Request to check out part: " + req.body.partid);
-  if(parts.checkout(req.body.partid,req.body.caseid)) {
-    parts.writeDb();
-    return res.redirect('/part/' + req.body.partid);
-  }
-  return next(new Error('Something went wrong :-('));
+  let partCheckoutSuccess = parts.checkout(req.body.partid,req.body.caseid);
+  let caseCreationSuccess = cases.write({
+    id:req.body.caseid,
+    owner:req.user,
+    time:Date.now()
+  });
+  if(!partCheckoutSuccess || !caseCreationSuccess) {
+    // parts.rollBackRecord(req.body.partid);
+    // cases.rollBackRecord(req.body.caseid);
+    return next(new Error('Something went wrong :-('));
+  }  
+  cases.writeDb();
+  parts.writeDb();
+  return res.redirect('/part/' + req.body.partid);
 }
 
 var appEditPartVerified = function(req,res,next) {
@@ -802,7 +879,11 @@ var appPrintPart = function(req,res,next) {
 var appGetCases = function(req,res,next) {
   let myName = 'appGetCases';
   logThis(myName + ": Getting all cases");
-  req.appData.cases = parts.getCases();
+  let caseList = parts.getCases();
+  req.appData.cases = [];
+  caseList.forEach(function(v,i,a) {
+    req.appData.cases.push(cases.find("id",v)[0]);
+  })
   logThis(JSON.stringify(req.appData.cases));
   req.appData.mode = "cases";
   return next();
@@ -821,6 +902,8 @@ var appGetCase = function(req,res,next) {
   logThis(myName + ": Getting parts with case #: " + caseId);
   req.appData.mode = "case";
   req.appData.caseId = caseId;
+  req.appData.caseRecord = cases.find("id",caseId)[0];
+  logThis(myName + ": " + JSON.stringify(req.appData.caseRecord));
   req.appData.parts = parts.findByCase(caseId);
   return next();
 }
