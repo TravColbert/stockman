@@ -2,6 +2,7 @@
   "appName":"stockr",
   "usersDbFile":"db/users.db",
   "partsDbFile":"db/parts.db",
+  "casesDbFile":"db/cases.db",
   "sessionSecret":"yoyo!",
   "viewsDir":"./views",
   "staticDir":"public",
