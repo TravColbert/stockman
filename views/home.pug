@@ -28,13 +28,15 @@ block content
 
   div Here is a list of the oldest opened cases. There are #{cases.length} of them. The ones that have already been closed do not appear on this list.
   //- .section-hdg.section-hdg-3 Oldest Cases (#{cases.length})
-  ul.itemlist
-    each item in oldestCases
-      - let targetLoc = "/case/" + item.id;
-      - let dateTime = new Date(item.time).toLocaleDateString() + " " + new Date(item.time).toLocaleTimeString();
-      - let ageMs = Date.now()-parseInt(item.time);
-      - let ageDays = Math.round((ageMs/(1000*60*60*24)));
-      li.layout-col(onclick="goTo('" + targetLoc + "')")
+  .item-listing.layout-row
+    .itemsidebar.layout-col.layout-width-1-8
+      i.material-icons.item-icon update
+    .itemcontent.layout-col.layout-width-7-8
+      each item in oldestCases
+        - let targetLoc = "/case/" + item.id;
+        - let dateTime = new Date(item.time).toLocaleDateString() + " " + new Date(item.time).toLocaleTimeString();
+        - let ageMs = Date.now()-parseInt(item.time);
+        - let ageDays = Math.round((ageMs/(1000*60*60*24)));
         .itemhead Case: #{item.id}
         .itemdetail.layout-col
           .label Days Old:
@@ -45,4 +47,26 @@ block content
         .itemdetail.layout-col
           .label Owner:
           .data #{item.owner}
+  
+  //- ul.itemlist
+  //-   each item in oldestCases
+  //-     - let targetLoc = "/case/" + item.id;
+  //-     - let dateTime = new Date(item.time).toLocaleDateString() + " " + new Date(item.time).toLocaleTimeString();
+  //-     - let ageMs = Date.now()-parseInt(item.time);
+  //-     - let ageDays = Math.round((ageMs/(1000*60*60*24)));
+  //-     .item-listing.layout-row
+  //-       .itemsidebar.layout-col.layout-width-1-8
+  //-         i.material-icons.item-icon update
+  //-       .itemcontent.layout-col.layout-width-7-8
+  //-         .itemhead Case: #{item.id}
+  //-         .itemdetail.layout-col
+  //-           .label Days Old:
+  //-           .data #{ageDays}
+  //-         .itemdetail.layout-col
+  //-           .label Create Date/Time:
+  //-           .data #{dateTime}
+  //-         .itemdetail.layout-col
+  //-           .label Owner:
+  //-           .data #{item.owner}
+      //- li.layout-row(onclick="goTo('" + targetLoc + "')")
   //- .section-hdg.section-hdg-3 Cases Consuming the Most Parts (#{cases.length})

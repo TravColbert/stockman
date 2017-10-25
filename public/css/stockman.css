@@ -71,7 +71,7 @@ ul {
   margin: 0;
   padding: 0;
 }
-.itemlist > li, .part-listing, .user-listing, .msg {
+.itemlist > li, .part-listing, .user-listing, .item-listing, .msg {
   border-bottom: 1px solid #ddd;
   border-radius: 3px;
   padding: 0.5em;
