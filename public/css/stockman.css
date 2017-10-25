@@ -52,6 +52,17 @@ input {
   border-radius: 0.2em;
 }
 /* Navigation Styles */
+nav, footer {
+  background-color: #fcfcfc;
+  color: #999;
+  box-shadow: 0 0 50px rgba(0,0,0,0.3);
+}
+nav {
+  border-bottom: 1px solid #aaa;
+}
+footer {
+  border-top: 1px solid #aaa;
+}
 #app-title {
   font-family: 'Inconsolata', monospace;
 }
@@ -71,7 +82,8 @@ ul {
 }
 .itemhead {
   color: #555;
-  font-weight: bold;
+  /* font-weight: bold; */
+  font-size: 1.3em;
   /* border-bottom: 1px solid silver; */
   margin-bottom: 0.5em;
 }
@@ -103,6 +115,7 @@ ul {
   overflow: hidden;
   padding-left: 0.5em;
   padding-right: 0.5em;
+  box-shadow: 0 0 30px rgba(0,0,0,0.1);
 }
 .section-hdg {
   font-family: 'Inconsolata', monospace;
@@ -146,4 +159,16 @@ ul {
 }
 .menu-icon {
   margin: 0 0.3em;
+}
+.usegraph {
+  background-color: #fdc8ca;
+  height: 1em;
+  border-radius: 0.25em;
+}
+.usedgraph {
+  color: white;
+  background-color: #FB3640;
+  height: 100%;
+  border-radius: 0.25em;
+  font-size: 0.75em;
 }
