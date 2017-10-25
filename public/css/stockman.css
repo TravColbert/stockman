@@ -123,7 +123,7 @@ ul {
 }
 .section-hdg-1 {
   font-size: 1.4em;
-  margin-bottom: 0.25em
+  padding: 0.8em 0.25em;
 }
 .section-hdg-2 {
   font-size: 1.2em;
