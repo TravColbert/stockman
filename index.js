@@ -96,6 +96,13 @@ let cases = {
     },this);
     return part;
   },
+  sort:function(compare) {
+    let methodName = "sort";
+    console.log(this.myName + ": " + methodName + ": Sorting db");
+    compare = compare || null;
+    let caseList = this.db;
+    return caseList.sort(compare);
+  },
   readDb:function() {
     let methodName = "readDb";
     console.log(this.myName + ": " + methodName + ": Attempting read of stored data...");
@@ -918,12 +925,32 @@ var appAckMsg = function(req,res,next) {
   if(index==-1) return res.json({'msgId':false});
   if(req.session.messages.splice(index,1).length!=1) return res.json({'msgId':false});
   return res.json({'msgId':msgId});
-  /*
-  console.log(JSON.stringify(req.session.messages));
-  console.log("FETCHING MSG:",req.params.msgId);
-  console.log(JSON.stringify(req.session.messages[req.params.msgId]));
-  */
-  // return next();
+}
+
+var appGetDashboard = function(req,res,next) {
+  let myName = "appGetDashboard";
+  let oldestCases = cases.sort(function(a,b) {
+    if(a.time<b.time) return -1;
+    if(a.time>b.time) return 1;
+    return 0;
+  });
+  req.appData.oldestCases = oldestCases.filter(function(caseRecord) {
+    return (parts.findByCase(caseRecord.id).length>0);
+  });
+
+  let yourCases = cases.find("owner",req.user);
+  if(yourCases.length>0) {
+    req.appData.yourCases = yourCases.filter(function(caseRecord) {
+      return (parts.findByCase(caseRecord.id).length>0);
+    });
+  }
+
+  return next();
+}
+
+let appSetHome = function(req,res,next) {
+  req.appData.mode = "home";
+  return next();
 }
 
 let makeMessage = function(obj) {
@@ -1028,6 +1055,8 @@ app.get('/case/:caseId',appCheckAuthentication,appGetCase);
 app.get('/messages/ack/:msgId',appCheckAuthentication,appAckMsg);
 
 app.get('/dump/:dbId',appDump);
+
+app.get('/',appGetParts,appGetCases,appGetDashboard,appSetHome);
 
 // app.use(appTest("end",false));
 //app.use(getSessionData,timeEnd,resEnd);
