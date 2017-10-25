@@ -765,9 +765,9 @@ var appAddPartVerified = function(req,res,next) {
     make:req.body.make,
     count:req.body.count
   });
-  if(!partId) {
+  if(partId===false) {
     req.session.messages.push(makeMessage({type:"warn",text:"Could not create new part"}));
-    return req.redirect("/part/");
+    return res.redirect("/part/");
   }
   parts.writeDb();
   req.session.messages.push(makeMessage({type:"success",text:"New part added"}));
@@ -834,7 +834,7 @@ var appCheckoutPart = function(req,res,next) {
     // parts.rollBackRecord(req.body.partid);
     // cases.rollBackRecord(req.body.caseid);
     return next(new Error('Something went wrong :-('));
-  }  
+  }
   cases.writeDb();
   parts.writeDb();
   return res.redirect('/part/' + req.body.partid);
