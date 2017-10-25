@@ -6,8 +6,16 @@ block content
     //- li This is the beginning.
     each part in parts
       - let targetLoc = "/part/" + part.id;
+      - let total = (parseFloat(part.free) + parseFloat(part.used));
+      - let ratio = Math.round((parseFloat(part.used)/parseFloat(total))*100);
       li.layout-col(onclick="goTo('" + targetLoc + "')")
         .itemhead #{part.make} #{part.description}
+        .itemdetail.layout-col
+          .label.nobreak Part Availability:
+          .usegraph.layout-row.layout-width-1-1.layout-align-center.layout-sd-width-5-8.layout-lg-width-4-8.layout-xl-width-3-8
+            if(ratio!=0)
+              .usedgraph.layout-row.layout-align-center.layout-justify-center(style="width:" + ratio + "%;") #{ratio}%
+          .data #{part.used} used out of #{total} (#{ratio}% consumed)
         .itemdetail.layout-col
           .label.nobreak Part Num:
           .data #{part.partnum}
