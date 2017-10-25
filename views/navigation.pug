@@ -1,5 +1,5 @@
 header.layout-row.layout-width-1-1
-  nav#topmenu.nav.layout-xs-col.layout-width-1-1.layout-sm-justify-end.boxshadow(role=navigation)
+  nav#topmenu.nav.layout-xs-col.layout-width-1-1.layout-sm-justify-end(role=navigation)
     #menu-title.layout-row.layout-justify-between
       div#app-title
         a(href="/")= title
@@ -11,6 +11,6 @@ header.layout-row.layout-width-1-1
         - var link = item.link;
         - var text = item.text;
         li.layout-size-x1
-          a(href=link).layout-width-1-1.layout-xs-row.layout-md-row.layout-col.layout-align-center.layout-xs-justify-start.layout-justify-center.text-xs-grow-x2
+          a(href=link).layout-width-1-1.layout-row.layout-sm-col.layout-align-center.layout-xs-justify-start.layout-justify-center.text-xs-grow-x2
             i.material-icons.menu-icon #{item.icon}
             .nobreak.text-sm-shrink-x3 #{text}
