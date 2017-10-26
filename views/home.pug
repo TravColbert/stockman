@@ -10,7 +10,7 @@ block content
   if(yourCases)
     div Here is a list of all of the cases that you own. There are #{cases.length} of them:
     .item-listing.layout-row
-      .itemsidebar.layout-col.layout-width-1-8
+      .itemsidebar.layout-col.layout-width-1-8.layout-align-center
         i.material-icons.item-icon face
       .itemcontent.layout-col.layout-width-7-8
         each item in yourCases
@@ -31,7 +31,7 @@ block content
 
   div Here is a list of the oldest opened cases. There are #{cases.length} of them. The ones that have already been closed do not appear on this list.
   .item-listing.layout-row
-    .itemsidebar.layout-col.layout-width-1-8
+    .itemsidebar.layout-col.layout-width-1-8.layout-align-center
       i.material-icons.item-icon alarm
     .itemcontent.layout-col.layout-width-7-8
       each item in oldestCases

@@ -25,7 +25,11 @@ block content
           each c in cases
             .itemdetail.caseitem.layout-width-1-1
               if caseId==c
-                a.btn.btn-small.btn-cancel.layout-size-x1.buttonpartcheckin(href="/part/checkin/" + part.id + "/case/" + c) Check In
+                a.btn.btn-cancel.layout-size-x1.buttonpartcheckin(href="/part/checkin/" + part.id + "/case/" + c) 
+                  i.material-icons add_circle_outline
+                  span Check In
               else
-                a.btn.btn-small.btn-normal.layout-size-x1(href="/case/" + c) #{c}
+                a.btn.btn-normal.layout-size-x1(href="/case/" + c) 
+                  i.material-icons assignment
+                  span #{c}
           

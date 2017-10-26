@@ -8,7 +8,7 @@ block content
       i.material-icons keyboard_arrow_left
       div Part Detail
     .part-listing.layout-col
-      .section-hdg.section-hdg-3 Info:
+      //- .section-hdg.section-hdg-3 Info:
       .partmake.itemdetail.layout-col
           .label Manufacturer:
           .data #{part.make}
@@ -19,7 +19,7 @@ block content
         .label Description:
         .data #{part.description}
       div
-        a.btn.btn-small.btn-primary.layout-size-x1.layout-row.layout-align-center.buttonpartedit(href="/part/edit/" + part.id)
+        a.btn.btn-primary.layout-size-x1.buttonpartedit(href="/part/edit/" + part.id)
           i.material-icons mode_edit
           span Edit Part
       .stock-control.layout-col
@@ -31,8 +31,8 @@ block content
           if part.free
             //-div.checkoutpart
             .layout-width-1-1
-              a.btn.btn-small.btn-normal.layout-size-x1.layout-row.layout-align-center.buttonpartcheckout(href="/part/checkout/" + part.id)
-                i.material-icons mode_edit
+              a.btn.btn-normal.layout-size-x1.buttonpartcheckout(href="/part/checkout/" + part.id)
+                i.material-icons remove_circle_outline
                 span Check Out
         .itemdetail.partused.layout-col
           .label Checked-Out:
@@ -41,8 +41,12 @@ block content
         #caselist.layout-col.layout-justify-between.layout-width-1-1
           each c in cases
             .itemdetail.caseitem.layout-width-1-1
-              a.btn.btn-small.btn-cancel.layout-size-x1.layout-row.layout-align-center.buttonpartcheckin(href="/part/checkin/" + part.id + "/case/" + c) Check In
-              a.btn.btn-small.btn-primary(href="/case/" + c) #{c}
+              a.btn.btn-cancel.layout-size-x1.buttonpartcheckin(href="/part/checkin/" + part.id + "/case/" + c) 
+                i.material-icons add_circle_outline
+                span Check In
+              a.btn.btn-primary.layout-row.layout-align-center(href="/case/" + c) 
+                i.material-icons assignment
+                span #{c}
       .part-qrcode.layout-col
         .section-hdg.section-hdg-3 QR Code:
         .qrcode.layout-col.layout-align-center
@@ -51,7 +55,9 @@ block content
             - let url = appUrl + "/part/" + part.id;
             #qrcode-url #{url}
         .qrcode-controls.layout-col
-          a#qrcode-print.btn.btn-small.btn-primary.layout-size-x1.layout-row.layout-align-center(href="/part/print/" + part.id) Print Code
+          a#qrcode-print.btn.btn-primary.layout-size-x1(href="/part/print/" + part.id)
+            i.material-icons print
+            span Print Code
 
 block scripts
   script(src='/js/qrcode.min.js')
