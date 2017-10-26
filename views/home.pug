@@ -6,9 +6,9 @@ block content
     .section-hdg.section-hdg-1 Dashboard
   else
     .section-hdg.section-hdg-1 #{account}'s Dashboard
-  div Hi #{account}!
+  .info Hi #{account}!
   if(yourCases)
-    div Here is a list of all of the cases that you own. There are #{cases.length} of them:
+    .info Here is a list of all of the cases that you own. There are #{cases.length} of them:
     .item-listing.layout-row
       .itemsidebar.layout-col.layout-width-1-8.layout-align-center
         i.material-icons.item-icon face
@@ -27,9 +27,9 @@ block content
               .itemdetail.layout-width-1-2.layout-col
                 .label Create Date/Time:
                 .data #{dateTime}
-    div To see other cases click <a href="">here</a> or use the menu above.
+    .info To see other cases click <a href="">here</a> or use the menu above.
 
-  div Here is a list of the oldest opened cases. There are #{cases.length} of them. The ones that have already been closed do not appear on this list.
+  .info Here is a list of the oldest opened cases. There are #{cases.length} of them. The ones that have already been closed do not appear on this list.
   .item-listing.layout-row
     .itemsidebar.layout-col.layout-width-1-8.layout-align-center
       i.material-icons.item-icon alarm
