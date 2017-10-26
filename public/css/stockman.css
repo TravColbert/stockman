@@ -80,6 +80,12 @@ ul {
   background-color: rgba(249, 249, 249, 0.8);
   overflow: hidden;
 }
+.item {
+  border-bottom: 1px dashed #ddd;
+}
+.item:last-child {
+  border: none;
+}
 .itemhead {
   color: #555;
   /* font-weight: bold; */
