@@ -19,7 +19,9 @@ block content
         .label Description:
         .data #{part.description}
       div
-        a.btn.btn-small.btn-primary.layout-size-x1.buttonpartedit(href="/part/edit/" + part.id) Edit Part
+        a.btn.btn-small.btn-primary.layout-size-x1.layout-row.layout-align-center.buttonpartedit(href="/part/edit/" + part.id)
+          i.material-icons mode_edit
+          span Edit Part
       .stock-control.layout-col
         .section-hdg.section-hdg-3 Current Stock: #{part.free} out of #{part.count}
         .itemdetail.partfree.layout-col
@@ -29,7 +31,9 @@ block content
           if part.free
             //-div.checkoutpart
             .layout-width-1-1
-              a.btn.btn-small.btn-normal.layout-size-x1.buttonpartcheckout(href="/part/checkout/" + part.id) Check Out
+              a.btn.btn-small.btn-normal.layout-size-x1.layout-row.layout-align-center.buttonpartcheckout(href="/part/checkout/" + part.id)
+                i.material-icons mode_edit
+                span Check Out
         .itemdetail.partused.layout-col
           .label Checked-Out:
           .data #{part.used}
@@ -37,7 +41,7 @@ block content
         #caselist.layout-col.layout-justify-between.layout-width-1-1
           each c in cases
             .itemdetail.caseitem.layout-width-1-1
-              a.btn.btn-small.btn-cancel.layout-size-x1.buttonpartcheckin(href="/part/checkin/" + part.id + "/case/" + c) Check In
+              a.btn.btn-small.btn-cancel.layout-size-x1.layout-row.layout-align-center.buttonpartcheckin(href="/part/checkin/" + part.id + "/case/" + c) Check In
               a.btn.btn-small.btn-primary(href="/case/" + c) #{c}
       .part-qrcode.layout-col
         .section-hdg.section-hdg-3 QR Code:
@@ -47,7 +51,7 @@ block content
             - let url = appUrl + "/part/" + part.id;
             #qrcode-url #{url}
         .qrcode-controls.layout-col
-          a#qrcode-print.btn.btn-small.btn-primary.layout-size-x1(href="/part/print/" + part.id) Print Code
+          a#qrcode-print.btn.btn-small.btn-primary.layout-size-x1.layout-row.layout-align-center(href="/part/print/" + part.id) Print Code
 
 block scripts
   script(src='/js/qrcode.min.js')
