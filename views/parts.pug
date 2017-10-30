@@ -2,28 +2,35 @@ extends index.pug
 
 block content
   .section-hdg.section-hdg-1 Parts (#{parts.length})
-  ul.itemlist
-    //- li This is the beginning.
-    each part in parts
-      - let targetLoc = "/part/" + part.id;
-      - let total = (parseFloat(part.free) + parseFloat(part.used));
-      - let ratio = Math.round((parseFloat(part.used)/parseFloat(total))*100);
-      li.layout-col(onclick="goTo('" + targetLoc + "')")
-        .itemhead #{part.make} #{part.description}
-        .itemdetail.layout-col
-          .label.nobreak Part Availability:
-          .usegraph.layout-row.layout-width-1-1.layout-align-center.layout-sd-width-5-8.layout-lg-width-4-8.layout-xl-width-3-8
-            if(ratio!=0)
-              .usedgraph.layout-row.layout-align-center.layout-justify-center(style="width:" + ratio + "%;") #{ratio}%
-          .data #{part.used} used out of #{total} (#{ratio}% consumed)
-        .itemdetail.layout-col
-          .label.nobreak Part Num:
-          .data #{part.partnum}
-        .itemdetail.layout-col
-          .label Description:
-          .data #{part.description}
-    //- li This is the end.
-  .layout-row.layout-justify-between
-    a.btn.normal(href="/parts/add")
-      i.material-icons add_circle_outline
-      span Add Part
+  .layout-row.layout-width-1-1
+    ul.itemlist.layout-col.layout-width-1-1.layout-sd-width-5-8.layout-lg-width-5-8.layout-xl-width-4-8
+      //- li This is the beginning.
+      each part in parts
+        - let targetLoc = "/part/" + part.id;
+        - let total = (parseFloat(part.free) + parseFloat(part.used));
+        - let ratio = Math.round((parseFloat(part.used)/parseFloat(total))*100);
+        li.layout-col(onclick="goTo('" + targetLoc + "')")
+          .itemhead #{part.make} #{part.description}
+          .itemdetail.layout-col
+            .label.nobreak Part Availability:
+            .usegraph.layout-row.layout-width-1-1.layout-align-center.layout-sd-width-5-8.layout-lg-width-4-8.layout-xl-width-3-8
+              if(ratio!=0)
+                .usedgraph.layout-row.layout-align-center.layout-justify-center(style="width:" + ratio + "%;") #{ratio}%
+            .data #{part.used} used out of #{total} (#{ratio}% consumed)
+          .itemdetail.layout-col
+            .label.nobreak Part Num:
+            .data #{part.partnum}
+          .itemdetail.layout-col
+            .label Description:
+            .data #{part.description}
+      //- li This is the end.
+      li.layout-row.layout-justify-between
+        a.btn.normal(href="/parts/add")
+          i.material-icons add_circle_outline
+          span Add Part
+    .description.layout-col.layout-xs-hidden.layout-sm-hidden.layout-md-hidden.layout-sd-width-3-8.layout-lg-width-3-8.layout-xl-width-4-8
+      .infotext This is the list of all parts in your parts-collection. 
+      .infotext Parts are listed in the order they were added to your parts-collection.
+      .infotext Click on the part-listing to check the part in or out based on availability.
+      .infotext The "part availability" graph indicates what percentage of that part are available for checkout. Use this to get a quick idea of the amount of parts that have been checked out.
+      .infotext You may also add new parts using the "Add Part" button, below.

@@ -7,65 +7,89 @@ block content
         i.material-icons devices
       i.material-icons keyboard_arrow_left
       div Part Detail
-    .part-listing.layout-col
-      //- .section-hdg.section-hdg-3 Info:
-      .partmake.itemdetail.layout-col
-          .label Manufacturer:
-          .data #{part.make}
-      .partnum.itemdetail.layout-col
-        .label.nobreak Part Num:
-        .data #{part.partnum}
-      .partdescription.itemdetail.layout-col
-        .label Description:
-        .data #{part.description}
-      div
-        a.btn.secondary.layout-size-x1.buttonpartedit(href="/part/edit/" + part.id)
-          i.material-icons mode_edit
-          span Edit Part
-      .stock-control.layout-col
-        .section-hdg.section-hdg-3 Current Stock: #{part.free} out of #{part.count}
-        - let targetLoc = "/part/" + part.id;
-        - let total = (parseFloat(part.free) + parseFloat(part.used));
-        - let ratio = Math.round((parseFloat(part.used)/parseFloat(total))*100);
-        .usegraph.layout-row.layout-width-1-1.layout-align-center.layout-sd-width-5-8.layout-lg-width-4-8.layout-xl-width-3-8
-          if(ratio!=0)
-            .usedgraph.layout-row.layout-align-center.layout-justify-center(style="width:" + ratio + "%;") #{ratio}%
-        .itemdetail.partfree.layout-col
-          .label Available:
-          .data #{part.free}
-        .itemdetail.partfree
-          if part.free
-            //-div.checkoutpart
-            .layout-width-1-1
-              a.btn.normal.layout-size-x1.buttonpartcheckout(href="/part/checkout/" + part.id)
-                //- i.material-icons remove_circle_outline
-                i.material-icons unarchive
-                span Check Out
-        .itemdetail.partused.layout-col
-          .label Checked-Out:
-          .data #{part.used}
-          - let cases = part.cases;
-        #caselist.layout-col.layout-justify-between.layout-width-1-1
-          each c in cases
-            .itemdetail.caseitem.layout-width-1-1
-              a.btn.normal.layout-size-x1.buttonpartcheckin(href="/part/checkin/" + part.id + "/case/" + c) 
-                //- i.material-icons add_circle_outline
-                i.material-icons archive
-                span Check In
-              a.btn.secondary.layout-row.layout-align-center(href="/case/" + c) 
-                i.material-icons assignment
-                span #{c}
-      .part-qrcode.layout-col
-        .section-hdg.section-hdg-3 QR Code:
-        .qrcode.layout-col.layout-align-center
-          #qrcode-box.layout-col(style="width:100px; height:100px;")
-          .qrcode-url.layout-col
-            - let url = appUrl + "/part/" + part.id;
-            #qrcode-url #{url}
-        .qrcode-controls.layout-col
-          a#qrcode-print.btn.secondary.layout-size-x1(href="/part/print/" + part.id)
-            i.material-icons print
-            span Print Code
+    .layout-row.layout-width-1-1
+      .part-listing.layout-col.layout-width-1-1.layout-sd-width-5-8.layout-lg-width-5-8.layout-xl-width-4-8
+        //- .section-hdg.section-hdg-3 Info:
+        .partmake.itemdetail.layout-col
+            .label Manufacturer:
+            .data #{part.make}
+        .partnum.itemdetail.layout-col
+          .label.nobreak Part Num:
+          .data #{part.partnum}
+        .partdescription.itemdetail.layout-col
+          .label Description:
+          .data #{part.description}
+        div
+          a.btn.secondary.layout-size-x1.buttonpartedit(href="/part/edit/" + part.id)
+            i.material-icons mode_edit
+            span Edit Part
+        .stock-control.layout-col
+          .section-hdg.section-hdg-3 Current Stock: #{part.free} out of #{part.count}
+          - let targetLoc = "/part/" + part.id;
+          - let total = (parseFloat(part.free) + parseFloat(part.used));
+          - let ratio = Math.round((parseFloat(part.used)/parseFloat(total))*100);
+          .usegraph.layout-row.layout-width-1-1.layout-align-center.layout-sd-width-5-8.layout-lg-width-4-8.layout-xl-width-3-8
+            if(ratio!=0)
+              .usedgraph.layout-row.layout-align-center.layout-justify-center(style="width:" + ratio + "%;") #{ratio}%
+          .itemdetail.partfree.layout-col
+            .label Available:
+            .data #{part.free}
+          .itemdetail.partfree
+            if part.free
+              //-div.checkoutpart
+              .layout-width-1-1
+                a.btn.normal.layout-size-x1.buttonpartcheckout(href="/part/checkout/" + part.id)
+                  //- i.material-icons remove_circle_outline
+                  i.material-icons unarchive
+                  span Check Out
+          .itemdetail.partused.layout-col
+            .label Checked-Out:
+            .data #{part.used}
+            - let cases = part.cases;
+          #caselist.layout-col.layout-justify-between.layout-width-1-1
+            each c in cases
+              .itemdetail.caseitem.layout-width-1-1
+                a.btn.normal.layout-size-x1.buttonpartcheckin(href="/part/checkin/" + part.id + "/case/" + c) 
+                  //- i.material-icons add_circle_outline
+                  i.material-icons archive
+                  span Check In
+                a.btn.secondary.layout-row.layout-align-center(href="/case/" + c) 
+                  i.material-icons assignment
+                  span #{c}
+        .part-qrcode.layout-col
+          .section-hdg.section-hdg-3 QR Code:
+          .qrcode.layout-col.layout-align-center
+            #qrcode-box.layout-col(style="width:100px; height:100px;")
+            .qrcode-url.layout-col
+              - let url = appUrl + "/part/" + part.id;
+              #qrcode-url #{url}
+          .qrcode-controls.layout-col
+            a#qrcode-print.btn.secondary.layout-size-x1(href="/part/print/" + part.id)
+              i.material-icons print
+              span Print Code
+      .description.layout-col.layout-xs-hidden.layout-sm-hidden.layout-md-hidden.layout-sd-width-3-8.layout-lg-width-3-8.layout-xl-width-4-8
+        .infotext These are the details for part: #{part.partnum}.
+        .infotext The "Part Detail" view is broken into 3 main sections:
+        .infotext
+          ol
+            li The product details section
+            li The product stock and availability section
+            li The QR Code section
+        .infotext.section-hdg.section-hdg-3 Product Details
+        .infotext The product details section shows you the manufacturer, part number and description of the unit.
+        .infotext These details can be changed by clicking on the "Edit Part" button.
+        .infotext You can edit the number of items that should be available in stock with this button also.
+        .infotext.section-hdg.section-hdg-3 Product Stock and Availability
+        .infotext The product stock and availability section shows you the current stock of the item. You can see how many units are availabile foe check-out.
+        .infotext If there are parts available for checkout you can use the "Check Out" button to check out an item.
+        .infotext If there are units that have already been checked out, two more buttons will appear:
+        .infotext
+          ol
+            li One button that allows you to check-in an item
+            li And another button that let's you jump to the case into which this part was checked out.
+        .infotext.section-hdg.section-hdg-3 QR Code Section
+        .infotext This section shows you the unique QR code generated for this item.
+        .infotext You may use the "Print Code" button to print the QR code to a label that may be affixed to the parts-bin holding this part.
 
 block scripts
   script(src='/js/qrcode.min.js')
