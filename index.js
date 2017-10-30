@@ -423,7 +423,8 @@ passport.deserializeUser(function(id,cb) {
   users.findById(id,function(err,user) {
     if(err) return cb(err,null);
     logThis(myName + ": SESSION-CHECK: Found user: " + user.username);
-    cb(null,user.username);
+    //cb(null,user.username);
+    cb(null,user);
   });
 });
 
@@ -464,9 +465,7 @@ var appStart = function(req,res,next) {
   req.appData = {};
   logThis(myName + ": Setting app name");
   req.appData.title = app.locals.appName;
-  // logThis(myName + ": Clearing appData/session messages");
   req.appData.messages = [];
-  // req.session.messages = [];
   return next();
 }
 
@@ -496,7 +495,7 @@ var appCheckAuthentication = function(req,res,next) {
     logThis(myName + ": header status: " + (res.headersSent));
     return res.redirect('/login');
   }
-  logThis(myName + ": Found session for: " + JSON.stringify(req.user));
+  logThis(myName + ": Found session for: " + JSON.stringify(req.user.username));
   logThis(myName + ": session is authenticated");
   return next();
 }
@@ -524,10 +523,12 @@ var appGetMenu = function(req,res,next) {
 }
 
 var appHello = function(req,res,next) {
-  var myName = "root";
-  logThis(myName + ": User: " + req.user);
-  let audience = req.user || "World";
-  req.appData.account = req.user;
+  var myName = "appHello";
+  if(req.user) {
+    logThis(myName + ": User: " + req.user.username + " id: " + req.user.id);
+    req.appData.account = req.user.username;
+    req.appData.accountNum = req.user.id;  
+  }
   return next();
 }
 
