@@ -24,6 +24,12 @@ block content
           span Edit Part
       .stock-control.layout-col
         .section-hdg.section-hdg-3 Current Stock: #{part.free} out of #{part.count}
+        - let targetLoc = "/part/" + part.id;
+        - let total = (parseFloat(part.free) + parseFloat(part.used));
+        - let ratio = Math.round((parseFloat(part.used)/parseFloat(total))*100);
+        .usegraph.layout-row.layout-width-1-1.layout-align-center.layout-sd-width-5-8.layout-lg-width-4-8.layout-xl-width-3-8
+          if(ratio!=0)
+            .usedgraph.layout-row.layout-align-center.layout-justify-center(style="width:" + ratio + "%;") #{ratio}%
         .itemdetail.partfree.layout-col
           .label Available:
           .data #{part.free}
