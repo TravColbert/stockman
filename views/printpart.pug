@@ -2,7 +2,7 @@ extends index.pug
 
 block content
   .layout-col.layout-align-center
-    .layout-row
+    #printthis.layout-row
       .part-qrcode.layout-col
         #qrcode-box.layout-col(style="width:100px; height:100px;")
         .qrcode-url.layout-col.layout-hidden
@@ -18,9 +18,10 @@ block content
         //- .stock-control.layout-col Stock Control
     #print-prompt.layout-col.layout-align-center 
       h1 Print This
-      .info.layout-col
+      .infotext.layout-col
         p Use your browser's print command (Ctrl-p) to print this QR code.
-        p None of this extra stuff will be printed.
+        p None of the extra stuff on this page will be printed.
+        p Apply the QR code to your parts bin to facilitate easy scanning of your parts as you check them in an out.
 
 block scripts
   script(src='/js/qrcode.min.js')

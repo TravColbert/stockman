@@ -1,3 +1,9 @@
+body {
+  background: #fff;
+}
+.content {
+  box-shadow: none;
+}
 header, footer, #print-prompt {
   display: none;
   visibility: hidden;
