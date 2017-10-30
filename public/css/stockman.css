@@ -43,13 +43,13 @@ a {
   background: #4577D4; 
 }
 .secondary {
-  background: #6B90D4;
+  background: #94B0DA;
 }
 .success {
   background: #2D83D7;
 }
 .danger {
-  background: #FF6C25;
+  background: #F55D3E ;
 }
 .warning {
   background: #FFCC25;
@@ -60,7 +60,7 @@ a {
 }
 .cancel {
   /* border-color: #d16014; */
-  background: #aaa;
+  background: #D1D5DE ;
 }
 .disabled {
   /* border-color: #333333; */
@@ -68,7 +68,7 @@ a {
 }
 .btn-bad {
   /* border-color: #FB3640; */
-  background: #EC6E6A;
+  background: #F55D3E;
 }
 input {
   font-size: 0.9em;
@@ -101,7 +101,7 @@ ul {
   font-size: 0.8em;
   color: #777;
 }
-.itemlist > li, .part-listing, .user-listing, .item-listing {
+.itemlist > li, .part-listing, .user-listing, .item-listing, #login-form {
   border-radius: 3px;
   padding: 0.5em;
   /* box-shadow: 0px 1px 2px rgba(0,0,0,0.2); */
@@ -111,7 +111,7 @@ ul {
   overflow: hidden;
 }
 .item {
-  border-bottom: 1px dashed #666;
+  border-bottom: 1px dashed #ccc;
 }
 .item:last-child {
   border: none;
@@ -133,6 +133,7 @@ ul {
 .label {
   font-size: 0.8em;
   color: rgba(51, 51, 51, 0.8);
+  color: #909090cc;
   /* width: 35%; */
   /* justify-content: flex-end; */
   /* padding-right: 0.5em; */
@@ -142,6 +143,8 @@ ul {
 }
 .stock-control, .part-qrcode {
   margin-top: 0.5em;
+  border-top: 1px dashed #ccc;
+  padding-top: 0.5em;
 }
 #qrcode-url {
   font-size: 0.6em;
@@ -174,9 +177,9 @@ ul {
 }
 #login-form {
   font-size: 1.2em;
-  background-color: #1FE8BD;
+  /* background-color: #1FE8BD;
   border-radius: 3px;
-  color: #fff;
+  color: #fff; */
 }
 #login-form div {
   padding: 0.2em;
