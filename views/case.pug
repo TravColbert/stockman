@@ -1,9 +1,14 @@
 extends index.pug
 block content
   - let dateTime = new Date(caseRecord.time).toLocaleDateString() + " " + new Date(caseRecord.time).toLocaleTimeString();
-  .section-hdg.section-hdg-1 Case Detail #{caseRecord.id}
-  .section-hdg.section-hdg-3 Case Date/Time #{dateTime}
-  .section-hdg.section-hdg-3 Case Owner #{caseRecord.owner}
+  .section-hdg.section-hdg-1.layout-row
+    a(href="/cases/")
+      i.material-icons assignment
+    i.material-icons keyboard_arrow_left
+    div Case Detail
+  .section-hdg.section-hdg-2 Case: #{caseRecord.id}
+  .section-hdg.section-hdg-3 Date/Time: #{dateTime}
+  .section-hdg.section-hdg-3 Owner: #{caseRecord.owner}
   .section-hdg.section-hdg-3 Parts Checked-Out: #{parts.length}
   ul.itemlist
     each part in parts
@@ -25,11 +30,11 @@ block content
           each c in cases
             .itemdetail.caseitem.layout-width-1-1
               if caseId==c
-                a.btn.btn-cancel.layout-size-x1.buttonpartcheckin(href="/part/checkin/" + part.id + "/case/" + c) 
-                  i.material-icons add_circle_outline
+                a.btn.normal.layout-size-x1.buttonpartcheckin(href="/part/checkin/" + part.id + "/case/" + c) 
+                  i.material-icons archive
                   span Check In
               else
-                a.btn.btn-normal.layout-size-x1(href="/case/" + c) 
+                a.btn.secondary.layout-size-x1(href="/case/" + c) 
                   i.material-icons assignment
                   span #{c}
           

@@ -7,7 +7,7 @@
       .itemsidebar.layout-col.layout-width-1-8.layout-align-center
         i.material-icons.item-icon message
       .itemcontent.layout-col.layout-width-7-8
-        each message,index in messages
+        each message in messages
           - let messageClass = "msg-" + message.type;
           - let messageText = message.text;
           .msg.layout-row.layout-width-1-1.layout-justify-between.layout-align-center(id="msg" + message.msgId class=messageClass onclick="ackMessage('" + message.msgId + "')")

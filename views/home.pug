@@ -2,13 +2,15 @@ extends index.pug
 
 block content
   //- .section-hdg.section-hdg-1 Parts (#{parts.length})
+  - let userName = account || null;
   if(!account)
     .section-hdg.section-hdg-1 Dashboard
   else
-    .section-hdg.section-hdg-1 #{account}'s Dashboard
-  .info Hi #{account}!
+    - userName = userName[0].toUpperCase() + userName.slice(1);
+    .section-hdg.section-hdg-1 #{userName}'s Dashboard
+  .infotext Hi #{userName}!
   if(yourCases)
-    .info Here is a list of all of the cases that you own. There are #{cases.length} of them:
+    .infotext Here is a list of all of the cases that you own. There are #{cases.length} of them:
     .item-listing.layout-row
       .itemsidebar.layout-col.layout-width-1-8.layout-align-center
         i.material-icons.item-icon face
@@ -27,9 +29,9 @@ block content
               .itemdetail.layout-width-1-2.layout-col
                 .label Create Date/Time:
                 .data #{dateTime}
-    .info To see other cases click <a href="">here</a> or use the menu above.
+    .infotext To see other cases click <a href="">here</a> or use the menu above.
 
-  .info Here is a list of the oldest opened cases. There are #{cases.length} of them. The ones that have already been closed do not appear on this list.
+  .infotext Here is a list of the oldest opened cases. There are #{cases.length} of them. The ones that have already been closed do not appear on this list.
   .item-listing.layout-row
     .itemsidebar.layout-col.layout-width-1-8.layout-align-center
       i.material-icons.item-icon alarm
