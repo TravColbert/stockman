@@ -44,8 +44,6 @@ app.use(passport.session());
  *          if false - show the menu item only when logged-out
  */
 let menu = [
-  /*{link:"/",text:"Home",icon:"home"},*/
-  /*{link:"/secure",text:"Secured",icon:"lock_outline",secured:true},*/
   {link:"/parts",text:"Parts",icon:"devices"},
   {link:"/cases",text:"Cases",icon:"assignment"},
   /*{link:"/update",text:"Update Database",icon:"update",secured:true},*/
