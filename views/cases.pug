@@ -2,15 +2,24 @@ extends index.pug
 
 block content
   .section-hdg.section-hdg-1 Cases (#{cases.length})
-  ul.itemlist
-    each item in cases
-      - let targetLoc = "/case/" + item.id;
-      - let dateTime = new Date(item.time).toLocaleDateString() + " " + new Date(item.time).toLocaleTimeString();
-      li.layout-col(onclick="goTo('" + targetLoc + "')")
-        .itemhead Case: #{item.id}
-        .itemdetail.layout-col
-          .label Create Date/Time:
-          .data #{dateTime}
-        .itemdetail.layout-col
-          .label Owner:
-          .data #{item.owner}
+  .layout-row.layout-width-1-1
+    ul.itemlist.layout-col.layout-width-1-1.layout-sd-width-5-8.layout-lg-width-5-8.layout-xl-width-4-8
+      each item in cases
+        - let targetLoc = "/case/" + item.id;
+        - let dateTime = new Date(item.time).toLocaleDateString() + " " + new Date(item.time).toLocaleTimeString();
+        li.layout-col(onclick="goTo('" + targetLoc + "')")
+          .itemhead Case: #{item.id}
+          .itemdetail.layout-col
+            .label Create Date/Time:
+            .data #{dateTime}
+          .itemdetail.layout-col
+            .label Owner:
+            .data #{item.owner}
+    .description.layout-col.layout-xs-hidden.layout-sm-hidden.layout-md-hidden.layout-sd-width-3-8.layout-lg-width-3-8.layout-xl-width-4-8
+        .infotext.section-hdg.section-hdg-3 Case List
+        .infotext This is the list of all open cases in which parts have been checked out.
+        .infotext Cases close when all parts from that case have been checked back in.
+        .infotext Click on an individual case to see more details.
+        .infotext The case number or ID should correspond to a case, issue or claim number in manufacturr's issue-tracker database
+        .infotext The case's data and time are listed. This is the modification date of the case. Each time a part is checked-in or out the date and time changes.
+        .infotext The owner of the case is the user who created the case.

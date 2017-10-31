@@ -2,25 +2,31 @@ extends index.pug
 
 block content
   .section-hdg.section-hdg-1 Check-Out Part
-  .part-listing.layout-col
-    form(action="/part/checkoutverified" method="post")
-      input(type="hidden" name="partid" id="partid" value=part.id)
-      #prompt.section-hdg.section-hdg-3 Confirm check-out of part #{part.id}
-      .itemdetail.layout-col
-        .label Manufacturer:
-        .data #{part.make}
-      .itemdetail.layout-col
-        .label Part Num:
-        .data #{part.partnum}
-      .itemdetail.layout-col
-        .label Description:
-        .data #{part.description}
-      .itemdetail.layout-col
-        label.label(for="caseid") Case:
-        .data
-          input(type="text" name="caseid" id="caseid" placeholder="case #" value=caseId required)
-      .itemdetail.layout-col
-        .label Actions:
-        .data
-          input.btn.primary.buttonconfirm(type="submit" id="submit" value="Confirm")
-          a.btn.cancel.buttoncancel(href="/part/" + part.id) Cancel
+  .layout-row.layout-width-1-1
+    .part-listing.layout-col.layout-width-1-1.layout-sd-width-5-8.layout-lg-width-5-8.layout-xl-width-4-8
+      form(action="/part/checkoutverified" method="post")
+        input(type="hidden" name="partid" id="partid" value=part.id)
+        //- #prompt.section-hdg.section-hdg-3 Confirm check-out of part #{part.id}
+        .itemdetail.layout-col
+          .label Manufacturer:
+          .data #{part.make}
+        .itemdetail.layout-col
+          .label Part Num:
+          .data #{part.partnum}
+        .itemdetail.layout-col
+          .label Description:
+          .data #{part.description}
+        .itemdetail.layout-col
+          label.label(for="caseid") Case:
+          .data
+            input(type="text" name="caseid" id="caseid" placeholder="case #" value=caseId required)
+        .itemdetail.layout-col
+          .label Actions:
+          .data
+            input.btn.primary.buttonconfirm(type="submit" id="submit" value="Confirm")
+            a.btn.cancel.buttoncancel(href="/part/" + part.id) Cancel
+    .description.layout-col.layout-xs-hidden.layout-sm-hidden.layout-md-hidden.layout-sd-width-3-8.layout-lg-width-3-8.layout-xl-width-4-8
+      .infotext.section-hdg.section-hdg-3 Check Out Part View
+      .infotext Use this view to complete the checkout of part #{part.id}
+      .infotext You must enter a valid case number to check out a part.
+      .infotext The case number will be used to check this part back in.

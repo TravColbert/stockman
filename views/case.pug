@@ -6,35 +6,55 @@ block content
       i.material-icons assignment
     i.material-icons keyboard_arrow_left
     div Case Detail
-  .section-hdg.section-hdg-2 Case: #{caseRecord.id}
-  .section-hdg.section-hdg-3 Date/Time: #{dateTime}
-  .section-hdg.section-hdg-3 Owner: #{caseRecord.owner}
-  .section-hdg.section-hdg-3 Parts Checked-Out: #{parts.length}
-  ul.itemlist
-    each part in parts
-      li.layout-col
-        .partmake.itemdetail.layout-col
-          .label Manufacturer:
-          .data #{part.make}
-        .partnum.itemdetail.layout-col
-          .label.nobreak Part Num:
-          .data #{part.partnum}
-        .partdescription.itemdetail.layout-col
-          .label Description:
-          .data #{part.description}
-        .partused.itemdetail.layout-col
-          .label Checked-Out:
-          .data #{part.used}
-        - let cases = part.cases;
-        #caselist.layout-col.layout-justify-between.layout-width-1-1
-          each c in cases
-            .itemdetail.caseitem.layout-width-1-1
-              if caseId==c
-                a.btn.normal.layout-size-x1.buttonpartcheckin(href="/part/checkin/" + part.id + "/case/" + c) 
-                  i.material-icons archive
-                  span Check In
-              else
-                a.btn.secondary.layout-size-x1(href="/case/" + c) 
-                  i.material-icons assignment
-                  span #{c}
-          
+  .layout-row.layout-width-1-1
+    .itembanner.layout-col.layout-width-1-1.layout-sd-width-5-8.layout-lg-width-5-8.layout-xl-width-4-8
+      .section-hdg.section-hdg-2 Case: #{caseRecord.id}
+      .section-hdg.section-hdg-3 Date/Time: #{dateTime}
+      .section-hdg.section-hdg-3 Owner: #{caseRecord.owner}
+      .section-hdg.section-hdg-3 Parts Checked-Out: #{parts.length}
+      ul.itemlist
+        each part in parts
+          li.layout-col
+            .partmake.itemdetail.layout-col
+              .label Manufacturer:
+              .data #{part.make}
+            .partnum.itemdetail.layout-col
+              .label.nobreak Part Num:
+              .data #{part.partnum}
+            .partdescription.itemdetail.layout-col
+              .label Description:
+              .data #{part.description}
+            .partused.itemdetail.layout-col
+              .label Checked-Out:
+              .data #{part.used}
+            - let cases = part.cases;
+            #caselist.layout-col.layout-justify-between.layout-width-1-1
+              each c in cases
+                .itemdetail.caseitem.layout-width-1-1
+                  if caseId==c
+                    a.btn.normal.layout-size-x1.buttonpartcheckin(href="/part/checkin/" + part.id + "/case/" + c) 
+                      i.material-icons archive
+                      span Check In
+                  else
+                    a.btn.secondary.layout-size-x1(href="/case/" + c) 
+                      i.material-icons assignment
+                      span #{c}
+    .description.layout-col.layout-xs-hidden.layout-sm-hidden.layout-md-hidden.layout-sd-width-3-8.layout-lg-width-3-8.layout-xl-width-4-8
+      .infotext.section-hdg.section-hdg-3 Case Detail View
+      .infotext These are the details for case: #{caseRecord.id}.
+      .infotext The case number or ID corresponds to a case, issue or claim number in manufacturr's issue-tracker database
+      .infotext The case's data and time are listed. This is the modification date of the case. Each time a part is checked-in or out the date and time changes.
+      .infotext The owner of the case is the user who created the case.
+      .infotext The case detail sheet shows the number of parts that are currently checked-out for this case.
+      .infotext Each part's details are listed below.
+      .infotext.section-hdg.section-hdg-3 Part Details
+      .infotext The product details section shows you the manufacturer, part number and description of the unit.
+      .infotext Finally, the number of this part that is checked out is listed. Notes that the number listed shows the amount of this part that have been checked out for all cases - not just this case.
+      .infotext.section-hdg.section-hdg-3 Product Stock and Availability
+      .infotext The product stock and availability section shows you the current stock of the item. You can see how many units are availabile foe check-out.
+      .infotext If there are parts available for checkout you can use the "Check Out" button to check out an item.
+      .infotext If there are units that have already been checked out, two more buttons will appear:
+      .infotext
+        ol
+          li One button that allows you to check-in an item
+          li And another button that let's you jump to the case into which this part was checked out. You can click on this button to move to another case where this same part has been checked-out.

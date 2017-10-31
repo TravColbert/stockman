@@ -2,14 +2,21 @@ extends index.pug
 
 block content
   .section-hdg.section-hdg-1 Users (#{users.length})
-  ul.itemlist
-    each item in users
-      - let targetLoc = "/user/" + item.id;
-      li.layout-col(onclick="goTo('" + targetLoc + "')")
-        .itemdetail.layout-col
-          .label User:
-          .data #{item.username}
-  .adduser.layout-row.layout-justify-between
-    a.btn.normal(href="/users/add")
-      i.material-icons add_circle_outline
-      span Add User
+  .layout-row.layout-width-1-1
+    .layout-col.layout-width-1-1.layout-sd-width-5-8.layout-lg-width-5-8.layout-xl-width-4-8
+      ul.itemlist
+        each item in users
+          - let targetLoc = "/user/" + item.id;
+          li.layout-col(onclick="goTo('" + targetLoc + "')")
+            .itemdetail.layout-col
+              .label User:
+              .data #{item.username}
+      .adduser.layout-row.layout-justify-between
+        a.btn.normal(href="/users/add")
+          i.material-icons add_circle_outline
+          span Add User
+    .description.layout-col.layout-xs-hidden.layout-sm-hidden.layout-md-hidden.layout-sd-width-3-8.layout-lg-width-3-8.layout-xl-width-4-8
+      .infotext.section-hdg.section-hdg-3 User List View
+      .infotext This is a list of users. You may edit the user's details by clicking on a user entry.
+      .infotext Click the "Add User" button to create a new user.
+      .infotext Each user is given a user ID that is used by stockr to keep track of the user and the user's cases.

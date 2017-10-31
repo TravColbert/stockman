@@ -1,28 +1,44 @@
 extends index.pug
 
 block content
-  div.layout-col
-    .part-listing.layout-col
-      form(action="/part/edit" method="post")
-        input(id="partid" type="hidden" name="partid" value=part.id)
-        .partnum.itemdetail.layout-col
-          label.label(for="partnum") Part Number: 
-          .data
-            input#partnum(type="text" name="partnum" placeholder="part number" value=part.partnum required)
-        .partdescription.itemdetail.layout-col
-          label.label(for="description") Description: 
-          .data
-            input#description(type="text" name="description" placeholder="description" value=part.description)
-        .partmake.itemdetail.layout-col
-          label.label(for="make") Make: 
-          .data
-            input#make(type="text" name="make" placeholder="manufacturer" value=part.make)
-        .partcount.itemdetail.layout-col
-          label.label(for="count") Stock Level: 
-          .data
-            input#count(type="number" name="count" value=part.count)
-        .partsubmit.itemdetail.layout-col
-          label.label Actions:
-          .data.layout-row
-            input.btn.primary.buttonconfirm(type="submit" id="submit" value="Confirm")
-            a.btn.cancel(href="/part/" + part.id) Cancel              
+  .layout-col
+    .section-hdg.section-hdg-1 Edit Part
+    .layout-row.layout-width-1-1
+      .part-listing.layout-col.layout-width-1-1.layout-sd-width-5-8.layout-lg-width-5-8.layout-xl-width-4-8
+        form(action="/part/edit" method="post")
+          input(id="partid" type="hidden" name="partid" value=part.id)
+          .partnum.itemdetail.layout-col
+            label.label(for="partnum") Part Number: 
+            .data
+              input#partnum(type="text" name="partnum" placeholder="part number" value=part.partnum required)
+          .partdescription.itemdetail.layout-col
+            label.label(for="description") Description: 
+            .data
+              input#description(type="text" name="description" placeholder="description" value=part.description)
+          .partmake.itemdetail.layout-col
+            label.label(for="make") Make: 
+            .data
+              input#make(type="text" name="make" placeholder="manufacturer" value=part.make)
+          .partcount.itemdetail.layout-col
+            label.label(for="count") Stock Level: 
+            .data
+              input#count(type="number" name="count" value=part.count)
+          .partsubmit.itemdetail.layout-col
+            label.label Actions:
+            .data.layout-row
+              input.btn.primary.buttonconfirm(type="submit" id="submit" value="Confirm")
+              a.btn.cancel(href="/part/" + part.id) Cancel              
+      .description.layout-col.layout-xs-hidden.layout-sm-hidden.layout-md-hidden.layout-sd-width-3-8.layout-lg-width-3-8.layout-xl-width-4-8
+        .infotext.section-hdg.section-hdg-3 Edit Part View
+        .infotext You can edit you part with this view.
+        .infotext Modify the details for the part that you would like to add.
+        .infotext.section-hdg.section-hdg-3 Manufacturer
+        .infotext Enter the manufacturer's name here. This should be the manufacturer for wich the part should be used.
+        .infotext.section-hdg.section-hdg-3 Part Number
+        .infotext Enter the ID, serial-number or part-number here.
+        .infotext.section-hdg.section-hdg-3 Description
+        .infotext Enter a helpful description here.
+        .infotext.section-hdg.section-hdg-3 Stock Level
+        .infotext Enter the desired total amount of parts that should be in stock.
+
+      

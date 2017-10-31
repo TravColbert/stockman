@@ -6,11 +6,15 @@ block content
       i.material-icons people_outline
     i.material-icons keyboard_arrow_left
     div User Detail
-  .user-listing.layout-col
-    if user
-      .itemdetail.layout-col
-        .label Username:
-        .data #{user.username}
-      .itemdetail.layout-col
-        .label System User Num:
-        .data #{user.id}
+  .layout-row.layout-width-1-1
+    .user-listing.layout-col.layout-width-1-1.layout-sd-width-5-8.layout-lg-width-5-8.layout-xl-width-4-8
+      if user
+        .itemdetail.layout-col
+          .label Username:
+          .data #{user.username}
+        .itemdetail.layout-col
+          .label System User Num:
+          .data #{user.id}
+    .description.layout-col.layout-xs-hidden.layout-sm-hidden.layout-md-hidden.layout-sd-width-3-8.layout-lg-width-3-8.layout-xl-width-4-8
+      .infotext.section-hdg.section-hdg-3 User View
+      .infotext Not much here right now.
