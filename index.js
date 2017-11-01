@@ -66,6 +66,13 @@ let cases = {
     });
     return caseRecord.id;
   },
+  search:function(searchString,field) {
+    field = field || null;
+    let results = this.db.filter(function(itemRecord) {
+      return itemRecord.owner.includes(searchString);
+    });
+    return results;
+  },
   write:function(caseRecord) {
     let methodName = 'write';
     logThis(methodName + ": " + JSON.stringify(caseRecord));
@@ -147,6 +154,19 @@ let parts = {
       cases:[]
     });
     return x;
+  },
+  search:function(searchString,field) {
+    let methodName = "search";
+    console.log(methodName + ": Searching for: " + searchString);
+    field = field || null;
+    let targetString;
+    let results = this.db.filter(function(itemRecord) {
+      if(field===null) {
+        targetString = itemRecord.partnum + " " + itemRecord.description + " " + itemRecord.make;
+      }
+      return targetString.includes(searchString);
+    });
+    return results;
   },
   find:function(field,val) {
     let methodName = "find";
@@ -361,6 +381,13 @@ let users = {
       password:userObj.password
     },this);
     return true;
+  },
+  search:function(searchString,field) {
+    field = field || "username";
+    let results = this.db.filter(function(itemRecord) {
+      return itemRecord[field].includes(searchString);
+    });
+    return results;
   },
   readDb:function() {
     let methodName = "readDb";
@@ -952,6 +979,41 @@ let appSetHome = function(req,res,next) {
   return next();
 }
 
+var appSearch = function(req,res,next) {
+  if(!req.query.q) return next();
+  req.appData.search = [];
+  let results = parts.search(req.query.q);
+  console.log(JSON.stringify(results));
+  if(results.length>0) {
+    results.forEach(function(v,i,a) {
+      v.resultType = "part";
+      v.resultIndex = i;
+      req.appData.search.push(v);
+    });  
+  }
+  results = cases.search(req.query.q);
+  console.log(JSON.stringify(results));
+  if(results.length>0) {
+    results.forEach(function(v,i,a) {
+      v.resultType = "case";
+      v.resultIndex = i;
+      req.appData.search.push(v);    
+    });  
+  }
+  results = users.search(req.query.q);
+  console.log(JSON.stringify(results));
+  if(results.length>0) {
+    results.forEach(function(v,i,a) {
+      v.resultType = "user";
+      v.resultIndex = i;
+      req.appData.search.push(v);    
+    });
+  }
+  console.log(JSON.stringify(req.appData.search));
+  req.appData.mode = "search";
+  return next();
+}
+
 let makeMessage = function(obj) {
   let myName = "makeMessage";
   logThis(myName + ": Making a message for: " + JSON.stringify(obj));
@@ -1052,6 +1114,8 @@ app.get('/cases/',appGetCases);
 app.get('/case/:caseId',appCheckAuthentication,appGetCase);
 
 app.get('/messages/ack/:msgId',appCheckAuthentication,appAckMsg);
+
+app.get('/search',appCheckAuthentication,appSearch);
 
 app.get('/dump/:dbId',appDump);
 

@@ -1,0 +1,42 @@
+extends index.pug
+
+block content
+  - let searchCount = search.length
+  .section-hdg.section-hdg-1 Search Results: #{searchCount}
+  .layout-row.layout-width-1-1  
+    ul.itemlist.layout-col.layout-width-1-1.layout-sd-width-5-8.layout-lg-width-5-8.layout-xl-width-4-8
+      each item in search
+        if(item.resultType=="part")
+          - let icon = "devices"
+        else if(item.resultType=="case")
+          - let icon = "assignment"
+        else
+          - let icon = "face"
+        - let targetLoc = "/" + item.resultType + "/" + item.id
+        li.searchitem.layout-row(onclick="goTo('" + targetLoc + "')")
+          .itemsidebar.layout-col.layout-width-1-8.layout-align-center
+            i.material-icons.item-icon devices
+          .itemcontent.layout-col.layout-width-7-8
+            if(item.resultType=="part")
+              .itemhead Part: #{item.id}
+              .itemdetail.layout-col
+                .label Manufacturer:
+                .data #{item.make}
+              .itemdetail.layout-col
+                .label.nobreak Part Num:
+                .data #{item.partnum}
+              .itemdetail.layout-col
+                .label Description:
+                .data #{item.description}
+            else if(item.resultType=="case")
+              .itemhead Case: #{item.id}
+              .itemdetail.layout-col
+                .label Create Date/Time:
+                .data #{dateTime}
+              .itemdetail.layout-col
+                .label Owner:
+                .data #{item.owner}
+            else
+              .itemdetail.layout-col
+                .label User:
+                .data #{item.username}

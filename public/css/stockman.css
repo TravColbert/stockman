@@ -234,3 +234,9 @@ ul {
   border-radius: 0.25em;
   font-size: 0.75em;
 }
+form#search {
+  background: #fff;
+  border-radius: 5px;
+  box-shadow: 0 3px 5px rgba(0,0,0,0.4);
+  font-size: 0.9em;
+}
