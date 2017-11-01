@@ -935,7 +935,7 @@ var appEditCase = function(req,res,next) {
   let myName = "appEditCase";
   logThis(myName + ": Editing case #:" + req.body.caseid);
   logThis(JSON.stringify(req.body));
-  if(!req.body.hasOwnProperty("caseid") || req.body.caseid===null || req.body.partid===undefined) {
+  if(!req.body.hasOwnProperty("caseid") || req.body.caseid===null || req.body.caseid===undefined) {
     logThis(myName + ": No case ID given. Punting!");
     return res.redirect('/cases/');
   }
@@ -944,7 +944,7 @@ var appEditCase = function(req,res,next) {
   });
   if(caseIndex==-1) return next(new Error("No case with id: " + req.body.caseid));
   cases.db[caseIndex].id = req.body.caseid;
-  cases.db[caseIndex].time = req.body.datetime;
+  cases.db[caseIndex].time = parseInt(req.body.datetime);
   cases.db[caseIndex].owner = req.body.owner;
   cases.writeDb();
   return res.redirect('/case/' + req.body.caseid);
