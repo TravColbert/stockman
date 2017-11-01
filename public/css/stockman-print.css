@@ -4,7 +4,7 @@ body {
 .content {
   box-shadow: none;
 }
-header, footer, #print-prompt {
+header, footer, #print-prompt, .messages {
   display: none;
   visibility: hidden;
 }
