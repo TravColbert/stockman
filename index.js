@@ -921,6 +921,35 @@ var appGetCase = function(req,res,next) {
   return next();
 }
 
+var appEditCaseVerified = function(req,res,next) {
+  let myName = "appEditCaseVerified";
+  logThis(myName + ": Request to edit case #:" + req.params.caseId);
+  let caseId = req.params.caseId;
+  let caseList = cases.find("id",caseId);
+  if(caseList.length<1) return next(new Error("Could not find case " + caseId));
+  req.appData.caseRecord = caseList[0];
+  req.appData.mode = "editcase";
+  return next();
+}
+var appEditCase = function(req,res,next) {
+  let myName = "appEditCase";
+  logThis(myName + ": Editing case #:" + req.body.caseid);
+  logThis(JSON.stringify(req.body));
+  if(!req.body.hasOwnProperty("caseid") || req.body.caseid===null || req.body.partid===undefined) {
+    logThis(myName + ": No case ID given. Punting!");
+    return res.redirect('/cases/');
+  }
+  let caseIndex = cases.db.findIndex(function(caseRecord) {
+    return caseRecord.id==req.body.caseid;
+  });
+  if(caseIndex==-1) return next(new Error("No case with id: " + req.body.caseid));
+  cases.db[caseIndex].id = req.body.caseid;
+  cases.db[caseIndex].time = req.body.datetime;
+  cases.db[caseIndex].owner = req.body.owner;
+  cases.writeDb();
+  return res.redirect('/case/' + req.body.caseid);
+}
+
 var appAckMsg = function(req,res,next) {
   let myName = 'appAckMsg';
   let msgId = req.params.msgId;
@@ -1092,6 +1121,8 @@ app.post('/part/edit',appCheckAuthentication,appEditPart);
 app.get('/part/:partId',appCheckAuthentication,appGetPart);
 
 app.get('/cases/',appGetCases);
+app.get('/case/edit/:caseId',appCheckAuthentication,appEditCaseVerified);
+app.post('/case/edit',appCheckAuthentication,appEditCase);
 app.get('/case/:caseId',appCheckAuthentication,appGetCase);
 
 app.get('/messages/ack/:msgId',appCheckAuthentication,appAckMsg);

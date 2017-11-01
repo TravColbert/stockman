@@ -1,4 +1,5 @@
 extends index.pug
+
 block content
   - let dateTime = new Date(caseRecord.time).toLocaleDateString() + " " + new Date(caseRecord.time).toLocaleTimeString();
   .section-hdg.section-hdg-1.layout-row
@@ -19,6 +20,10 @@ block content
         .itemdetail.layout-col
           .label Parts Checked-Out:
           .data #{parts.length}
+        div
+          a.btn.secondary.layout-size-x1.buttonpartedit(href="/case/edit/" + caseRecord.id)
+            i.material-icons mode_edit
+            span Edit Case
       ul.itemlist
         each part in parts
           li.layout-col
