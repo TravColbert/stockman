@@ -8,23 +8,24 @@ block content
       i.material-icons keyboard_arrow_left
       div Part Detail
     .layout-row.layout-width-1-1
-      .part-listing.layout-col.layout-width-1-1.layout-sd-width-5-8.layout-lg-width-5-8.layout-xl-width-4-8
-        //- .section-hdg.section-hdg-3 Info:
-        .partmake.itemdetail.layout-col
-            .label Manufacturer:
-            .data #{part.make}
-        .partnum.itemdetail.layout-col
-          .label.nobreak Part Num:
-          .data #{part.partnum}
-        .partdescription.itemdetail.layout-col
-          .label Description:
-          .data #{part.description}
-        div
-          a.btn.secondary.layout-size-x1.buttonpartedit(href="/part/edit/" + part.id)
-            i.material-icons mode_edit
-            span Edit Part
-        .stock-control.layout-col
-          .section-hdg.section-hdg-3 Current Stock: #{part.free} out of #{part.count}
+      .itempanel.layout-col.layout-width-1-1.layout-sd-width-5-8.layout-lg-width-5-8.layout-xl-width-4-8
+        .itembanner.layout-col
+          .itemhead Part: #{part.id}
+          .itemdetail.layout-col
+              .label Manufacturer:
+              .data #{part.make}
+          .itemdetail.layout-col
+            .label.nobreak Part Num:
+            .data #{part.partnum}
+          .itemdetail.layout-col
+            .label Description:
+            .data #{part.description}
+          div
+            a.btn.secondary.layout-size-x1.buttonpartedit(href="/part/edit/" + part.id)
+              i.material-icons mode_edit
+              span Edit Part
+        .item-listing.layout-col
+          .itemhead Current Stock: #{part.free} out of #{part.count}
           - let targetLoc = "/part/" + part.id;
           - let total = (parseFloat(part.free) + parseFloat(part.used));
           - let ratio = Math.round((parseFloat(part.used)/parseFloat(total))*100);
@@ -56,17 +57,17 @@ block content
                 a.btn.secondary.layout-row.layout-align-center(href="/case/" + c) 
                   i.material-icons assignment
                   span #{c}
-        .part-qrcode.layout-col
-          .section-hdg.section-hdg-3 QR Code:
-          .qrcode.layout-col.layout-align-center
-            #qrcode-box.layout-col(style="width:100px; height:100px;")
-            .qrcode-url.layout-col
-              - let url = appUrl + "/part/" + part.id;
-              #qrcode-url #{url}
-          .qrcode-controls.layout-col
-            a#qrcode-print.btn.secondary.layout-size-x1(href="/part/print/" + part.id)
-              i.material-icons print
-              span Print Code
+          .part-qrcode.layout-col
+            .itemhead QR Code:
+            .qrcode.layout-col.layout-align-center
+              #qrcode-box.layout-col(style="width:100px; height:100px;")
+              .qrcode-url.layout-col
+                - let url = appUrl + "/part/" + part.id;
+                #qrcode-url #{url}
+            .qrcode-controls.layout-col
+              a#qrcode-print.btn.secondary.layout-size-x1(href="/part/print/" + part.id)
+                i.material-icons print
+                span Print Code
       .description.layout-col.layout-xs-hidden.layout-sm-hidden.layout-md-hidden.layout-sd-width-3-8.layout-lg-width-3-8.layout-xl-width-4-8
         .infotext.section-hdg.section-hdg-3 Part Detail View
         .infotext These are the details for part: #{part.partnum}.

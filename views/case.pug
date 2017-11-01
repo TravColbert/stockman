@@ -7,11 +7,18 @@ block content
     i.material-icons keyboard_arrow_left
     div Case Detail
   .layout-row.layout-width-1-1
-    .itembanner.layout-col.layout-width-1-1.layout-sd-width-5-8.layout-lg-width-5-8.layout-xl-width-4-8
-      .section-hdg.section-hdg-2 Case: #{caseRecord.id}
-      .section-hdg.section-hdg-3 Date/Time: #{dateTime}
-      .section-hdg.section-hdg-3 Owner: #{caseRecord.owner}
-      .section-hdg.section-hdg-3 Parts Checked-Out: #{parts.length}
+    .itempanel.layout-col.layout-width-1-1.layout-sd-width-5-8.layout-lg-width-5-8.layout-xl-width-4-8
+      .itembanner.layout-col
+        .itemhead Case: #{caseRecord.id}
+        .itemdetail.layout-col
+          .label Date/Time:
+          .data #{dateTime}
+        .itemdetail.layout-col
+          .label Owner:
+          .data #{caseRecord.owner}
+        .itemdetail.layout-col
+          .label Parts Checked-Out:
+          .data #{parts.length}
       ul.itemlist
         each part in parts
           li.layout-col
@@ -56,5 +63,5 @@ block content
       .infotext If there are units that have already been checked out, two more buttons will appear:
       .infotext
         ol
-          li One button that allows you to check-in an item
-          li And another button that let's you jump to the case into which this part was checked out. You can click on this button to move to another case where this same part has been checked-out.
+          li One button that allows you to check-in an item. This is the primary-colored button.
+          li And another button that let's you jump to the case into which this part was checked out. This is the secondary-colored button. You can click on this button to move to another case where this same part has been checked-out.

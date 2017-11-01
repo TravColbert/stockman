@@ -13,7 +13,8 @@ a {
 }
 .btn {
 /*   border: 1px solid #ddd; */
-  border-radius: 3px;
+  border-radius: 5px;
+  border: 2px solid #e0e0e0;
   padding: 0.5em;
   min-width: fit-content;
   font-weight: bold;
@@ -43,7 +44,7 @@ a {
   background: #4577D4; 
 }
 .secondary {
-  background: #94B0DA;
+  background: #9CBFFF;
 }
 .success {
   background: #2D83D7;
@@ -52,7 +53,7 @@ a {
   background: #F55D3E ;
 }
 .warning {
-  background: #FFCC25;
+  background: #FFB20B;
 }
 .info {
   color: #333;
@@ -102,7 +103,7 @@ ul {
   color: #777;
 }
 .itemlist > li, .part-listing, .user-listing, .item-listing, #login-form {
-  border-radius: 3px;
+  border-radius: 5px;
   padding: 0.5em;
   /* box-shadow: 0px 1px 2px rgba(0,0,0,0.2); */
   margin-bottom: 0.4em;
@@ -122,6 +123,14 @@ ul {
   font-size: 1.3em;
   /* border-bottom: 1px solid silver; */
   margin-bottom: 0.5em;
+}
+.itembanner {
+  background-color: #dbdbdb;
+  padding: 0.5em;
+  border-top-left-radius: 5px;
+  border-top-right-radius: 5px;
+  color: #333;
+  border-bottom: 3px solid #FFD477;
 }
 .itemdetail {
   align-items: baseline;
@@ -214,13 +223,13 @@ ul {
   margin: 0 0.3em;
 }
 .usegraph {
-  background-color: #FFE17D;
+  background-color: #FFD477;
   height: 1em;
   border-radius: 0.25em;
 }
 .usedgraph {
   color: #fff;
-  background-color: #FFC300;
+  background-color: #FFB20B;
   height: 100%;
   border-radius: 0.25em;
   font-size: 0.75em;
