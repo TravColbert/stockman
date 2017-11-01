@@ -11,6 +11,10 @@ block content
             label.label(for="partnum") Part Number: 
             .data
               input#partnum(type="text" name="partnum" placeholder="part number" value=part.partnum required)
+          .partaltnum.itemdetail.layout-col
+            label.label(for="partaltnum") Alternate Part Number: 
+            .data
+              input#partaltnum(type="text" name="partaltnum" placeholder="alternate part number" value=part.partaltnum required)
           .partdescription.itemdetail.layout-col
             label.label(for="description") Description: 
             .data
@@ -34,10 +38,30 @@ block content
         .infotext Modify the details for the part that you would like to add.
         .infotext.section-hdg.section-hdg-3 Manufacturer
         .infotext Enter the manufacturer's name here. This should be the manufacturer for wich the part should be used.
+        .infotext.example.layout-col 
+          .infotext.heading Examples:
+          .infotext Acer
+          .infotext Lenovo
+          .infotext HP
+        .infotext.important This is a required field.
         .infotext.section-hdg.section-hdg-3 Part Number
         .infotext Enter the ID, serial-number or part-number here.
+        .infotext.example.layout-col 
+          .infotext.heading Examples:
+          .infotext 6M.G55N7.001
+        .infotext As noted above - try to match the 'case' and layout that the manufacturer uses. Use the punctuation, dashes, spaces, etc that your manufacturer's software would recognize.
+        .infotext.important This is a required field.
+        .infotext.section-hdg.section-hdg-3 Alternate Part Number
+        .infotext Some parts have an alternate, completely-compatible part available for repaired units. The manufacturer may send the alternate part when the primary part number has been requested. Enter the alternate ID, serial-number or part-number here.
         .infotext.section-hdg.section-hdg-3 Description
         .infotext Enter a helpful description here.
+        .infotext SUGGESTION: if you have more data that you would like to use (for search or identification) you might try using dashes or some othe delimiter to separate 'fields' within this Description field.
+        .infotext.example.layout-col 
+          .infotext.heading Examples:
+          .infotext R11 - C738T - LCD LED touch panel w/ bezel 11.6
+        .infotext Notice (above) that the 'model name', 'model number', and text description of this part is included in one field by delimiting them with a dash(-).
+        .infotext Decide on a standard and try to stick with it.
+        .infotext.important This is a required field.
         .infotext.section-hdg.section-hdg-3 Stock Level
         .infotext Enter the desired total amount of parts that should be in stock.
 

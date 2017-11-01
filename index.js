@@ -160,10 +160,17 @@ let parts = {
     let methodName = "search";
     console.log(methodName + ": Searching for: " + searchString);
     field = field || null;
-    let targetString;
+    let targetString = '';
     let results = this.db.filter(function(itemRecord) {
       if(field===null) {
-        targetString = itemRecord.partnum.toLowerCase() + " " + itemRecord.description.toLowerCase() + " " + itemRecord.make.toLowerCase();
+        if(itemRecord.partnum)
+          targetString += itemRecord.partnum.toLowerCase() + " ";
+        if(itemRecord.partaltnum)
+          targetString += itemRecord.partaltnum.toLowerCase() + " ";
+        if(itemRecord.description)
+          targetString += itemRecord.description.toLowerCase() + " ";
+        if(itemRecord.make)
+          targetString += itemRecord.make.toLowerCase();
       }
       return targetString.includes(searchString);
     });
@@ -720,42 +727,12 @@ var appGetPart = function(req,res,next) {
 //   return res.json(objParts);
 // }
 
-var appFormSearchPart = function(req,res,next) {
-  let myName = "appFormSearchPart";
-  logThis(myName);
-  responseString +=`
-  <form action="/search" method="post">
-  <div id="prompt">Search Parts</div>
-  <div><input type="text" name="description" id="description" placeholder="Description" /></div>
-  <div><input type="text" name="partnum" id="partnum" placeholder="Manufacturer Part Number" /></div>
-  <div><input type="text" name="make" id="make" placeholder="Manufacturer" /></div>
-  <div><input type="text" name="count" id="count" placeholder="Current Count" /></div>
-  <input type="submit" id="submit" value="Create Part" />
-  </form>`;
-  return next();
-}
-
 // var appGetAddPartUi = function(req,res,next) {
 //   let myName = "appGetAddPartUi";
 //   logThis(myName);
 //   responseString += "<a href='/parts/add'>Add Part</a>";
 //   return next();
 // }
-
-var appFormCreatePart = function(req,res,next) {
-  let myName = "appFormCreateUser";
-  logThis(myName + ": Building create part form");
-  responseString +=`
-<form action="/part" method="post">
-<div id="prompt">Add New Part</div>
-<div><input type="text" name="description" id="description" placeholder="Description" /></div>
-<div><input type="text" name="partnum" id="partnum" placeholder="Manufacturer Part Number" /></div>
-<div><input type="text" name="make" id="make" placeholder="Manufacturer" /></div>
-<div><input type="text" name="count" id="count" placeholder="Current Count" /></div>
-<input type="submit" id="submit" value="Create Part" />
-</form>`;
-  return next();
-}
 
 // var appCreatePart = function(req,res,next) {
 //   let myName = "appCreatePart";
@@ -780,7 +757,7 @@ var appAddPartVerified = function(req,res,next) {
     console.log(myName + ": " + partRecord.partnum + " : " + req.body.partnum);
     return partRecord.partnum==req.body.partnum;
   });
-  console.log(myName + ": " + duplicatePartNumber);
+  logThis(myName + ": " + duplicatePartNumber);
   if(duplicatePartNumber>-1) {
     req.session.messages.push(makeMessage({type:"err",text:"Can't add part with duplicate manufacturer's number"}));
     // return next(new Error("Attempting to add part with duplicate manufacturer's number"));
@@ -788,6 +765,7 @@ var appAddPartVerified = function(req,res,next) {
   }
   let partId = parts.add({
     partnum:req.body.partnum,
+    partaltnum:req.body.partaltnum,
     description:req.body.description,
     make:req.body.make,
     count:req.body.count
@@ -891,6 +869,7 @@ var appEditPart = function(req,res,next) {
   });
   if(partIndex==-1) return next(new Error("No part with id: " + req.body.partid));
   parts.db[partIndex].partnum = req.body.partnum;
+  parts.db[partIndex].partaltnum = req.body.partaltnum;
   parts.db[partIndex].description = req.body.description;
   parts.db[partIndex].make = req.body.make;
   parts.db[partIndex].count = req.body.count;

@@ -14,6 +14,10 @@ block content
             label.label(for="partnum") Part Num: 
             .data
               input(id="partnum" type="text" name="partnum" placeholder="part number" required)
+          .partaltnum.itemdetail.layout-col
+            label.label(for="partaltnum") Alternate Part Num: 
+            .data
+              input(id="partaltnum" type="text" name="partaltnum" placeholder="alternate part number")
           .partdescription.itemdetail.layout-col
             label.label(for="description") Description: 
             .data
@@ -47,6 +51,8 @@ block content
           .infotext 6M.G55N7.001
         .infotext As noted above - try to match the 'case' and layout that the manufacturer uses. Use the punctuation, dashes, spaces, etc that your manufacturer's software would recognize.
         .infotext.important This is a required field.
+        .infotext.section-hdg.section-hdg-3 Alternate Part Number
+        .infotext Some parts have an alternate, completely-compatible part available for repaired units. The manufacturer may send the alternate part when the primary part number has been requested. Enter the alternate ID, serial-number or part-number here.
         .infotext.section-hdg.section-hdg-3 Description
         .infotext Enter a helpful description here.
         .infotext SUGGESTION: if you have more data that you would like to use (for search or identification) you might try using dashes or some othe delimiter to separate 'fields' within this Description field.

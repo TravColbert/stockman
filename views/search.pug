@@ -29,6 +29,11 @@ block content
               .itemdetail.layout-col
                 .label.nobreak Part Num:
                 .data #{item.partnum}
+              - let partaltnum = item.partaltnum || null
+              if partaltnum
+                .itemdetail.layout-col
+                  .label.nobreak Alternate Part Num:
+                  .data #{partaltnum}
               .itemdetail.layout-col
                 .label Description:
                 .data #{item.description}
