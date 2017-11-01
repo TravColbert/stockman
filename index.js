@@ -854,7 +854,7 @@ var appCheckoutPart = function(req,res,next) {
   let partCheckoutSuccess = parts.checkout(req.body.partid,req.body.caseid);
   let caseCreationSuccess = cases.write({
     id:req.body.caseid,
-    owner:req.user,
+    owner:req.user.username,
     time:Date.now()
   });
   if(!partCheckoutSuccess || !caseCreationSuccess) {
