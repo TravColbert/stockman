@@ -69,7 +69,8 @@ let cases = {
   search:function(searchString,field) {
     field = field || null;
     let results = this.db.filter(function(itemRecord) {
-      return itemRecord.owner.toLowerCase().includes(searchString);
+      let targetString = itemRecord.id.toLowerCase() + " " + itemRecord.owner.toLowerCase();
+      return targetString.includes(searchString);
     });
     return results;
   },
