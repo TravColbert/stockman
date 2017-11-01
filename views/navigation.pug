@@ -1,15 +1,18 @@
 header.layout-row.layout-width-1-1
-  nav#topmenu.nav.layout-xs-col.layout-width-1-1.layout-sm-justify-end(role=navigation)
+  nav#topmenu.nav.layout-xs-col.layout-width-1-1.layout-sm-justify-end.layout-align-center.layout-xs-align-stretch(role=navigation)
     #menu-title.layout-row.layout-justify-between
       div#app-title
         a(href="/")= title
       label#menu-hamburger.layout-justify-end(for="show-menu") &#9776;
     input#show-menu(type="checkbox" role="button")
-    form#search(action="/search" method="get").layout-row
-      input#q(type="text" name="q")
-      input.btn.btnsearch(type="submit" id="submit" value="s")
-    ul.layout-xs-hidden.layout-xs-col.layout-row.layout-sm-size-x2.layout-size-x1.layout-justify-around
+    ul.layout-xs-hidden.layout-xs-col.layout-row.layout-sm-size-x2.layout-size-x1.layout-justify-around.layout-align-center
       - let m = menu;
+      li.layout-row.layout-size-x3.layout-justify-center
+        form#search(action="/search" method="get").layout-row
+          input#q(type="text" name="q")
+          //- input.btn.btn-search(type="submit" id="submit" value="s")
+          a(href="#" onclick="document.getElementById('search').submit()")
+            i.material-icons search
       each item in m
         - var link = item.link;
         - var text = item.text;

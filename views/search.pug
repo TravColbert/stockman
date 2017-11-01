@@ -6,16 +6,20 @@ block content
   .layout-row.layout-width-1-1  
     ul.itemlist.layout-col.layout-width-1-1.layout-sd-width-5-8.layout-lg-width-5-8.layout-xl-width-4-8
       each item in search
-        if(item.resultType=="part")
-          - let icon = "devices"
-        else if(item.resultType=="case")
-          - let icon = "assignment"
-        else
-          - let icon = "face"
-        - let targetLoc = "/" + item.resultType + "/" + item.id
+        - let icon
+        case item.resultType
+          when "part"
+            - icon = "devices";
+          when "case"
+            - icon = "content_paste";
+          when "user"
+            - icon = "face";
+          default
+            - icon = "assignment"
+        - let targetLoc = "/" + item.resultType + "/" + item.id;
         li.searchitem.layout-row(onclick="goTo('" + targetLoc + "')")
           .itemsidebar.layout-col.layout-width-1-8.layout-align-center
-            i.material-icons.item-icon devices
+            i.material-icons.item-icon #{icon}
           .itemcontent.layout-col.layout-width-7-8
             if(item.resultType=="part")
               .itemhead Part: #{item.id}
@@ -31,6 +35,7 @@ block content
             else if(item.resultType=="case")
               .itemhead Case: #{item.id}
               .itemdetail.layout-col
+                - let dateTime = new Date(item.time).toLocaleDateString() + " " + new Date(item.time).toLocaleTimeString();
                 .label Create Date/Time:
                 .data #{dateTime}
               .itemdetail.layout-col

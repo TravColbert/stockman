@@ -45,10 +45,10 @@ app.use(passport.session());
  */
 let menu = [
   {link:"/parts",text:"Parts",icon:"devices"},
-  {link:"/cases",text:"Cases",icon:"assignment"},
+  {link:"/cases",text:"Cases",icon:"content_paste"},
   /*{link:"/update",text:"Update Database",icon:"update",secured:true},*/
   {link:"/users",text:"Users",icon:"people_outline",secured:true},
-  {link:"/about",text:"About",icon:"info_outline"},
+  /*{link:"/about",text:"About",icon:"info_outline"},*/
   {link:"/login",text:"Log In",icon:"verified_user",secured:false},
   {link:"/logout",text:"Log Out",icon:"highlight_off",secured:true},
 ];
@@ -69,7 +69,7 @@ let cases = {
   search:function(searchString,field) {
     field = field || null;
     let results = this.db.filter(function(itemRecord) {
-      return itemRecord.owner.includes(searchString);
+      return itemRecord.owner.toLowerCase().includes(searchString);
     });
     return results;
   },
@@ -162,7 +162,7 @@ let parts = {
     let targetString;
     let results = this.db.filter(function(itemRecord) {
       if(field===null) {
-        targetString = itemRecord.partnum + " " + itemRecord.description + " " + itemRecord.make;
+        targetString = itemRecord.partnum.toLowerCase() + " " + itemRecord.description.toLowerCase() + " " + itemRecord.make.toLowerCase();
       }
       return targetString.includes(searchString);
     });
@@ -385,7 +385,7 @@ let users = {
   search:function(searchString,field) {
     field = field || "username";
     let results = this.db.filter(function(itemRecord) {
-      return itemRecord[field].includes(searchString);
+      return itemRecord[field].toLowerCase().includes(searchString);
     });
     return results;
   },
@@ -982,7 +982,8 @@ let appSetHome = function(req,res,next) {
 var appSearch = function(req,res,next) {
   if(!req.query.q) return next();
   req.appData.search = [];
-  let results = parts.search(req.query.q);
+  let searchString = req.query.q.toLowerCase();
+  let results = parts.search(searchString);
   console.log(JSON.stringify(results));
   if(results.length>0) {
     results.forEach(function(v,i,a) {
@@ -991,7 +992,7 @@ var appSearch = function(req,res,next) {
       req.appData.search.push(v);
     });  
   }
-  results = cases.search(req.query.q);
+  results = cases.search(searchString);
   console.log(JSON.stringify(results));
   if(results.length>0) {
     results.forEach(function(v,i,a) {
@@ -1000,7 +1001,7 @@ var appSearch = function(req,res,next) {
       req.appData.search.push(v);    
     });  
   }
-  results = users.search(req.query.q);
+  results = users.search(searchString);
   console.log(JSON.stringify(results));
   if(results.length>0) {
     results.forEach(function(v,i,a) {
