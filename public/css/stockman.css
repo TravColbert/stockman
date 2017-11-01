@@ -117,6 +117,28 @@ ul {
   background-color: #f0f0f0;
   overflow: hidden;
 }
+.infotext.example {
+  font-family: 'Cutive Mono', monospace;
+  border-radius: 2px;
+  border: 1px solid silver;
+  padding: 0;
+  margin: 0.5em;
+}
+.infotext.important {
+  color: #F7A072;
+  font-weight: bold;
+}
+.infotext.heading {
+  border-bottom: 1px solid silver;
+  font-weight: bold;
+  background: #ddd;
+}
+.infotext.section-hdg {
+  margin-top: 1em;
+}
+.infotext.section-hdg:first-child {
+  margin-top: 0;
+}
 .item {
   border-bottom: 1px dashed #ccc;
 }
