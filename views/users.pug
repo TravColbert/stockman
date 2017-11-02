@@ -11,6 +11,11 @@ block content
             .itemdetail.layout-col
               .label User:
               .data #{item.username}
+            - let email = item.email || null
+            if email
+              .itemdetail.layout-col
+                .label Email:
+                .data #{item.email}
       .adduser.layout-row.layout-justify-between
         a.btn.normal(href="/users/add")
           i.material-icons add_circle_outline

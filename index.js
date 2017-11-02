@@ -386,6 +386,7 @@ let users = {
     hashPw({
       id:getNextIndex(this),
       username:userObj.username,
+      email:userObj.email,
       password:userObj.password
     },this);
     return true;
@@ -516,18 +517,27 @@ var appMessages = function(req,res,next) {
   return next();
 }
 
+var isAuthenticated = function(req) {
+  if(!req.session.cookie) return false;
+  if(!req.user) return false;
+  if(!req.user.username) return false;
+  if(users.find("username",req.user.username).length<1) return false;
+  return true;
+}
+
 var appCheckAuthentication = function(req,res,next) {
   let myName = "appCheckAuthentication";
   logThis(myName + ": Starting authentication check...");
-  if(req.session.cookie) {
-    logThis(myName + ": Current session data: " + JSON.stringify(req.session));
-  }
-  if(!req.user) {
-    logThis(myName + ": Could not find user for session");
-    logThis(myName + ": session is NOT authenticated");
-    logThis(myName + ": header status: " + (res.headersSent));
-    return res.redirect('/login');
-  }
+  if(!isAuthenticated(req)) return res.redirect('/login');
+  // if(req.session.cookie) {
+  //   logThis(myName + ": Current session data: " + JSON.stringify(req.session));
+  // }
+  // if(!req.user) {
+  //   logThis(myName + ": Could not find user for session");
+  //   logThis(myName + ": session is NOT authenticated");
+  //   logThis(myName + ": header status: " + (res.headersSent));
+  //   return res.redirect('/login');
+  // }
   logThis(myName + ": Found session for: " + JSON.stringify(req.user.username));
   logThis(myName + ": session is authenticated");
   return next();
@@ -629,7 +639,11 @@ var appGetUsers = function(req,res,next) {
   req.appData.mode = "users";
   users.db.forEach(function(user,i,a) {
     logThis(myName + ": " + user.id + " " + user.username);
-    req.appData.users.push({id:user.id,username:user.username});
+    req.appData.users.push({
+      id:user.id,
+      username:user.username,
+      email:user.email
+    });
   });
   return next();
 }
@@ -646,9 +660,11 @@ var appGetUser = function(req,res,next) {
       req.session.messages.push(makeMessage({type:"warn",text:"No user found with ID:" + userId}));
     } else {
       req.session.messages.push(makeMessage({type:"succ",text:"Found user ID:" + userId + " " + JSON.stringify(user)}));
-      // delete user.password;
-      req.appData.user = {id:user.id,username:user.username};
-      // delete req.appData.user.password;
+      req.appData.user = {
+        id:user.id,
+        username:user.username,
+        email:user.email
+      };
     }
   });
   return next();
@@ -666,6 +682,34 @@ var appCreateUser = function(req,res,next) {
   logThis(myName + ": Request to create user: " + JSON.stringify(req.body));
   users.add(req.body);
   return res.redirect('/users');
+}
+
+var appEditUserVerified = function(req,res,next) {
+  let myName = "appEditUserVerified";
+  logThis(myName + ": Request to edit user #:" + req.params.userId);
+  let userId = req.params.userId;
+  let userList = users.find("id",userId);
+  if(userList.length<1) return next(new Error("Could not find user " + userId));
+  req.appData.user = userList[0];
+  req.appData.mode = "edituser";
+  return next();
+}
+
+var appEditUser = function(req,res,next) {
+  let myName = "appEditUser";
+  logThis(myName + ": Editing user #:" + req.body.userid);
+  logThis(JSON.stringify(req.body));
+  if(!req.body.hasOwnProperty("userid") || req.body.userid===null || req.body.userid===undefined) {
+    logThis(myName + ": No user ID given. Punting!");
+    return res.redirect('/users/');
+  }
+  let userIndex = users.db.findIndex(function(userRecord) {
+    return userRecord.id==req.body.userid;
+  });
+  if(userIndex==-1) return next(new Error("No user with id: " + req.body.userid));
+  users.db[userIndex].email = req.body.email;
+  users.writeDb();
+  return res.redirect('/user/' + req.body.userid);
 }
 
 var appGetParts = function(req,res,next) {
@@ -973,13 +1017,15 @@ var appGetDashboard = function(req,res,next) {
     return (parts.findByCase(caseRecord.id).length>0);
   });
 
-  let yourCases = cases.find("owner",req.user);
-  if(yourCases.length>0) {
-    req.appData.yourCases = yourCases.filter(function(caseRecord) {
-      return (parts.findByCase(caseRecord.id).length>0);
-    });
+  if(isAuthenticated(req)) {
+    logThis(myName + ": Finding cases owned by: " + req.user.username);
+    let yourCases = cases.find("owner",req.user.username);
+    if(yourCases.length>0) {
+      req.appData.yourCases = yourCases.filter(function(caseRecord) {
+        return (parts.findByCase(caseRecord.id).length>0);
+      });
+    }
   }
-
   return next();
 }
 
@@ -1106,7 +1152,9 @@ app.get('/secure/',appTest(3,false));
 app.get('/users/add',appCheckAuthentication,appAddUser);
 app.get('/users/',appCheckAuthentication,appGetUsers);
 app.post('/user/',appCheckAuthentication,appCreateUser);
+app.post('/user/edit',appCheckAuthentication,appEditUser);
 app.get('/user/:userId',appCheckAuthentication,appGetUser);
+app.get('/user/edit/:userId',appCheckAuthentication,appEditUserVerified);
 
 app.get('/parts/add',appCheckAuthentication,appAddPart);
 app.get('/parts/',appGetParts);

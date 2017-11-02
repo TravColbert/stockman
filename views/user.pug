@@ -12,9 +12,19 @@ block content
         .itemdetail.layout-col
           .label Username:
           .data #{user.username}
+        - let email = user.email || null
+        if email
+          .itemdetail.layout-col
+            .label Email:
+            .data #{user.email}
         .itemdetail.layout-col
           .label System User Num:
           .data #{user.id}
+        div
+          a.btn.secondary.layout-size-x1.buttonpartedit(href="/user/edit/" + user.id)
+            i.material-icons mode_edit
+            span Edit User
+
     .description.layout-col.layout-xs-hidden.layout-sm-hidden.layout-md-hidden.layout-sd-width-3-8.layout-lg-width-3-8.layout-xl-width-4-8
       .infotext.section-hdg.section-hdg-3 User View
       .infotext Not much here right now.
