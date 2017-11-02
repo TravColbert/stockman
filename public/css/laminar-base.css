@@ -1016,7 +1016,7 @@ img.border-circle {
     font-size: 0.5em;
   }
 }
-@media only screen and (min-width: 768px) and (max-width: 959px) {
+@media only screen and (min-width: 768px) and (max-width: 900px) {
   .layout-md-col {
     flex-direction: column;
   }
@@ -1293,7 +1293,7 @@ img.border-circle {
     font-size: 0.5em;
   }
 }
-@media only screen and (min-width: 960px) and (max-width: 1023px) {
+@media only screen and (min-width: 901px) and (max-width: 1023px) {
   body {
     font-size: 1.1em;
   }
