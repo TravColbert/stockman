@@ -1016,11 +1016,10 @@ var appGetDashboard = function(req,res,next) {
   });
   // Get the top X
   let limit = (oldestCases.length>5) ? 5 : oldestCases.length;
-  let topXOldestCases = oldestCases.slice(0,limit);
-  req.appData.oldestCases = topXOldestCases.filter(function(caseRecord) {
+  oldestCases = oldestCases.filter(function(caseRecord) {
     return (parts.findByCase(caseRecord.id).length>0);
   });
-
+  req.appData.oldestCases = oldestCases.slice(0,limit);
   if(isAuthenticated(req)) {
     logThis(myName + ": Finding cases owned by: " + req.user.username);
     let yourCases = cases.find("owner",req.user.username);
