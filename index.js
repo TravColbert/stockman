@@ -1014,7 +1014,9 @@ var appGetDashboard = function(req,res,next) {
     if(a.time>b.time) return 1;
     return 0;
   });
-  req.appData.oldestCases = oldestCases.filter(function(caseRecord) {
+  // Get the top X
+  let topXOldestCases = oldestCases.slice(0,5);
+  req.appData.oldestCases = topXOldestCases.filter(function(caseRecord) {
     return (parts.findByCase(caseRecord.id).length>0);
   });
 
