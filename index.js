@@ -157,23 +157,25 @@ let parts = {
     return x;
   },
   search:function(searchString,field) {
-    let methodName = "search";
+    let methodName = "partsearch";
     console.log(methodName + ": Searching for: " + searchString);
     field = field || null;
-    let targetString = '';
+    let targetString;
     let results = this.db.filter(function(itemRecord) {
-      if(field===null) {
-        if(itemRecord.partnum)
-          targetString += itemRecord.partnum.toLowerCase() + " ";
-        if(itemRecord.partaltnum)
-          targetString += itemRecord.partaltnum.toLowerCase() + " ";
-        if(itemRecord.description)
-          targetString += itemRecord.description.toLowerCase() + " ";
-        if(itemRecord.make)
-          targetString += itemRecord.make.toLowerCase();
-      }
+      targetString = '';
+      if(itemRecord.partnum)
+        targetString += itemRecord.partnum.toLowerCase() + " ";
+      if(itemRecord.partaltnum)
+        targetString += itemRecord.partaltnum.toLowerCase() + " ";
+      if(itemRecord.description)
+        targetString += itemRecord.description.toLowerCase() + " ";
+      if(itemRecord.make)
+        targetString += itemRecord.make.toLowerCase();
+      // console.log(targetString);
+      // console.log(targetString.indexOf(searchString));
       return targetString.includes(searchString);
     });
+    console.log(methodName + ": Found " + results.length + " records");
     return results;
   },
   find:function(field,val) {
@@ -1038,11 +1040,13 @@ let appSetHome = function(req,res,next) {
 }
 
 var appSearch = function(req,res,next) {
+  let myName = "appSearch";
   if(!req.query.q) return next();
+  logThis(myName + ": Searching for " + req.query.q);
   req.appData.search = [];
   let searchString = req.query.q.toLowerCase();
   let results = parts.search(searchString);
-  console.log(JSON.stringify(results));
+  // console.log(JSON.stringify(results));
   if(results.length>0) {
     results.forEach(function(v,i,a) {
       v.resultType = "part";
@@ -1051,7 +1055,7 @@ var appSearch = function(req,res,next) {
     });  
   }
   results = cases.search(searchString);
-  console.log(JSON.stringify(results));
+  // console.log(JSON.stringify(results));
   if(results.length>0) {
     results.forEach(function(v,i,a) {
       v.resultType = "case";
@@ -1060,7 +1064,7 @@ var appSearch = function(req,res,next) {
     });  
   }
   results = users.search(searchString);
-  console.log(JSON.stringify(results));
+  // console.log(JSON.stringify(results));
   if(results.length>0) {
     results.forEach(function(v,i,a) {
       v.resultType = "user";
@@ -1068,7 +1072,7 @@ var appSearch = function(req,res,next) {
       req.appData.search.push(v);    
     });
   }
-  console.log(JSON.stringify(req.appData.search));
+  // console.log(JSON.stringify(req.appData.search));
   req.appData.mode = "search";
   return next();
 }
