@@ -1015,7 +1015,8 @@ var appGetDashboard = function(req,res,next) {
     return 0;
   });
   // Get the top X
-  let topXOldestCases = oldestCases.slice(0,5);
+  let limit = (oldestCases.length>5) ? 5 : oldestCases.length;
+  let topXOldestCases = oldestCases.slice(0,limit);
   req.appData.oldestCases = topXOldestCases.filter(function(caseRecord) {
     return (parts.findByCase(caseRecord.id).length>0);
   });
