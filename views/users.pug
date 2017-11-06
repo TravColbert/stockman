@@ -7,7 +7,7 @@ block content
       ul.itemlist
         each item in users
           - let targetLoc = "/user/" + item.id;
-          li.layout-col(onclick="goTo('" + targetLoc + "')")
+          li.layout-col.clickable(onclick="goTo('" + targetLoc + "')")
             .itemdetail.layout-col
               .label User:
               .data #{item.username}

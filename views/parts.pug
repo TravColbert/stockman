@@ -9,7 +9,7 @@ block content
           - let targetLoc = "/part/" + part.id;
           - let total = (parseFloat(part.free) + parseFloat(part.used));
           - let ratio = Math.round((parseFloat(part.used)/parseFloat(total))*100);
-          li.layout-col(onclick="goTo('" + targetLoc + "')")
+          li.layout-col.clickable(onclick="goTo('" + targetLoc + "')")
             .itemhead #{part.make} #{part.description}
             .itemdetail.layout-col
               .label.nobreak Part Availability:

@@ -7,7 +7,7 @@ block content
       each item in cases
         - let targetLoc = "/case/" + item.id;
         - let dateTime = new Date(item.time).toLocaleDateString() + " " + new Date(item.time).toLocaleTimeString();
-        li.layout-col(onclick="goTo('" + targetLoc + "')")
+        li.layout-col.clickable(onclick="goTo('" + targetLoc + "')")
           .itemhead Case: #{item.id}
           .itemdetail.layout-col
             .label Create Date/Time:

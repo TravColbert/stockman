@@ -7,23 +7,43 @@ block content
     i.material-icons keyboard_arrow_left
     div User Detail
   .layout-row.layout-width-1-1
-    .user-listing.layout-col.layout-width-1-1.layout-sd-width-5-8.layout-lg-width-5-8.layout-xl-width-4-8
-      if user
-        .itemdetail.layout-col
-          .label Username:
-          .data #{user.username}
-        - let email = user.email || null
-        if email
+    .layout-col.layout-width-1-1.layout-sd-width-5-8.layout-lg-width-5-8.layout-xl-width-4-8
+      //- .user-listing.layout-col
+      .itembanner.layout-col        
+        if user
+          .itemhead User: #{user.id}
           .itemdetail.layout-col
-            .label Email:
-            .data #{user.email}
-        .itemdetail.layout-col
-          .label System User Num:
-          .data #{user.id}
-        div
-          a.btn.secondary.layout-size-x1.buttonpartedit(href="/user/edit/" + user.id)
-            i.material-icons mode_edit
-            span Edit User
+            .label Username:
+            .data #{user.username}
+          - let email = user.email || null
+          if email
+            .itemdetail.layout-col
+              .label Email:
+              .data #{user.email}
+          .itemdetail.layout-col
+            .label System User Num:
+            .data #{user.id}
+          div
+            a.btn.secondary.layout-size-x1.buttonpartedit(href="/user/edit/" + user.id)
+              i.material-icons mode_edit
+              span Edit User
+      - let casesExist = !!(cases.length>0)
+      if casesExist
+        ul.itemlist.layout-col
+          each item in cases
+            - let targetLoc = "/case/" + item.id;
+            - let dateTime = new Date(item.time).toLocaleDateString() + " " + new Date(item.time).toLocaleTimeString();
+            - let ageMs = Date.now()-parseInt(item.time);
+            - let ageDays = Math.round((ageMs/(1000*60*60*24)));
+            li.layout-col.clickable(onclick="goTo('" + targetLoc + "')")
+              .itemhead Case: #{item.id}
+              .layout-row
+                .itemdetail.layout-width-3-8.layout-col
+                  .label Days Old:
+                  .data #{ageDays}
+                .itemdetail.layout-width-5-8.layout-col
+                  .label Create Date/Time:
+                  .data #{dateTime}
 
     .description.layout-col.layout-xs-hidden.layout-sm-hidden.layout-md-hidden.layout-sd-width-3-8.layout-lg-width-3-8.layout-xl-width-4-8
       .infotext.section-hdg.section-hdg-3 User View

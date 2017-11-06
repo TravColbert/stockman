@@ -665,6 +665,7 @@ var appGetUser = function(req,res,next) {
         username:user.username,
         email:user.email
       };
+      req.appData.cases = cases.find("owner",user.username);
     }
   });
   return next();
