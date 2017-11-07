@@ -855,6 +855,7 @@ var appCheckinPart = function(req,res,next) {
   if(parts.checkin(req.body.partid,req.body.caseid)) {
     parts.writeDb();
     logThis(myName + ": Redirecting to: /part/" + req.body.partid);
+    req.session.messages.push(makeMessage({type:"info",text:"Thanks! Part has been checked in."}));
     return res.redirect('/part/' + req.body.partid);
   }
   return next(new Error('Something went wrong :-('));
@@ -889,6 +890,7 @@ var appCheckoutPart = function(req,res,next) {
   }
   cases.writeDb();
   parts.writeDb();
+  req.session.messages.push(makeMessage({type:"info",text:"Thanks! Part has been checked out."}));
   return res.redirect('/part/' + req.body.partid);
 }
 
