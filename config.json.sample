@@ -1,0 +1,18 @@
+{
+  "appName":"stockr",
+  "usersDbFile":"db/users.db",
+  "partsDbFile":"db/parts.db",
+  "casesDbFile":"db/cases.db",
+  "sessionSecret":"yoyo!",
+  "viewsDir":"./views",
+  "staticDir":"public",
+  "addr":"https://10.175.9.145",
+  "port":3000,
+  "keyFile":"tls/stockr-key.pem",
+  "certFile":"tls/stockr.crt",
+  "smtpServer":"mail.epnetworking.com",
+  "smtpPort":"366",
+  "smtpSecurity":false,
+  "smtpFromName":"stockr",
+  "smtpFromAddr":"stockr@dataimpressions.com"
+}
