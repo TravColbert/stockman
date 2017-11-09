@@ -5,7 +5,8 @@ const session = require('express-session');
 const bodyParser = require('body-parser');
 const app = express();
 app.locals = JSON.parse(fs.readFileSync('config.json'));
-app.locals.url = app.locals.addr + ":" + app.locals.port;
+app.locals.url = "https://" + app.locals.addr;
+if(app.locals.port!="443") app.locals.url += ":" + app.locals.port;
 const options = {
   key: fs.readFileSync(app.locals.keyFile),
   cert: fs.readFileSync(app.locals.certFile)
@@ -438,8 +439,6 @@ passport.use(new LocalStrategy(
         console.log("No user");
         return done(null,false,{message:"Invalid account"});
       }
-      console.log(JSON.stringify(user));
-      console.log(password,user.password);
       if(!bcrypt.compareSync(password,user.password)) {
         console.log("Wrong password");
         return done(null,false,{message:"Invalid password"});
@@ -607,15 +606,31 @@ var appRender = function(req,res) {
     if(req.session.messages.length>0) req.appData.messages = req.session.messages;
   }
   logThis(myName + ": Sending off to template: " + templateFile + " (" + req.appData.mode + ")");
-  logThis(myName + ": " + JSON.stringify(req.appData));
+  // logThis(myName + ": " + JSON.stringify(req.appData));
   res.render(templateFile,req.appData);
 }
 
+var generateString = function(length) {
+  let myName = "generateString";
+  length = parseInt(length);
+  let sauce = '';
+  while(sauce.length<length) {
+    sauce += (Math.random()+1).toString(36).substring(2);
+    logThis(myName + ": More sauce: " + sauce);
+  }
+  logThis(myName + ": Final sauce (length " + length + "): " + sauce);
+  return sauce.substring(null,length);
+}
+
 var appLoginPage = function(req,res,next) {
+  let myName = "appLoginPage";
   logThis("...(sending login page)...");
   // let salt = bcrypt.genSaltSync(10);
   req.appData.mode = "login";
-  req.appData.secretSauce = "blahblahblah";
+  let secretSauce = generateString(12);
+  logThis(myName + ": Generated secret sauce of: " + secretSauce);
+  // req.appData.secretSauce = "blahblahblah";
+  req.appData.secretSauce = secretSauce;
   return next();
 }
 
@@ -717,7 +732,7 @@ var appEditUser = function(req,res,next) {
 
 var appGetParts = function(req,res,next) {
   let myName = "appGetParts";
-  logThis(myName + ": Request to get ALL PARTS: " + JSON.stringify(req.body));
+  logThis(myName + ": Request to get ALL PARTS");
   req.appData.parts = parts.db;
   req.appData.mode = "parts";
   req.appData.parts.forEach(function(part,i,a) {
@@ -846,7 +861,7 @@ var appCheckinPartVerified = function(req,res,next) {
   req.appData.mode = "checkin";
   logThis(myName + ": " + JSON.stringify(part));
   let dateNow = Date.now();
-  next();
+  return next();
 }
 
 var appCheckinPart = function(req,res,next) {
@@ -871,7 +886,7 @@ var appCheckoutPartVerified = function(req,res,next) {
   req.appData.mode = "checkout";
   logThis(myName + ": " + JSON.stringify(part));
   let dateNow = Date.now();
-  next();
+  return next();
 }
 
 var appCheckoutPart = function(req,res,next) {
@@ -1048,7 +1063,6 @@ var appSearch = function(req,res,next) {
   req.appData.search = [];
   let searchString = req.query.q.toLowerCase();
   let results = parts.search(searchString);
-  // console.log(JSON.stringify(results));
   if(results.length>0) {
     results.forEach(function(v,i,a) {
       v.resultType = "part";
@@ -1057,7 +1071,6 @@ var appSearch = function(req,res,next) {
     });  
   }
   results = cases.search(searchString);
-  // console.log(JSON.stringify(results));
   if(results.length>0) {
     results.forEach(function(v,i,a) {
       v.resultType = "case";
@@ -1066,7 +1079,6 @@ var appSearch = function(req,res,next) {
     });  
   }
   results = users.search(searchString);
-  // console.log(JSON.stringify(results));
   if(results.length>0) {
     results.forEach(function(v,i,a) {
       v.resultType = "user";
@@ -1074,7 +1086,6 @@ var appSearch = function(req,res,next) {
       req.appData.search.push(v);    
     });
   }
-  // console.log(JSON.stringify(req.appData.search));
   req.appData.mode = "search";
   return next();
 }
@@ -1143,12 +1154,6 @@ app.get('/login',appLoginPage);
 app.post('/login',passport.authenticate('local'),appRedirectToOriginalReq);
 app.get('/logout',appLogout);
 
-// app.get('/test',appGetMenu,function(req,res) {
-//   console.log("Rendering the template:");
-//   console.log(JSON.stringify(req.appData));
-//   res.render('index',req.appData);
-// });
-
 // app.get('/menu/',appGetMenuJson);
 
 app.get('/secure/',appCheckAuthentication,secureApp);
@@ -1205,6 +1210,3 @@ app.use(timeEnd,appRender);
 https.createServer(options,app).listen(app.locals.port,function() {
   console.log(app.locals.appName + " server listening on port " + app.locals.port);
 });
-
-// app.listen(port, function() {
-// });
