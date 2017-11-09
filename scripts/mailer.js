@@ -2,7 +2,8 @@ const nodemailer = require('nodemailer');
 const fs = require('fs');
 let app = {};
 app.locals = JSON.parse(fs.readFileSync('config.json'));
-app.locals.url = app.locals.addr + ":" + app.locals.port;
+app.locals.url = "https://" + app.locals.addr;
+if(app.locals.port!="443") app.locals.url += ":" + app.locals.port;
 
 console.log(app.locals);
 
