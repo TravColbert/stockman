@@ -136,11 +136,11 @@ let emailUsersWithOpenCases = function(userList) {
       let dateTime = new Date(v.cases[c].time).toLocaleDateString() + " " + new Date(v.cases[c].time).toLocaleTimeString();
       let ageMs = Date.now()-parseInt(v.cases[c].time);
       let ageDays = Math.round((ageMs/(1000*60*60*24)));
-      html += `<li><a href="${app.locals.addr}:${app.locals.port}/case/${v.cases[c].id}">${v.cases[c].id}</a>. This case is ${ageDays} ${(ageDays==1) ? "day" : "days"} old. Last edited on ${dateTime}.</li>`
+      html += `<li><a href="${app.locals.url}/case/${v.cases[c].id}">${v.cases[c].id}</a>. This case is ${ageDays} ${(ageDays==1) ? "day" : "days"} old. Last edited on ${dateTime}.</li>`
     }
     html += `</ul>`;
     html += `<p style="font-size:0.8em">Click on the links to see the details for each case.`;
-    html += `<p>Keep track of them all in <a href="${app.locals.addr}:${app.locals.port}/user/${v.id}">${app.locals.appName}</a>.`;
+    html += `<p>Keep track of them all in <a href="${app.locals.url}/user/${v.id}">${app.locals.appName}</a>.`;
     html += `<p>Sincerely,`;
     html += `<p style="margin-left:0.5em">stockr`;
     let mailOptions = {
