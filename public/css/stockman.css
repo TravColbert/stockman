@@ -49,6 +49,9 @@ a {
 .secondary {
   background: #9CBFFF;
 }
+.tertiary {
+  background: rgba(69,119,212,0.2);
+}
 .success {
   background: #2D83D7;
 }
