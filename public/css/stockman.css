@@ -165,7 +165,7 @@ ul {
   border-bottom: 3px solid #FFD477;
 }
 .itemdetail {
-  align-items: baseline;
+  /* align-items: baseline; */
   margin-bottom: 0.5em;
 }
 .itemdetail:last-child {
