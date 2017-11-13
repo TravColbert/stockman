@@ -126,6 +126,13 @@ let getCasesByUsername = function(username,caseList) {
   return usersCases;
 }
 
+let isWeekend = function() {
+  let d = new Date();
+  // Sunday == 0
+  // Saturday == 6
+  return (d.getDay()==0 || d.getDay()==6);
+}
+
 let emailUsersWithOpenCases = function(userList) {
   userList.forEach(function(v,i) {
     let personName = v.username[0].toUpperCase() + v.username.slice(1);
@@ -159,7 +166,7 @@ let emailUsersWithOpenCases = function(userList) {
 console.log("=====");
 
 getDbs(function(){
-  listDbs();
+  if(isWeekend()) return true;
   let usersWithOpenCases = getUsersWithOpenCases();
   emailUsersWithOpenCases(usersWithOpenCases);
 });  
