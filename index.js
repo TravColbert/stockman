@@ -942,6 +942,8 @@ var appEditPart = function(req,res,next) {
   parts.db[partIndex].partnum = req.body.partnum;
   parts.db[partIndex].partaltnum = req.body.partaltnum;
   parts.db[partIndex].description = req.body.description;
+  console.log(" * * * IN-WARRANTY: " + !!(req.body.inwarranty=="on") + " * * *");
+  parts.db[partIndex].inwarranty = !!(req.body.inwarranty=="on");
   parts.db[partIndex].make = req.body.make;
   parts.db[partIndex].count = req.body.count;
   parts.writeDb();

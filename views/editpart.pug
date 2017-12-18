@@ -7,6 +7,10 @@ block content
       .part-listing.layout-col.layout-width-1-1.layout-sd-width-5-8.layout-lg-width-5-8.layout-xl-width-4-8
         form(action="/part/edit" method="post")
           input(id="partid" type="hidden" name="partid" value=part.id)
+          .partmake.itemdetail.layout-col
+            label.label(for="make") Make: 
+            .data
+              input#make(type="text" name="make" placeholder="manufacturer" value=part.make)
           .partnum.itemdetail.layout-col
             label.label(for="partnum") Part Number: 
             .data
@@ -19,10 +23,16 @@ block content
             label.label(for="description") Description: 
             .data
               input#description(type="text" name="description" placeholder="description" value=part.description)
-          .partmake.itemdetail.layout-col
-            label.label(for="make") Make: 
+          .partwarranty.itemdetail.layout-col
+            label.label In-Warranty: 
             .data
-              input#make(type="text" name="make" placeholder="manufacturer" value=part.make)
+              label(for="inwarranty") 
+                i.material-icons check_box_outline_blank
+                i.material-icons.hidden check_box
+              //- label(for="inwarranty") 
+              //-   i.material-icons check_box
+              input#inwarranty.hidden(type="checkbox" name="inwarranty")
+              //- input#warranty(type="text" name="inwarranty" placeholder="warranty status" required)
           .partcount.itemdetail.layout-col
             label.label(for="count") Stock Level: 
             .data

@@ -9,6 +9,7 @@ block content
           - let targetLoc = "/part/" + part.id;
           - let total = (parseFloat(part.free) + parseFloat(part.used));
           - let ratio = Math.round((parseFloat(part.used)/parseFloat(total))*100);
+          - let inwarranty = part.inwarranty;
           li.layout-col.clickable(onclick="goTo('" + targetLoc + "')")
             .itemhead #{part.make} #{part.description}
             .itemdetail.layout-col
@@ -17,6 +18,11 @@ block content
                 if(ratio!=0)
                   .usedgraph.layout-row.layout-align-center.layout-justify-center(style="width:" + ratio + "%;") #{ratio}%
               .data #{part.used} used out of #{total} (#{ratio}% consumed)
+            .itemdetail.layout-col
+              .label.nobreak In-Warranty Part:
+              .data
+                i.material-icons check_box_outline_blank
+                i.material-icons.hidden check_box
             .itemdetail.layout-col
               .label.nobreak Part Num:
               .data #{part.partnum}
