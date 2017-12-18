@@ -735,6 +735,12 @@ var appGetParts = function(req,res,next) {
   let myName = "appGetParts";
   logThis(myName + ": Request to get ALL PARTS");
   req.appData.parts = parts.db;
+  /* Sort tickets by item description */
+  req.appData.parts = req.appData.parts.sort(function(a,b){
+    if(a.description<b.description) return -1;
+    if(b.description<a.description) return 1;
+    return 0;
+  });
   req.appData.mode = "parts";
   req.appData.parts.forEach(function(part,i,a) {
     logThis(myName + ": Calculating stock levels for part: " + part.id);
