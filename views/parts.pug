@@ -20,9 +20,11 @@ block content
               .data #{part.used} used out of #{total} (#{ratio}% consumed)
             .itemdetail.layout-col
               .label.nobreak In-Warranty Part:
-              .data
-                i.material-icons check_box_outline_blank
-                i.material-icons.hidden check_box
+              #warrantycheck.data
+                if part.inwarranty
+                  i.material-icons.warrantyyes.checkbox check_box
+                else
+                  i.material-icons.warrantyno.checkbox check_box_outline_blank
             .itemdetail.layout-col
               .label.nobreak Part Num:
               .data #{part.partnum}

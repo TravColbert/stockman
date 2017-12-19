@@ -282,6 +282,29 @@ form#search {
   flex-direction: row;
   align-items: center;
 }
+.itemdetail .checkbox {
+  font-size: 1.7em;
+  text-shadow: 0 1px 4px rgba(0,0,0,0.4);
+}
+.itemdetail .checkbox.warrantyyes {
+  color: #4577D4;
+}
+input#inwarranty:checked ~ .warrantyno {
+  display: none;
+  /* color: red; */
+}
+input#inwarranty:checked ~ .warrantyyes {
+  display: flex;
+  /* color: blue; */
+}
+input#inwarranty:not(:checked) ~ .warrantyno {
+  /* color: blue; */
+  display: flex;
+}
+input#inwarranty:not(:checked) ~ .warrantyyes {
+  /* color: red; */
+  display: none;
+}
 @media only screen and (max-width: 500px) and (min-width: 425px){
   #search #q {
     font-size: 0.5em;

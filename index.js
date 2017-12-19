@@ -153,6 +153,7 @@ let parts = {
       partnum:part.partnum,
       description:part.description,
       make:part.make,
+      inwarranty:part.inwarranty,
       count:part.count,
       cases:[]
     });
@@ -836,6 +837,7 @@ var appAddPartVerified = function(req,res,next) {
     partnum:req.body.partnum,
     partaltnum:req.body.partaltnum,
     description:req.body.description,
+    inwarranty:!!(req.body.inwarranty=="on"),
     make:req.body.make,
     count:req.body.count
   });

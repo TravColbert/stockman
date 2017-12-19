@@ -23,9 +23,11 @@ block content
             .data
               input(id="description" type="text" name="description" placeholder="description" required)
           .partwarranty.itemdetail.layout-col
-            label.label(for="inwarranty") Warranty Status: 
-            .data
-              input(id="inwarranty" type="text" name="inwarranty" placeholder="warranty status" required)
+            label.label(for="inwarranty") In-Warranty: 
+            #warrantycheck.data
+              input#inwarranty.hidden(type="checkbox" name="inwarranty")
+              label.material-icons.warrantyyes.checkbox(for="inwarranty") check_box
+              label.material-icons.warrantyno.checkbox(for="inwarranty") check_box_outline_blank
           .partcount.itemdetail.layout-col
             label.label(for="count") Stock Level: 
             .data
