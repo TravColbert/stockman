@@ -282,6 +282,11 @@ form#search {
   flex-direction: row;
   align-items: center;
 }
+.note {
+  color: #dc6969;
+  font-size: 0.7em;
+  align-items: center;
+}
 .itemdetail .checkbox {
   font-size: 1.7em;
   text-shadow: 0 1px 4px rgba(0,0,0,0.4);

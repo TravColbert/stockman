@@ -23,8 +23,10 @@ block content
               #warrantycheck.data
                 if part.inwarranty
                   i.material-icons.warrantyyes.checkbox check_box
+                  .note Part is designated for in-warranty repairs only
                 else
                   i.material-icons.warrantyno.checkbox check_box_outline_blank
+                  .note Part is designated for out-of-warranty repairs only
             .itemdetail.layout-col
               .label.nobreak Part Num:
               .data #{part.partnum}
@@ -48,6 +50,9 @@ block content
       .infotext.section-hdg.section-hdg-3 Parts Availability
       .infotext The yellow "part availability" graph indicates what percentage of that part are available for checkout. Use this to get a quick idea of the amount of parts that have been checked out.
       .infotext The "percentage consumed" field may also be used to know how many parts are available.
+      .infotext.section-hdg.section-hdg-3 In-Warranty Part
+      .infotext Parts that are designated for 'in-warranty' repairs will be checked.
+      .infotext Parts that are designated for 'out-of-warranty' repairs will be un-checked.
       .infotext.section-hdg.section-hdg-3 Part Numbers
       .infotext This field shows the part or serial numbers recorded for this part.
       .infotext Some parts may have more than one part number. This may be because the manufacturer has provided a fully-compatible replacement part with a different serial number.

@@ -19,7 +19,7 @@ block content
         .itemdetail.layout-col
           label.label(for="caseid") Case:
           .data
-            input(type="text" name="caseid" id="caseid" placeholder="case #" value=caseId required)
+            input(type="text" name="caseid" id="caseid" placeholder="case or p.o. #" value=caseId required)
         .itemdetail.layout-col
           .label Actions:
           .data
@@ -28,5 +28,5 @@ block content
     .description.layout-col.layout-xs-hidden.layout-sm-hidden.layout-md-hidden.layout-sd-width-3-8.layout-lg-width-3-8.layout-xl-width-4-8
       .infotext.section-hdg.section-hdg-3 Check Out Part View
       .infotext Use this view to complete the checkout of part #{part.id}
-      .infotext You must enter a valid case number to check out a part.
-      .infotext The case number will be used to check this part back in.
+      .infotext You must enter a valid case number or purchase order number to check out a part.
+      .infotext The case or purchase order number will be used to check this part back in.
