@@ -23,6 +23,13 @@ let sessionConfig = {
   saveUninitialized:false
 };
 
+let transporter = nodemailer.createTransport({
+  host: app.locals.smtpServer,
+  port: app.locals.smtpPort,
+  secure: app.locals.smtpSecurity,
+  ignoreTLS: true
+});
+
 /**
  * Configuration
  */
@@ -157,6 +164,7 @@ let parts = {
       make:part.make,
       inwarranty:part.inwarranty,
       count:part.count,
+      mincount:part.mincount,
       cases:[]
     });
     return x;
@@ -785,7 +793,8 @@ var appAddPartVerified = function(req,res,next) {
     description:req.body.description,
     inwarranty:!!(req.body.inwarranty=="on"),
     make:req.body.make,
-    count:req.body.count
+    count:req.body.count,
+    mincount:(req.body.mincount) || 1
   });
   if(partId===false) {
     req.session.messages.push(makeMessage({type:"warn",text:"Could not create new part"}));
@@ -861,12 +870,17 @@ var appCheckoutPart = function(req,res,next) {
   cases.writeDb();
   parts.writeDb();
   let part = parts.find(req.body.partid)[0];
-  if(appCheckPartLevels(req.body.partid)<0) {
+  if(appCheckPartLevels(req.body.partid,part.mincount)<0) {
+    logThis(myName + ": Part levels are low. I want to send a message");
     // Get who to warn
-    let mailTo = '<travis@dataimpressions.com, michael.simpson@dataimpressions, seth@dataimpressions.com';
+    let mailTo = 'travis@dataimpressions.com, michael.simpson@dataimpressions, seth@dataimpressions.com';
     let subject = 'Part Supply Is Low for part: ' + part.partnum;
-    let body = `The supply of part: ${part.partnum} ${part.description} has run below ${part.mincount}.
-    Stockr`;
+    let body = `
+    The supply of part: <strong>${part.partnum} ${part.description} </strong>has run below <span style='color:"#f33"'>${part.mincount}</span>.</br>
+    Current available units: <span style='color:"#f33"'>${part.free}</span></br>
+    Check the facts in <strong><a href="${app.locals.url}/part/${part.id}">${app.locals.appName}</a></strong>.
+    Sincerely,</br>
+    stockr`;
     // Launch warnings: e-mail, DOM class markers etc)
     sendEmail(mailTo,subject,body);
   }
@@ -874,11 +888,11 @@ var appCheckoutPart = function(req,res,next) {
   return res.redirect('/part/' + req.body.partid);
 }
 
-var appCheckPartLevels = function(partId) {
+var appCheckPartLevels = function(partId,mincount) {
   let myName = "appCheckPartLevels";
   let partsLeft = parts.countFree(partId);
   logThis(myName + ": We have: " + partsLeft + " parts left.");
-  if(partsLeft<part.mincount) return -1;
+  if(partsLeft<mincount) return -1;
   return 0;
 };
 
@@ -912,6 +926,7 @@ var appEditPart = function(req,res,next) {
   parts.db[partIndex].inwarranty = !!(req.body.inwarranty=="on");
   parts.db[partIndex].make = req.body.make;
   parts.db[partIndex].count = req.body.count;
+  parts.db[partIndex].mincount = (req.body.mincount) || 1;
   parts.writeDb();
   return res.redirect('/part/' + req.body.partid);
 }
@@ -956,8 +971,30 @@ var appGetCase = function(req,res,next) {
   req.appData.caseId = caseId;
   req.appData.caseRecord = cases.find("id",caseId)[0];
   logThis(myName + ": " + JSON.stringify(req.appData.caseRecord));
-  req.appData.parts = parts.findByCase(caseId);
+  let partsList = parts.findByCase(caseId).slice(0);
+  // req.appData.parts = parts.findByCase(caseId);
+  logThis(myName + ": STARTS WITH: " + JSON.stringify(partsList));
+  // logThis(myName + ": MIDDLE: " + partsList.slice(0));
+  logThis(myName + ": CASES: " + JSON.stringify(partsList));
+  logThis(myName + ": CASE_ID: " + caseId);
+  for(let c=0; c<partsList.length; c++) {
+    if(partsList[c].hasOwnProperty("cases"))
+    partsList[c].cases = pushMyCaseIdToTop(caseId,partsList[c].cases);
+  }
+  logThis(myName + ": ENDS WITH: " + JSON.stringify(partsList));
+  req.appData.parts = partsList;
+  // logThis(myName + ": Re-arranged: " + JSON.stringify(pushMyCaseIdToTop(caseId,)));
   return next();
+}
+
+var pushMyCaseIdToTop = function(caseId,cases) {
+  let idx = cases.indexOf(caseId);
+  if(idx>=0) {
+    let caseRecord = cases.splice(idx,1)[0];
+    cases.unshift(caseRecord);
+  }
+  console.log(" ** " + cases);
+  return cases;
 }
 
 var appEditCaseVerified = function(req,res,next) {
@@ -1083,12 +1120,14 @@ let setMailOptions = function(to,subject,body) {
 
 let sendEmail = function(to,subject,body) {
   let myName = "sendEmail";
+  logThis(myName + ": Attempting to send mail message to: " + to);
   if(Array.isArray(to)) to = to.join(", ");
   let mailOptions = setMailOptions(to,subject,body);
   transporter.sendMail(mailOptions, function(err,info) {
     if(err) return console.log(err);
-    console.log("Message send to " + v.username);
+    logThis(myName + ": Message send to " + to);
   });
+  return true;
 }
 
 var errorHandler = function(err,req,res,next) {
