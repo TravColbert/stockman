@@ -777,16 +777,16 @@ var appAddPartVerified = function(req,res,next) {
   let myName = "appAddPartVerified";
   logThis(myName + ": Attempting to add part " + req.body.partnum);
   // Maybe just check to ensure that the manufacturer's number is not a dupliacate
-  let duplicatePartNumber = parts.db.findIndex(function(partRecord) {
-    console.log(myName + ": " + partRecord.partnum + " : " + req.body.partnum);
-    return partRecord.partnum==req.body.partnum;
-  });
-  logThis(myName + ": " + duplicatePartNumber);
-  if(duplicatePartNumber>-1) {
-    req.session.messages.push(makeMessage({type:"err",text:"Can't add part with duplicate manufacturer's number"}));
-    // return next(new Error("Attempting to add part with duplicate manufacturer's number"));
-    return res.redirect('/parts/');
-  }
+  // let duplicatePartNumber = parts.db.findIndex(function(partRecord) {
+  //   console.log(myName + ": " + partRecord.partnum + " : " + req.body.partnum);
+  //   return partRecord.partnum==req.body.partnum;
+  // });
+  // logThis(myName + ": " + duplicatePartNumber);
+  // if(duplicatePartNumber>-1) {
+  //   req.session.messages.push(makeMessage({type:"err",text:"Can't add part with duplicate manufacturer's number"}));
+  //   // return next(new Error("Attempting to add part with duplicate manufacturer's number"));
+  //   return res.redirect('/parts/');
+  // }
   let partId = parts.add({
     partnum:req.body.partnum,
     partaltnum:req.body.partaltnum,
