@@ -142,7 +142,7 @@ let emailUsersWithOpenCases = function(userList) {
     for(let c=0;c<v.cases.length;c++) {
       let dateTime = new Date(v.cases[c].time).toLocaleDateString() + " " + new Date(v.cases[c].time).toLocaleTimeString();
       let ageMs = Date.now()-parseInt(v.cases[c].time);
-      let ageDays = Math.round((ageMs/(1000*60*60*24)));
+      let ageDays = Math.round((ageMs/(1000*60*60*24)));  // ms * secs * mins * hrs = ms/day
       html += `<li><a href="${app.locals.url}/case/${v.cases[c].id}">${v.cases[c].id}</a>. This case is ${ageDays} ${(ageDays==1) ? "day" : "days"} old. Last edited on ${dateTime}.</li>`
     }
     html += `</ul>`;

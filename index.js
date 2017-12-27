@@ -5,6 +5,8 @@ const express = require('express');
 const session = require('express-session');
 const bodyParser = require('body-parser');
 const app = express();
+const nodemailer = require('nodemailer');
+
 app.locals = JSON.parse(fs.readFileSync('config.json'));
 app.locals.url = "https://" + app.locals.addr;
 if(app.locals.port!="443") app.locals.url += ":" + app.locals.port;
@@ -231,8 +233,8 @@ let parts = {
   /**
    * Checking in and out parts is a matter of adding and removing case numbers from an
    * array in the part record.
-   * To check-out : add a case number to the array
-   * To check-in : remove a case number from the array
+   * To check-in  : add a case number to the array
+   * To check-out : remove a case number from the array
    *
    * The 'count' property now indicates the total desired parts in the stock
    */
@@ -532,15 +534,6 @@ var appCheckAuthentication = function(req,res,next) {
   let myName = "appCheckAuthentication";
   logThis(myName + ": Starting authentication check...");
   if(!isAuthenticated(req)) return res.redirect('/login');
-  // if(req.session.cookie) {
-  //   logThis(myName + ": Current session data: " + JSON.stringify(req.session));
-  // }
-  // if(!req.user) {
-  //   logThis(myName + ": Could not find user for session");
-  //   logThis(myName + ": session is NOT authenticated");
-  //   logThis(myName + ": header status: " + (res.headersSent));
-  //   return res.redirect('/login');
-  // }
   logThis(myName + ": Found session for: " + JSON.stringify(req.user.username));
   logThis(myName + ": session is authenticated");
   return next();
@@ -751,27 +744,6 @@ var appGetParts = function(req,res,next) {
   return next();
 }
 
-// var appGetPartsJson = function(req,res,next) {
-//   let myName = "appGetPartsJson";
-//   logThis(myName + ": Request to get ALL PARTS: " + JSON.stringify(req.body));
-//   let objParts = {"parts":[]};
-//   parts.db.forEach(function(v) {
-//     objParts.parts.push(v);
-//   });
-//   return res.json(objParts);
-// }
-
-// var appGetPartsByCaseJson = function(req,res,next) {
-//   let myName = "appGetPartsByCaseJson";
-//   let caseId = req.params.caseId;
-//   let objParts = {"parts":[]};
-//   logThis(myName + ": Getting parts with case #: " + caseId);
-//   parts.findByCase(caseId).forEach(function(v) {
-//     objParts.parts.push(v);
-//   });
-//   return res.json(objParts);
-// }
-
 var appGetPart = function(req,res,next) {
   let myName = "appGetPart";
   let partId = req.params.partId;
@@ -785,32 +757,6 @@ var appGetPart = function(req,res,next) {
   req.appData.mode = "part";
   return next();
 }
-
-// var appGetPartJson = function(req,res,next) {
-//   let myName = "appGetPartJson";
-//   let partId = req.params.partId;
-//   let objParts = {"parts":[]};
-//   logThis(myName + ": Getting part with ID: " + partId);
-//   parts.find("id",partId).forEach(function(v) {
-//     objParts.parts.push(v);
-//   });
-//   return res.json(objParts);
-// }
-
-// var appGetAddPartUi = function(req,res,next) {
-//   let myName = "appGetAddPartUi";
-//   logThis(myName);
-//   responseString += "<a href='/parts/add'>Add Part</a>";
-//   return next();
-// }
-
-// var appCreatePart = function(req,res,next) {
-//   let myName = "appCreatePart";
-//   logThis(myName + ": Request to create part: " + JSON.stringify(req.body));
-//   parts.add(req.body);
-//   res.redirect('/parts/add');
-//   return;
-// }
 
 var appAddPart = function(req,res,next) {
   let myName = "appAddPart";
@@ -914,9 +860,27 @@ var appCheckoutPart = function(req,res,next) {
   }
   cases.writeDb();
   parts.writeDb();
-  req.session.messages.push(makeMessage({type:"info",text:"Thanks! Part has been checked out."}));
+  let part = parts.find(req.body.partid)[0];
+  if(appCheckPartLevels(req.body.partid)<0) {
+    // Get who to warn
+    let mailTo = '<travis@dataimpressions.com, michael.simpson@dataimpressions, seth@dataimpressions.com';
+    let subject = 'Part Supply Is Low for part: ' + part.partnum;
+    let body = `The supply of part: ${part.partnum} ${part.description} has run below ${part.mincount}.
+    Stockr`;
+    // Launch warnings: e-mail, DOM class markers etc)
+    sendEmail(mailTo,subject,body);
+  }
+  req.session.messages.push(makeMessage({type:"info",text:"Thanks! Part: '" + part.description + "' has been checked out."}));
   return res.redirect('/part/' + req.body.partid);
 }
+
+var appCheckPartLevels = function(partId) {
+  let myName = "appCheckPartLevels";
+  let partsLeft = parts.countFree(partId);
+  logThis(myName + ": We have: " + partsLeft + " parts left.");
+  if(partsLeft<part.mincount) return -1;
+  return 0;
+};
 
 var appEditPartVerified = function(req,res,next) {
   let myName = "appEditPartVerified";
@@ -1104,9 +1068,27 @@ var appSearch = function(req,res,next) {
 let makeMessage = function(obj) {
   let myName = "makeMessage";
   logThis(myName + ": Making a message for: " + JSON.stringify(obj));
-  // obj.usr = req.user;
   obj.msgId = Date.now();
   return obj;
+}
+
+let setMailOptions = function(to,subject,body) {
+  return {
+    from: app.locals.smtpFromName + "<" + app.locals.smtpFromAddr + ">",
+    to: to,
+    subject: subject,
+    html: body
+  };
+}
+
+let sendEmail = function(to,subject,body) {
+  let myName = "sendEmail";
+  if(Array.isArray(to)) to = to.join(", ");
+  let mailOptions = setMailOptions(to,subject,body);
+  transporter.sendMail(mailOptions, function(err,info) {
+    if(err) return console.log(err);
+    console.log("Message send to " + v.username);
+  });
 }
 
 var errorHandler = function(err,req,res,next) {
@@ -1155,7 +1137,6 @@ app.use(appIgnoreFavicon,appStats,appStart,timeStart);
 /**
  * NORMAL ROUTES
  */
-// app.use(setSessionData,appHello,appMenu);
 app.use(setSessionData,appMessages,appHello,appGetMenu);
 
 /**
@@ -1165,15 +1146,9 @@ app.get('/login',appLoginPage);
 app.post('/login',passport.authenticate('local'),appRedirectToOriginalReq);
 app.get('/logout',appLogout);
 
-// app.get('/menu/',appGetMenuJson);
-
 app.get('/secure/',appCheckAuthentication,secureApp);
 app.get('/secure/',appTest(1,false),appTest(2,false));
 app.get('/secure/',appTest(3,false));
-// app.get('/update/',updateApp);
-// The HTML response
-// app.get('/users/',appCheckAuthentication,appGetUsers,appFormCreateUser);
-// The JSON response
 app.get('/users/add',appCheckAuthentication,appAddUser);
 app.get('/users/',appCheckAuthentication,appGetUsers);
 app.post('/user/',appCheckAuthentication,appCreateUser);
