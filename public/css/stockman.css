@@ -259,6 +259,9 @@ ul {
   height: 1em;
   border-radius: 0.25em;
 }
+.usegraph.warning {
+  background-color: #F55D3E;
+}
 .usedgraph {
   color: #fff;
   background-color: #FFB20B;
@@ -266,6 +269,10 @@ ul {
   border-radius: 0.25em;
   font-size: 0.75em;
 }
+.usegraph.warning .usedgraph {
+  background-color: #9b1e05;
+}
+
 form#search {
   background: #5583D7;
   border-radius: 3px;
