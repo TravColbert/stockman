@@ -32,6 +32,10 @@ block content
             label.label(for="count") Stock Level: 
             .data
               input(id="count" type="number" name="count" placeholder="desired amount of parts" required)
+          .partmincount.itemdetail.layout-col
+            label.label(for="count") Minimum Stock Level: 
+            .data
+              input(id="mincount" type="number" name="mincount" placeholder="minimum amount of parts" required)
           .partsubmit.itemdetail.layout-col
             label.label Actions:
             .data
@@ -71,4 +75,5 @@ block content
         .infotext.section-hdg.section-hdg-3 Stock Level
         .infotext Enter the desired total amount of parts that should be in stock.
         .infotext.important This is a required field.
-        
+        .infotext.section-hdg.section-hdg-3 Minimum Stock Level
+        .infotext Enter the desired minimum amount of stock parts below which stockr send notifications

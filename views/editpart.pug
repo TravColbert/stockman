@@ -36,6 +36,12 @@ block content
             label.label(for="count") Stock Level: 
             .data
               input#count(type="number" name="count" value=part.count)
+          .partmincount.itemdetail.layout-col
+            label.label(for="count") Minimum Stock Level: 
+            .data
+              input#mincount(type="number" name="mincount" placeholder="minimum amount of parts" value=part.mincount required)
+              input.btn.primary.buttontoggle(type="button" id="mincountminus1" value="-")
+              input.btn.primary.buttontoggle(type="button" id="mincountplus1" value="+")
           .partsubmit.itemdetail.layout-col
             label.label Actions:
             .data.layout-row
@@ -76,5 +82,5 @@ block content
         .infotext Parts that are designated for 'out-of-warranty' repairs should be un-checked.
         .infotext.section-hdg.section-hdg-3 Stock Level
         .infotext Enter the desired total amount of parts that should be in stock.
-
-      
+        .infotext.section-hdg.section-hdg-3 Minimum Stock Level
+        .infotext Enter the desired minimum amount of stock parts below which stockr send notifications
