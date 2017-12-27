@@ -1,0 +1,92 @@
+extends index.pug
+
+block content
+  .section-hdg.section-hdg-1 Parts (#{parts.length})
+  .layout-row.layout-width-1-1
+    .layout-col.layout-width-1-1.layout-sd-width-5-8.layout-lg-width-5-8.layout-xl-width-4-8
+      ul.compactitemlist
+        each part in parts
+          - let targetLoc = "/part/" + part.id;
+          - let total = (parseFloat(part.free) + parseFloat(part.used));
+          - let ratio = Math.round((parseFloat(part.used)/parseFloat(total))*100);
+          - let inwarranty = part.inwarranty;
+          li.layout-col.clickable.compactpartslist(onclick="goTo('" + targetLoc + "')")
+            .layout-row
+              #partmake #{part.make}
+              #partnum #{part.partnum}
+            .layout-row.partdetails
+              #partdescription.layout-width-6-8 #{part.description}
+              if part.inwarranty
+                #partwarranty.material-icons.warrantyyes.checkbox pan_tool
+              #partavailability.layout-width-1-8
+                if part.free<=part.mincount
+                  .usegraph.layout-row.layout-width-1-1.layout-align-center.warning
+                    if(ratio!=0)
+                      .usedgraph.layout-row.layout-align-center.layout-justify-center(style="width:" + ratio + "%;") #{ratio}
+                else
+                  .usegraph.layout-row.layout-width-1-1.layout-align-center
+                    if(ratio!=0)
+                      .usedgraph.layout-row.layout-align-center.layout-justify-center(style="width:" + ratio + "%;") #{ratio}
+              //- else
+              //-   #partwarranty.material-icons.warrantyno.checkbox check_box_outline_blank
+
+            //- .itemhead #{part.make} #{part.description}
+            //- .itemdetail.layout-col
+            //-   .label.nobreak Part Availability:
+            //-   if part.free<=part.mincount
+            //-     .usegraph.layout-row.layout-width-1-1.layout-align-center.layout-sd-width-5-8.layout-lg-width-4-8.layout-xl-width-3-8.warning
+            //-       if(ratio!=0)
+            //-         .usedgraph.layout-row.layout-align-center.layout-justify-center(style="width:" + ratio + "%;") #{ratio}%
+            //-     .note Stock for this item has fallen below minimum levels
+            //-   else
+            //-     .usegraph.layout-row.layout-width-1-1.layout-align-center.layout-sd-width-5-8.layout-lg-width-4-8.layout-xl-width-3-8
+            //-       if(ratio!=0)
+            //-         .usedgraph.layout-row.layout-align-center.layout-justify-center(style="width:" + ratio + "%;") #{ratio}%
+            //-   .data #{part.used} used out of #{total} (#{ratio}% consumed)
+            //- .itemdetail.layout-col
+            //-   .label.nobreak In-Warranty Part:
+            //-   #warrantycheck.data
+            //-     if part.inwarranty
+            //-       i.material-icons.warrantyyes.checkbox check_box
+            //-       .note Part is designated for in-warranty repairs only
+            //-     else
+            //-       i.material-icons.warrantyno.checkbox check_box_outline_blank
+            //-       .note Part is designated for out-of-warranty repairs only
+            //- .itemdetail.layout-col
+            //-   .label.nobreak Part Num:
+            //-   .data #{part.partnum}
+            //- - let partaltnum = part.partaltnum || null
+            //- if partaltnum
+            //-   .itemdetail.layout-col
+            //-     .label.nobreak Alternate Part Num:
+            //-     .data #{partaltnum}
+            //- .itemdetail.layout-col
+            //-   .label Description:
+            //-   .data #{part.description}
+
+      .layout-row.layout-justify-between
+        a.btn.normal(href="/parts/add")
+          i.material-icons add_circle_outline
+          span Add Part
+    .description.layout-col.layout-xs-hidden.layout-sm-hidden.layout-md-hidden.layout-sd-width-3-8.layout-lg-width-3-8.layout-xl-width-4-8
+      .infotext.section-hdg.section-hdg-3 Parts View
+      .infotext This is the list of all parts in your parts-collection. 
+      .infotext Parts are listed in the order they were added to your parts-collection.
+      .infotext Click on the part to check the part in or out based on availability.
+      .infotext.section-hdg.section-hdg-3 Parts Availability
+      .infotext The yellow "part availability" graph indicates what percentage of that part are available for checkout. Use this to get a quick idea of the amount of parts that have been checked out.
+      .infotext The "percentage consumed" field may also be used to know how many parts are available.
+      .infotext.section-hdg.section-hdg-3 In-Warranty Part
+      .infotext Parts that are designated for 'in-warranty' repairs will be checked.
+      .infotext Parts that are designated for 'out-of-warranty' repairs will be un-checked.
+      .infotext.section-hdg.section-hdg-3 Part Numbers
+      .infotext This field shows the part or serial numbers recorded for this part.
+      .infotext Some parts may have more than one part number. This may be because the manufacturer has provided a fully-compatible replacement part with a different serial number.
+      .infotext If this part does not have an alternat part number recorded then this field will not appear.
+      .infotext This is a searchable field.
+      .infotext.section-hdg.section-hdg-3 Description
+      .infotext Description of the part. You might use this field to contain other searchable data for this part.
+      .infotext.section-hdg.section-hdg-3 Add Part Button
+      .infotext You may also add new parts using the "Add Part" button below.
+      .infotext.section-hdg.section-hdg-3 Tip
+      .infotext Use the search field in the menu to find parts. You can search on most fields.

@@ -190,6 +190,39 @@ ul {
 #qrcode-url {
   font-size: 0.6em;
 }
+
+.compactitemlist {
+  border-radius: 5px;
+  padding: 0.5em;
+  background-color: #f0f0f0;
+}
+.compactitemlist > li {
+  padding: 0.2em 0;
+  overflow: hidden;
+  border-bottom: 1px dotted silver;
+}
+.compactitemlist > li:last-child {
+  margin-bottom: 0em;
+  border-bottom: 0px;
+}
+
+.compactpartslist #partmake {
+  flex-grow: 1;
+}
+.compactpartslist .partdetails {
+  font-size: 0.8em;
+}
+.compactpartslist #partdescription {
+  flex-grow: 1;
+}
+/* .compactpartslist #partavailability {
+  flex-basis: 15%;
+} */
+.compactpartslist #partwarranty {
+  font-size: 1em;
+  margin: 0 1em;
+}
+
 /* Content Styles */
 .content {
   overflow: hidden;

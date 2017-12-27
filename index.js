@@ -743,7 +743,7 @@ var appGetParts = function(req,res,next) {
     if(b.description<a.description) return 1;
     return 0;
   });
-  req.appData.mode = "parts";
+  req.appData.mode = "parts_small";
   req.appData.parts.forEach(function(part,i,a) {
     logThis(myName + ": Calculating stock levels for part: " + part.id);
     part.free = parts.countFree(part.id);
