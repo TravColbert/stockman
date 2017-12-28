@@ -26,7 +26,7 @@ block content
               #partnum #{part.partnum}
             .layout-row.partdetails
               #partdescription.layout-width-6-8 #{part.description}
-              if part.inwarranty
+              if !part.inwarranty
                 #partwarranty.material-icons.warrantyyes.checkbox pan_tool
               #partavailability.layout-width-1-8
                 if part.free<=part.mincount
