@@ -4,6 +4,7 @@ const https = require('https');
 const express = require('express');
 const session = require('express-session');
 const bodyParser = require('body-parser');
+// const querystring = require('querystring');
 const app = express();
 const nodemailer = require('nodemailer');
 
@@ -36,6 +37,7 @@ let transporter = nodemailer.createTransport({
 // Template Engine setup:
 app.set('views',app.locals.viewsDir);
 app.set('view engine','pug');
+app.set('query parser',true);
 app.use(express.static(app.locals.staticDir));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended:true}));
@@ -743,7 +745,10 @@ var appGetParts = function(req,res,next) {
     if(b.description<a.description) return 1;
     return 0;
   });
-  req.appData.mode = "parts_small";
+  if(req.query.compact)
+    req.appData.mode = "parts_small";
+  else
+    req.appData.mode = "parts";
   req.appData.parts.forEach(function(part,i,a) {
     logThis(myName + ": Calculating stock levels for part: " + part.id);
     part.free = parts.countFree(part.id);

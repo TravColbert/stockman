@@ -497,6 +497,9 @@ img.border-circle {
 .text-shrink-x3 {
   font-size: 0.5em;
 }
+.text-shrink-x4 {
+  font-size: 0.4em;
+}
 .nobreak,
 .text-nobreak {
   white-space: nowrap;
