@@ -4,7 +4,6 @@ const https = require('https');
 const express = require('express');
 const session = require('express-session');
 const bodyParser = require('body-parser');
-// const querystring = require('querystring');
 const app = express();
 const nodemailer = require('nodemailer');
 
@@ -629,19 +628,16 @@ var generateString = function(length) {
 
 var appLoginPage = function(req,res,next) {
   let myName = "appLoginPage";
-  logThis("...(sending login page)...");
+  logThis(myName + ": ...(sending login page)...");
   // let salt = bcrypt.genSaltSync(10);
   req.appData.mode = "login";
-  let secretSauce = generateString(12);
-  logThis(myName + ": Generated secret sauce of: " + secretSauce);
-  // req.appData.secretSauce = "blahblahblah";
-  req.appData.secretSauce = secretSauce;
+  req.appData.secretSauce = generateString(12);
   return next();
 }
 
 var appLogout = function(req,res,next) {
   let myName = "appLogout";
-  logThis(myName);
+  logThis(myName + ": Logging out...");
   req.logout();
   return res.redirect('/');
 }
@@ -681,7 +677,7 @@ var appGetUser = function(req,res,next) {
     } else if(!user) {
       req.session.messages.push(makeMessage({type:"warn",text:"No user found with ID:" + userId}));
     } else {
-      req.session.messages.push(makeMessage({type:"succ",text:"Found user ID:" + userId + " " + JSON.stringify(user)}));
+      // req.session.messages.push(makeMessage({type:"succ",text:"Found user ID:" + userId + " " + JSON.stringify(user)}));
       req.appData.user = {
         id:user.id,
         username:user.username,

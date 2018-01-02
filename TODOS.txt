@@ -1,0 +1,8 @@
+BUGS:
+BUG: USER view shows ALL cases - even cases that have long been closed
+BUG: USER view still shows messages with hashed passwords
+
+FEATURE REQUESTS:
+TODO: Modify messages interface with CLOSE icon.
+TODO: Add roles to users. GOAL: Help stockr know who to email about parts ordering, old cases, etc.
+TODO: Change 'time' field in case DB to openTime and closeTime. GOAL: add more metrics to dashboard
