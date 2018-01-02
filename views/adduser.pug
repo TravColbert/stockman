@@ -8,21 +8,33 @@ block content
         .username.itemdetail.layout-col
           label.label(for="username") User Name: 
           .data
-            input(id="username" type="text" name="username" placeholder="user name" required autofocus)
+            input#username(type="text" name="username" placeholder="user name" required autofocus)
         .email.itemdetail.layout-col
-          label.label(for="email") User's Email Address': 
+          label.label(for="email") User's Email Address: 
           .data
-            input(id="email" type="text" name="email" placeholder="email address" required)
+            input#email(type="text" name="email" placeholder="email address" required)
+        .userroleparts.itemdetail.layout-col
+          label.label(for="roleparts") Role - Parts Manager: 
+          .data
+            input#roleparts.hidden(type="checkbox" name="roleparts")
+            label.material-icons.rolepartstrue.hidden.checkbox(for="roleparts") check_box
+            label.material-icons.rolepartsfalse.checkbox(for="roleparts") check_box_outline_blank
+        .userroleuser.itemdetail.layout-col
+          label.label(for="roleuser") Role - User Manager: 
+          .data
+            input#roleuser.hidden(type="checkbox" name="roleuser")
+            label.material-icons.roleusertrue.hidden.checkbox(for="roleuser") check_box
+            label.material-icons.roleuserfalse.checkbox(for="roleuser") check_box_outline_blank
         .userpassword.itemdetail.layout-col
           label.label(for="password") Password: 
           .data
-            input(id="password" type="password" name="password" placeholder="password" required)
+            input#password(type="password" name="password" placeholder="password" required)
         .userpasswordverify.itemdetail.layout-col
           label.label(for="passwordv") Verification: 
           .data
-            input(id="passwordv" type="password" name="passwordv" placeholder="password" required)
+            input#passwordv(type="password" name="passwordv" placeholder="password" required)
         .usersubmit.itemdetail.layout-col
           .label Actions:
           .data
-            input.btn.normal.buttonconfirm(type="submit" id="submit" value="Confirm")
+            input#submit.btn.normal.buttonconfirm(type="submit" value="Confirm")
             a.btn.cancel.buttoncancel(href="/users/") Cancel

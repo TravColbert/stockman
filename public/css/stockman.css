@@ -344,20 +344,30 @@ form#search {
 }
 input#inwarranty:checked ~ .warrantyno {
   display: none;
-  /* color: red; */
 }
 input#inwarranty:checked ~ .warrantyyes {
   display: flex;
-  /* color: blue; */
 }
 input#inwarranty:not(:checked) ~ .warrantyno {
-  /* color: blue; */
   display: flex;
 }
 input#inwarranty:not(:checked) ~ .warrantyyes {
-  /* color: red; */
   display: none;
 }
+input#roleparts:checked ~ .rolepartsfalse {
+  display: none;
+}
+input#roleparts:checked ~ .rolepartstrue {
+  display: flex;
+}
+input#roleuser:checked ~ .roleuserfalse {
+  display: none;
+}
+input#roleuser:checked ~ .roleusertrue {
+  display: flex;
+}
+
+
 .disabledtext {
   color: rgba(150,150,150,0.5);
 }

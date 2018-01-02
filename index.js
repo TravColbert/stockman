@@ -65,6 +65,20 @@ let menu = [
   {link:"/logout",text:"Log Out",icon:"highlight_off",secured:true},
 ];
 
+/**
+ * ROLES:
+ * Use to separate users into domains of interest and concern
+ * OPTIONS:
+ *  parts: part control - used to be aware of parts/ordering
+ *  user: user administration
+ * 
+ *  This could translate into a bit-mask: 
+ *    001 - role 1
+ *    010 - role 2
+ *    100 - role 3
+ *    101 - role 3 and 1
+ * etc...
+ */
 let cases = {
   myName:"casedb",
   add:function(caseRecord) {
@@ -403,6 +417,8 @@ let users = {
       id:getNextIndex(this),
       username:userObj.username,
       email:userObj.email,
+      roleparts:userObj.roleparts,
+      roleuser:userObj.roleuser,
       password:userObj.password
     },this);
     return true;
@@ -677,10 +693,11 @@ var appGetUser = function(req,res,next) {
     } else if(!user) {
       req.session.messages.push(makeMessage({type:"warn",text:"No user found with ID:" + userId}));
     } else {
-      // req.session.messages.push(makeMessage({type:"succ",text:"Found user ID:" + userId + " " + JSON.stringify(user)}));
       req.appData.user = {
         id:user.id,
         username:user.username,
+        roleuser:user.roleuser,
+        roleadmin:user.roleadmin,
         email:user.email
       };
       req.appData.cases = cases.find("owner",user.username);
@@ -727,6 +744,8 @@ var appEditUser = function(req,res,next) {
   });
   if(userIndex==-1) return next(new Error("No user with id: " + req.body.userid));
   users.db[userIndex].email = req.body.email;
+  users.db[userIndex].roleuser = !!(req.body.roleuser=="on");
+  users.db[userIndex].roleparts = !!(req.body.roleparts=="on");
   users.writeDb();
   return res.redirect('/user/' + req.body.userid);
 }
