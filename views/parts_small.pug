@@ -2,16 +2,16 @@ extends index.pug
 
 block content
   .section-hdg.section-hdg-1.layout-row
-    .layout-row.layout-width-6-8.layout-align-center Parts (#{parts.length})
-    .layout-col.layout-width-2-8.text-align-center
+    .layout-row.layout-width-7-8.layout-align-center Parts (#{parts.length})
+    .layout-col.layout-width-1-8.text-align-center
       .layout-col.layout-width-1-1.text-shrink-x3.text-align-center Layout
       .layout-row
         .layout-col.layout-width-1-2.disabledtext
           .material-icons(href="/parts?compact=true") phone_android
-          span.text-shrink-x4 Compact
+          span.text-shrink-x4.layout-xs-hidden.layout-sm-hidden Compact
         .layout-col.layout-width-1-2
           a.material-icons(href="/parts") computer
-          span.text-shrink-x4 Full
+          span.text-shrink-x4.layout-xs-hidden.layout-sm-hidden Full
   .layout-row.layout-width-1-1
     .layout-col.layout-width-1-1.layout-sd-width-5-8.layout-lg-width-5-8.layout-xl-width-4-8
       ul.compactitemlist

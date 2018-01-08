@@ -16,6 +16,18 @@ block content
               .itemdetail.layout-col
                 .label Email:
                 .data #{item.email}
+            if item.roleuser
+              .itemdetail.layout-col
+                .label User Manager Role:
+                .data
+                  i.material-icons.roleuser people
+                  .note This user can manage users
+            if item.roleparts
+              .itemdetail.layout-col
+                .label Parts Manager Role:
+                .data 
+                  i.material-icons.roleparts build
+                  .note This user can manage parts
       .adduser.layout-row.layout-justify-between
         a.btn.normal(href="/users/add")
           i.material-icons add_circle_outline

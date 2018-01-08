@@ -8,10 +8,9 @@ block content
     div User Detail
   .layout-row.layout-width-1-1
     .layout-col.layout-width-1-1.layout-sd-width-5-8.layout-lg-width-5-8.layout-xl-width-4-8
-      //- .user-listing.layout-col
-      .itembanner.layout-col        
+      .itembanner.layout-col
         if user
-          .itemhead User: #{user.id}
+          .itemhead User: #{user.username}
           .itemdetail.layout-col
             .label Username:
             .data #{user.username}
@@ -20,9 +19,21 @@ block content
             .itemdetail.layout-col
               .label Email:
               .data #{user.email}
-          .itemdetail.layout-col
-            .label System User Num:
-            .data #{user.id}
+          if user.roleuser
+            .itemdetail.layout-col
+              .label User Manager Role:
+              .data
+                i.material-icons.roleuser people
+                .note This user can manage users
+          if user.roleparts
+            .itemdetail.layout-col
+              .label Parts Manager Role:
+              .data 
+                i.material-icons.roleparts build
+                .note This user can manage parts
+          //- .itemdetail.layout-col
+          //-   .label System User Num:
+          //-   .data #{user.id}
           div
             a.btn.tertiary.layout-size-x1.buttonpartedit(href="/user/edit/" + user.id)
               i.material-icons mode_edit
@@ -44,7 +55,6 @@ block content
                 .itemdetail.layout-width-5-8.layout-col
                   .label Create Date/Time:
                   .data #{dateTime}
-
     .description.layout-col.layout-xs-hidden.layout-sm-hidden.layout-md-hidden.layout-sd-width-3-8.layout-lg-width-3-8.layout-xl-width-4-8
       .infotext.section-hdg.section-hdg-3 User View
       .infotext Not much here right now.

@@ -10,7 +10,9 @@
         each message in messages
           - let messageClass = "msg-" + message.type;
           - let messageText = message.text;
-          .msg.layout-row.layout-width-1-1.layout-justify-between.layout-align-center(id="msg" + message.msgId class=messageClass onclick="ackMessage('" + message.msgId + "')")
-            .itemdetail.layout-width-1-2.layout-col
+          .msg.layout-row.layout-width-1-1.layout-justify-between.layout-align-center.messageClass(id="msg" + message.msgId)
+            .itemdetail.layout-width-7-8.layout-col
               .label Message:
               .data #{messageText}
+            .itemdetail.layout-width-1-8.layout-col.layout-align-end
+              i.material-icons.item-icon.clickable(id="msg_close_" + message.msgId onclick="ackMessage('" + message.msgId + "')") close

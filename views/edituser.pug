@@ -15,16 +15,7 @@ block content
             .data
               input#email(type="text" name="email" placeholder="email address" value=user.email required autofocus)
           .itemdetail.layout-col
-            label.label(for="roleparts") Role - Parts Manager: 
-            #rolepartscheck.data
-              if user.roleparts
-                input#roleparts.hidden(type="checkbox" name="roleparts" checked)
-              else
-                input#roleparts.hidden(type="checkbox" name="roleparts")
-              label.material-icons.rolepartstrue.hidden.checkbox(for="roleparts") check_box
-              label.material-icons.rolepartsfalse.checkbox(for="roleparts") check_box_outline_blank
-          .itemdetail.layout-col
-            label.label(for="roleuser") Role - User Manager: 
+            label.label(for="roleuser") User Manager Role: 
             #roleusercheck.data
               if user.roleuser
                 input#roleuser.hidden(type="checkbox" name="roleuser" checked)
@@ -33,8 +24,17 @@ block content
               label.material-icons.roleusertrue.hidden.checkbox(for="roleuser") check_box
               label.material-icons.roleuserfalse.checkbox(for="roleuser") check_box_outline_blank
           .itemdetail.layout-col
-            label.label(for="id") System User Num: 
-            .data #{user.id}
+            label.label(for="roleparts") Parts Manager Role: 
+            #rolepartscheck.data
+              if user.roleparts
+                input#roleparts.hidden(type="checkbox" name="roleparts" checked)
+              else
+                input#roleparts.hidden(type="checkbox" name="roleparts")
+              label.material-icons.rolepartstrue.hidden.checkbox(for="roleparts") check_box
+              label.material-icons.rolepartsfalse.checkbox(for="roleparts") check_box_outline_blank
+          //- .itemdetail.layout-col
+          //-   label.label(for="id") System User Num: 
+          //-   .data #{user.id}
           .itemdetail.layout-col
             label.label Actions:
             .data.layout-row

@@ -555,12 +555,47 @@ var isAuthenticated = function(req) {
   return true;
 }
 
+/**
+ * Authentication means: are you a valid user?
+ * @param {*} req 
+ * @param {*} res 
+ * @param {*} next 
+ */
 var appCheckAuthentication = function(req,res,next) {
   let myName = "appCheckAuthentication";
   logThis(myName + ": Starting authentication check...");
   if(!isAuthenticated(req)) return res.redirect('/login');
   logThis(myName + ": Found session for: " + JSON.stringify(req.user.username));
   logThis(myName + ": session is authenticated");
+  return next();
+}
+
+var isAuthorized = function(req) {
+  let myName = "isAuthorized";
+  let authorizations = {
+    "GET:/user/edit/:userId":"roleuser",
+    "GET:/part/edit/:partId":"roleparts"
+  }
+  logThis(myName + ": Checking authorization for: " + req.user.username);
+  logThis(myName + ": He's trying to access: " + req.method + ":" + req.route.path);
+  logThis(myName + ": We get: " + authorizations[req.method + ":" + req.route.path]);
+  return (req.user[authorizations[req.method + ":" + req.route.path]]==true);
+  // return false;
+}
+
+/**
+ * Authorization means: are you allowed to do what you're about to do?
+ * @param {*} req 
+ * @param {*} res 
+ * @param {*} next 
+ */
+var appCheckAuthorization = function(req,res,next) {
+  /**
+   * Maybe check authorization based on: user roles and req.baseUrl
+   * First, look up the baseUrl, check the role that it wants vs what the 
+   * user's role supports.
+   */
+  if(!isAuthorized(req)) return res.redirect('/');
   return next();
 }
 
@@ -673,10 +708,18 @@ var appGetUsers = function(req,res,next) {
   req.appData.mode = "users";
   users.db.forEach(function(user,i,a) {
     logThis(myName + ": " + user.id + " " + user.username);
+    /**
+     * TODO: We don't want the password to be passed down.
+     * So, we go through this fragile process of creating a new object
+     * piece-by-piece.
+     * Bad idea!
+     */
     req.appData.users.push({
       id:user.id,
       username:user.username,
-      email:user.email
+      email:user.email,
+      roleuser:user.roleuser||false,
+      roleparts:user.roleparts||false
     });
   });
   return next();
@@ -696,9 +739,9 @@ var appGetUser = function(req,res,next) {
       req.appData.user = {
         id:user.id,
         username:user.username,
-        roleuser:user.roleuser,
-        roleadmin:user.roleadmin,
-        email:user.email
+        email:user.email,
+        roleuser:user.roleuser||false,
+        roleparts:user.roleparts||false
       };
       req.appData.cases = cases.find("owner",user.username);
     }
@@ -854,7 +897,7 @@ var appCheckinPart = function(req,res,next) {
   if(parts.checkin(req.body.partid,req.body.caseid)) {
     parts.writeDb();
     logThis(myName + ": Redirecting to: /part/" + req.body.partid);
-    req.session.messages.push(makeMessage({type:"info",text:"Thanks! Part has been checked in."}));
+    req.session.messages.push(makeMessage({type:"info",text:"Thanks! Part: " + req.body.partnum + " has been checked in from case: " + req.body.caseid}));
     return res.redirect('/part/' + req.body.partid);
   }
   return next(new Error('Something went wrong :-('));
@@ -889,13 +932,22 @@ var appCheckoutPart = function(req,res,next) {
   }
   cases.writeDb();
   parts.writeDb();
-  let part = parts.find(req.body.partid)[0];
+  let part = parts.find("id",req.body.partid)[0];
   if(appCheckPartLevels(req.body.partid,part.mincount)<0) {
-    logThis(myName + ": Part levels are low. I want to send a message");
-    // Get who to warn
-    let mailTo = 'travis@dataimpressions.com, michael.simpson@dataimpressions, seth@dataimpressions.com';
+    // Get who to warn? Look up the names
+    let mailToList = users.find("roleparts",true);
+    let mailTo = (function(mtl){
+      let addresses = [];
+      for(var c=0;c<mtl.length;c++) {
+        if(mtl[c].hasOwnProperty('email')) {
+          addresses.push(mtl[c].email);
+        }
+      }
+      return addresses.join(", ");
+    })(mailToList);
     let subject = 'Part Supply Is Low for part: ' + part.partnum;
     let body = `
+    Dear stockr Parts Manager(s),<br>
     The supply of part: <strong>${part.partnum} ${part.description} </strong>has run below <span style='color:"#f33"'>${part.mincount}</span>.</br>
     Current available units: <span style='color:"#f33"'>${part.free}</span></br>
     Check the facts in <strong><a href="${app.locals.url}/part/${part.id}">${app.locals.appName}</a></strong>.
@@ -942,7 +994,7 @@ var appEditPart = function(req,res,next) {
   parts.db[partIndex].partnum = req.body.partnum;
   parts.db[partIndex].partaltnum = req.body.partaltnum;
   parts.db[partIndex].description = req.body.description;
-  console.log(" * * * IN-WARRANTY: " + !!(req.body.inwarranty=="on") + " * * *");
+  // console.log(" * * * IN-WARRANTY: " + !!(req.body.inwarranty=="on") + " * * *");
   parts.db[partIndex].inwarranty = !!(req.body.inwarranty=="on");
   parts.db[partIndex].make = req.body.make;
   parts.db[partIndex].count = req.body.count;
@@ -1213,7 +1265,7 @@ app.get('/users/',appCheckAuthentication,appGetUsers);
 app.post('/user/',appCheckAuthentication,appCreateUser);
 app.post('/user/edit',appCheckAuthentication,appEditUser);
 app.get('/user/:userId',appCheckAuthentication,appGetUser);
-app.get('/user/edit/:userId',appCheckAuthentication,appEditUserVerified);
+app.get('/user/edit/:userId',appCheckAuthentication,appCheckAuthorization,appEditUserVerified);
 
 app.get('/parts/add',appCheckAuthentication,appAddPart);
 app.get('/parts/',appGetParts);
@@ -1222,7 +1274,7 @@ app.get('/part/checkin/:partId/case/:caseId',appCheckAuthentication,appCheckinPa
 app.get('/part/checkout/:partId',appCheckAuthentication,appCheckoutPartVerified);
 app.post('/part/checkinverified',appCheckAuthentication,appCheckinPart);
 app.post('/part/checkoutverified',appCheckAuthentication,appCheckoutPart);
-app.get('/part/edit/:partId',appCheckAuthentication,appEditPartVerified);
+app.get('/part/edit/:partId',appCheckAuthentication,appCheckAuthorization,appEditPartVerified);
 app.post('/part/add',appCheckAuthentication,appAddPartVerified);
 app.post('/part/edit',appCheckAuthentication,appEditPart);
 app.get('/part/:partId',appCheckAuthentication,appGetPart);
