@@ -65,6 +65,24 @@ let menu = [
   {link:"/logout",text:"Log Out",icon:"highlight_off",secured:true},
 ];
 
+let authElements = {
+  "GET:/user/edit/:userId":{
+    role:"roleuser"
+  },
+  "GET:/part/edit/:partId":{
+    role:"roleparts"
+  },
+  "user_edit":{
+    role:"roleuser",
+    element:{
+      id:"user_edit_button",
+      type:"a",
+      classlist:["btn","tertiary","layout-size-x1","buttonpartedit"],
+      content:"<i class=\"material-icons\">mode_edit</i><span>Edit User</span>"
+    }
+  }
+};
+
 /**
  * ROLES:
  * Use to separate users into domains of interest and concern
@@ -570,17 +588,17 @@ var appCheckAuthentication = function(req,res,next) {
   return next();
 }
 
-var isAuthorized = function(req) {
+let isAuthorized = function(req,requiredRole) {
   let myName = "isAuthorized";
-  let authorizations = {
-    "GET:/user/edit/:userId":"roleuser",
-    "GET:/part/edit/:partId":"roleparts"
-  }
   logThis(myName + ": Checking authorization for: " + req.user.username);
   logThis(myName + ": He's trying to access: " + req.method + ":" + req.route.path);
-  logThis(myName + ": We get: " + authorizations[req.method + ":" + req.route.path]);
-  return (req.user[authorizations[req.method + ":" + req.route.path]]==true);
-  // return false;
+  logThis(myName + ": He's needs role: '" + requiredRole + "'...");
+  if(req.user.hasOwnProperty(requiredRole)) {
+    logThis(myName + ": Role '" + requiredRole + "' is: " + req.user[requiredRole]);
+    return req.user[requiredRole];
+  }
+  logThis(myName + ": Correct role not set as TRUE for this user. NOT authorized.");
+  return false;
 }
 
 /**
@@ -590,13 +608,20 @@ var isAuthorized = function(req) {
  * @param {*} next 
  */
 var appCheckAuthorization = function(req,res,next) {
+  let myName = "appCheckAuthorization";
   /**
    * Maybe check authorization based on: user roles and req.baseUrl
    * First, look up the baseUrl, check the role that it wants vs what the 
    * user's role supports.
    */
-  if(!isAuthorized(req)) return res.redirect('/');
-  return next();
+  if(authElements.hasOwnProperty(req.method + ":" + req.route.path)) {
+    if(isAuthorized(req,authElements[req.method + ":" + req.route.path].role)) {
+      logThis(myName + ": Authorized for request: " + req.method + ":" + req.route.path);
+      return next();
+    }
+  }
+  logThis(myName + ": NOT Authorized for request: " + req.method + ":" + req.route.path);
+  return res.redirect('/');
 }
 
 var timeStart = function(req,res,next) {
@@ -1135,6 +1160,32 @@ var appGetDashboard = function(req,res,next) {
   return next();
 }
 
+let getElement = function(element) {
+  let requestedElement = {};
+  console.log("Fetching: " + element);
+  if(authElements.hasOwnProperty(element)) {
+    requestedElement = authElements[element].element;
+  }
+  return requestedElement;
+}
+
+let appGetElement = function(req,res,next) {
+  let myName = "appGetElement";
+
+  if(authElements.hasOwnProperty(req.params.element)) {
+    if(isAuthorized(req,authElements[req.params.element].role)) {
+      logThis(myName + ": Authorized for request: " + req.method + ":" + req.route.path);
+      let element = getElement(req.params.element);
+      logThis(myName + ": Sending element: " + JSON.stringify(element));
+      return res.json(element);
+    }
+  }
+  logThis(myName + ": NOT Authorized for request: " + req.method + ":" + req.route.path);
+  return res.json({
+    'error':"Not authorized"
+  });
+}
+
 let appSetHome = function(req,res,next) {
   req.appData.mode = "home";
   return next();
@@ -1266,6 +1317,7 @@ app.post('/user/',appCheckAuthentication,appCreateUser);
 app.post('/user/edit',appCheckAuthentication,appEditUser);
 app.get('/user/:userId',appCheckAuthentication,appGetUser);
 app.get('/user/edit/:userId',appCheckAuthentication,appCheckAuthorization,appEditUserVerified);
+// app.get('/user/edit/:userId',appCheckAuthentication,appEditUserVerified);
 
 app.get('/parts/add',appCheckAuthentication,appAddPart);
 app.get('/parts/',appGetParts);
@@ -1283,6 +1335,8 @@ app.get('/cases/',appGetCases);
 app.get('/case/edit/:caseId',appCheckAuthentication,appEditCaseVerified);
 app.post('/case/edit',appCheckAuthentication,appEditCase);
 app.get('/case/:caseId',appCheckAuthentication,appGetCase);
+
+app.post('/authorizedelements/:element',appCheckAuthentication,appGetElement);
 
 app.get('/messages/ack/:msgId',appCheckAuthentication,appAckMsg);
 
