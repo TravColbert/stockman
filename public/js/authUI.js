@@ -25,15 +25,13 @@ let requestElement = function(parentElement) {
       console.log(elementJson.error);
     } else {
       console.log(elementJson);
-      if(Array.isArray(elementJson)) {
-        let requestedElement = [];
-        for(let c=0;c<elementJson.length;c++) {
-          elementJson[c].parent = parentElement;
-          requestedElement[c] = new Laminar.Widget(elementJson);
+      elementJson.parent = parentElement;
+      let user_button = new Laminar.Widget(elementJson);
+      var attributes = Object.keys(parentElement.dataset);
+      for(c in attributes) {
+        if(attributes[c]!="fetch") {
+          user_button.set(attributes[c],parentElement.dataset[attributes[c]]);
         }
-      } else {
-        elementJson.parent = parentElement;
-        let user_button = new Laminar.Widget(elementJson);
       }
     }
   })
