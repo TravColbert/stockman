@@ -17,6 +17,10 @@ block content
         .itemdetail.layout-col
           .label Owner:
           .data #{caseRecord.owner}
+        if(caseRecord.notes)
+          .itemdetail.layout-col
+            .label Notes:
+            pre.data #{caseRecord.notes}
         .itemdetail.layout-col
           .label Parts Checked-Out:
           .data #{parts.length}

@@ -21,6 +21,10 @@ block content
             label.label(for="owner") Owner: 
             .data
               input#owner(type="text" name="owner" placeholder="owner" value=caseRecord.owner)
+          .itemdetail.layout-col
+            label.label(for="notes") Notes: 
+            .data
+              textarea#notes(name="notes" placeholder="notes" rows="5" maxlength="255") #{caseRecord.notes}
           .partsubmit.itemdetail.layout-col
             label.label Actions:
             .data.layout-row
@@ -29,34 +33,13 @@ block content
       .description.layout-col.layout-xs-hidden.layout-sm-hidden.layout-md-hidden.layout-sd-width-3-8.layout-lg-width-3-8.layout-xl-width-4-8
         .infotext.section-hdg.section-hdg-3 Edit Case View
         .infotext You can certain details of cases with this view.
-        .infotext Modify the details for the part that you would like to add.
-        .infotext.section-hdg.section-hdg-3 Date
-        .infotext Enter the manufacturer's name here. This should be the manufacturer for wich the part should be used.
-        .infotext.example.layout-col 
-          .infotext.heading Examples:
-          .infotext Acer
-          .infotext Lenovo
-          .infotext HP
+        .infotext Modify the details for the case.
+        .infotext.section-hdg.section-hdg-3 Date/Time
+        .infotext Enter the date and time for the case. This is generally the time that the case was opened however you might enter the date that the case was modified.
         .infotext.important This is a required field.
-        .infotext.section-hdg.section-hdg-3 Part Number
-        .infotext Enter the ID, serial-number or part-number here.
-        .infotext.example.layout-col 
-          .infotext.heading Examples:
-          .infotext 6M.G55N7.001
-        .infotext As noted above - try to match the 'case' and layout that the manufacturer uses. Use the punctuation, dashes, spaces, etc that your manufacturer's software would recognize.
+        .infotext.section-hdg.section-hdg-3 Owner
+        .infotext Enter the username for the user who 'owns' the case.
         .infotext.important This is a required field.
-        .infotext.section-hdg.section-hdg-3 Alternate Part Number
-        .infotext Some parts have an alternate, completely-compatible part available for repaired units. The manufacturer may send the alternate part when the primary part number has been requested. Enter the alternate ID, serial-number or part-number here.
-        .infotext.section-hdg.section-hdg-3 Description
-        .infotext Enter a helpful description here.
-        .infotext SUGGESTION: if you have more data that you would like to use (for search or identification) you might try using dashes or some othe delimiter to separate 'fields' within this Description field.
-        .infotext.example.layout-col 
-          .infotext.heading Examples:
-          .infotext R11 - C738T - LCD LED touch panel w/ bezel 11.6
-        .infotext Notice (above) that the 'model name', 'model number', and text description of this part is included in one field by delimiting them with a dash(-).
-        .infotext Decide on a standard and try to stick with it.
-        .infotext.important This is a required field.
-        .infotext.section-hdg.section-hdg-3 Stock Level
-        .infotext Enter the desired total amount of parts that should be in stock.
-
+        .infotext.section-hdg.section-hdg-3 Notes
+        .infotext Enter any relevant notes attached to the case. The notes field is searchable.
       

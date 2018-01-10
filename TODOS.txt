@@ -1,4 +1,5 @@
 BUGS:
+BUG: App search is injecting spurious fields in databases
 BUG: [FIXED] USER view still shows messages with hashed passwords
 BUG: [FIXED] Wrong part information would be used when generating stock level emails
 BUG: USER view shows ALL cases - even cases that have long been closed
@@ -7,7 +8,7 @@ FEATURE REQUESTS:
 TODO: [DONE] Modify messages interface with CLOSE icon.
 TODO: [DONE] Modify layout of parts-list-style icons to be more compact
 TODO: [DONE] UserId/Number in views - not normally needed
-TODO: Add a 'Notes' field that can be for tracking numbers, etc
+TODO: [DONE] Add a 'Notes' field that can be for tracking numbers, etc
 TODO: Improve messages for:
   [DONE]Part checked in - show the number of part/case number closed
   Part checked out - show part number [DONE] and case

@@ -77,11 +77,15 @@ a {
   /* border-color: #FB3640; */
   background: #F55D3E;
 }
-input {
+input, textarea {
+  font-family: 'Nunito', sans-serif;
   font-size: 0.9em;
   padding: 0.6em;
   border: 0px solid #ddd;
   border-radius: 5px;
+}
+textarea {
+  width: 100%;
 }
 /* Navigation Styles */
 nav, footer {
@@ -341,6 +345,12 @@ form#search {
 }
 .itemdetail .checkbox.warrantyyes {
   color: #4577D4;
+}
+.itemdetail pre {
+  font-size: 1.2em;
+  font-family: 'Nunito', sans-serif;
+  /* font-size: 0.9em; */
+  margin: 0;
 }
 input#inwarranty:checked ~ .warrantyno {
   display: none;

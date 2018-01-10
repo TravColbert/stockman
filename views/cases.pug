@@ -15,6 +15,10 @@ block content
           .itemdetail.layout-col
             .label Owner:
             .data #{item.owner}
+          if(item.notes)
+            .itemdetail.layout-col
+              .label Notes:
+              pre.data #{item.notes}
     .description.layout-col.layout-xs-hidden.layout-sm-hidden.layout-md-hidden.layout-sd-width-3-8.layout-lg-width-3-8.layout-xl-width-4-8
         .infotext.section-hdg.section-hdg-3 Case List
         .infotext This is the list of all open cases in which parts have been checked out.

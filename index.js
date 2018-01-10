@@ -139,7 +139,8 @@ let cases = {
     this.db.push({
       id:caseRecord.id,
       time:caseRecord.time,
-      owner:caseRecord.owner
+      owner:caseRecord.owner,
+      notes:caseRecord.notes || null
     });
     return caseRecord.id;
   },
@@ -147,6 +148,7 @@ let cases = {
     field = field || null;
     let results = this.db.filter(function(itemRecord) {
       let targetString = itemRecord.id.toLowerCase() + " " + itemRecord.owner.toLowerCase();
+      if(itemRecord.notes) targetString += " " + itemRecord.notes.toLowerCase();
       return targetString.includes(searchString);
     });
     return results;
@@ -1102,9 +1104,7 @@ var appGetCase = function(req,res,next) {
   req.appData.caseRecord = cases.find("id",caseId)[0];
   logThis(myName + ": " + JSON.stringify(req.appData.caseRecord));
   let partsList = parts.findByCase(caseId).slice(0);
-  // req.appData.parts = parts.findByCase(caseId);
   logThis(myName + ": STARTS WITH: " + JSON.stringify(partsList));
-  // logThis(myName + ": MIDDLE: " + partsList.slice(0));
   logThis(myName + ": CASES: " + JSON.stringify(partsList));
   logThis(myName + ": CASE_ID: " + caseId);
   for(let c=0; c<partsList.length; c++) {
@@ -1152,6 +1152,7 @@ var appEditCase = function(req,res,next) {
   cases.db[caseIndex].id = req.body.caseid;
   cases.db[caseIndex].time = parseInt(req.body.datetime);
   cases.db[caseIndex].owner = req.body.owner;
+  cases.db[caseIndex].notes = req.body.notes || null;
   cases.writeDb();
   return res.redirect('/case/' + req.body.caseid);
 }
