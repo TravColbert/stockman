@@ -14,8 +14,8 @@ TODO: Improve messages for:
   When you edit parts/cases there should be an acknowledgement
 TODO: [DONE] Add roles to users. GOAL: Help stockr know who to email about parts ordering, old cases, etc.
 TODO: [DONE] Only mail parts managers about stock levels
-TODO: Only allow user managers to edit users
-TODO: Only allow parts managers to add/edit/delete parts
+TODO: [DONE] Only allow user managers to edit users
+TODO: [DONE] Only allow parts managers to add/edit/delete parts
 TODO: Add more descriptive help text to 'users' and 'user' views
 TODO: Change 'time' field in case DB to openTime and closeTime. GOAL: add more metrics to dashboard
 TODO: Break away DB functions into a separate module
