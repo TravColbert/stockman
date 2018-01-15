@@ -18,7 +18,7 @@ TODO: Improve messages for:
   [DONE]Part checked in - show the number of part/case number closed
   Part checked out - show part number [DONE] and case
   When you edit parts/cases there should be an acknowledgement
-TODO: Add 'delete case' functionality
+TODO: [DONE] Add 'delete case' functionality
 TODO: Add more descriptive help text to 'users' and 'user' views
 TODO: Change 'time' field in case DB to openTime and closeTime. GOAL: add more metrics to dashboard
 TODO: Break away DB functions into a separate module
