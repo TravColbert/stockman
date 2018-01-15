@@ -188,6 +188,12 @@ let cases = {
     let caseList = this.db;
     return caseList.sort(compare);
   },
+  delete:function(caseId) {
+    let index = this.findIndex(caseId);
+    if(index==-1) return false;
+    if(this.db.splice(index,1).length!=0) return true;
+    return false;
+  },
   readDb:function() {
     let methodName = "readDb";
     console.log(this.myName + ": " + methodName + ": Attempting read of stored data...");
@@ -1008,9 +1014,9 @@ var appCheckoutPart = function(req,res,next) {
     let subject = 'Part Supply Is Low for part: ' + part.partnum;
     let body = `
     Dear stockr Parts Manager(s),<br>
-    The supply of part: <strong>${part.partnum} ${part.description} </strong>has run below <span style='color:"#f33"'>${part.mincount}</span>.</br>
+    The supply of part: <strong>${part.partnum} ${part.description} </strong>has at at or below the minimum level count of <span style='color:"#f33"'>${part.mincount}</span>.</br>
     Current available units: <span style='color:"#f33"'>${part.free}</span></br>
-    Check the facts in <strong><a href="${app.locals.url}/part/${part.id}">${app.locals.appName}</a></strong>.
+    Check the facts in <strong><a href="${app.locals.url}/part/${part.id}">${app.locals.appName}</a></strong>.</br>
     Sincerely,</br>
     stockr`;
     // Launch warnings: e-mail, DOM class markers etc)
@@ -1140,7 +1146,7 @@ var appEditCaseVerified = function(req,res,next) {
 var appEditCase = function(req,res,next) {
   let myName = "appEditCase";
   logThis(myName + ": Editing case #:" + req.body.caseid);
-  logThis(JSON.stringify(req.body));
+  // logThis(JSON.stringify(req.body));
   if(!req.body.hasOwnProperty("caseid") || req.body.caseid===null || req.body.caseid===undefined) {
     logThis(myName + ": No case ID given. Punting!");
     return res.redirect('/cases/');
@@ -1154,6 +1160,34 @@ var appEditCase = function(req,res,next) {
   cases.db[caseIndex].owner = req.body.owner;
   cases.db[caseIndex].notes = req.body.notes || null;
   cases.writeDb();
+  return res.redirect('/case/' + req.body.caseid);
+}
+
+var appPurgeCaseVerify = function(req,res,next) {
+  let myName = "appPurgeCaseVerify";
+  logThis(myName + ": Request to purge case #:" + req.params.caseId);
+  let caseId = req.params.caseId;
+  let caseIndex = cases.findIndex(caseId);
+  let caseList = cases.find("id",caseId);
+  if(caseIndex==-1) return next(new Error("Could not find case " + caseId));
+  req.appData.caseRecord = caseList[0];
+  req.appData.mode = "purgecase";
+  return next();
+}
+
+var appPurgeCase = function(req,res,next) {
+  let myName = "appPurgeCase";
+  logThis(myName + ": Purging case #:" + req.body.caseid);
+  if(!req.body.hasOwnProperty("caseid") || req.body.caseid===null || req.body.caseid===undefined) {
+    logThis(myName + ": No case ID given. Punting!");
+    return res.redirect('/cases/');
+  }
+  if(cases.delete(req.body.caseid)) {
+    req.session.messages.push(makeMessage({type:"info",text:"Success! Case: '" + req.body.caseid + "' has been purged."}));
+    cases.writeDb();
+    return res.redirect('/cases/');
+  }
+  req.session.messages.push(makeMessage({type:"info",text:"Oops! Case: '" + req.body.caseid + "' could not be purged. See the admin."}));
   return res.redirect('/case/' + req.body.caseid);
 }
 
@@ -1234,9 +1268,10 @@ var appSearch = function(req,res,next) {
   let results = parts.search(searchString);
   if(results.length>0) {
     results.forEach(function(v,i,a) {
-      v.resultType = "part";
-      v.resultIndex = i;
-      req.appData.search.push(v);
+      let searchItem = Object.assign({},v);
+      searchItem.resultType = "part";
+      searchItem.resultIndex = i;
+      req.appData.search.push(searchItem);
     });  
   }
   results = cases.search(searchString);
@@ -1369,6 +1404,8 @@ app.get('/cases/',appGetCases);
 app.get('/case/edit/:caseId',appCheckAuthentication,appEditCaseVerified);
 app.post('/case/edit',appCheckAuthentication,appEditCase);
 app.get('/case/:caseId',appCheckAuthentication,appGetCase);
+app.get('/case/purge/:caseId',appCheckAuthentication,appPurgeCaseVerify);
+app.post('/case/purgeverified',appCheckAuthentication,appPurgeCase)
 
 app.post('/authorizedelements/:element',appCheckAuthentication,appGetElement);
 

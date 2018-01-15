@@ -1,0 +1,39 @@
+extends index.pug
+
+block content
+  - let dateTime = new Date(caseRecord.time).toLocaleDateString() + " " + new Date(caseRecord.time).toLocaleTimeString();
+  .layout-col
+    .section-hdg.section-hdg-1 Purge Case
+    .layout-row.layout-width-1-1
+      .part-listing.layout-col.layout-width-1-1.layout-sd-width-5-8.layout-lg-width-5-8.layout-xl-width-4-8
+        form(action="/case/purgeverified" method="post")
+          input(id="caseid" type="hidden" name="caseid" value=caseRecord.id)
+          .itemdetail.layout-col
+            label.label Case: 
+            .data
+              div #{caseRecord.id}
+          .itemdetail.layout-col
+            .label Date/Time:
+            .data #{dateTime}
+          .itemdetail.layout-col
+            .label Owner:
+            .data #{caseRecord.owner}
+          if(caseRecord.notes)
+            .itemdetail.layout-col
+              .label Notes:
+              pre.data #{caseRecord.notes}
+          - let hasParts = caseRecord.hasOwnProperty("parts");
+          - let partsAttached = (hasParts) ? caseRecord.parts.length : 0;
+          if(partsAttached==0)
+            .partsubmit.itemdetail.layout-col
+              label.label Actions:
+              .data.layout-row
+                input.btn.danger.layout-size-x1.buttonpartpurge(type="submit" id="submit" value="Confirm Purge")
+                //- input.btn.primary.buttonconfirm(type="submit" id="submit" value="Confirm Purge")
+                a.btn.cancel(href="/case/" + caseRecord.id) Cancel
+          else
+            .partsubmit.itemdetail.layout-col
+              label.label Can't Purge!:
+              .data.layout-row
+                div This case cannot be purged because there are #{partsAttached} parts checked-out under it. Check-in the parts first, then try again.
+                a.btn.cancel(href="/case/" + caseRecord.id) Cancel

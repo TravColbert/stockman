@@ -1,8 +1,9 @@
 BUGS:
 BUG: [FIXED] USER view still shows messages with hashed passwords
 BUG: [FIXED] Wrong part information would be used when generating stock level emails
-BUG: App search is injecting spurious fields in databases
+BUG: [FIXED] App search is injecting spurious fields in databases
 BUG: USER view shows ALL cases - even cases that have long been closed
+BUG: Editing a case puts the wrong dat in the Date/Time field
 
 FEATURE REQUESTS:
 TODO: [DONE] Modify messages interface with CLOSE icon.
