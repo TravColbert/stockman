@@ -1,0 +1,16 @@
+[Unit]
+Description=stockr - the simplest stock-taking app
+After=network.target
+
+[Service]
+ExecStart=/var/www/stockr/index.js
+Restart=always
+User=root
+# Note RHEL/Fedora uses 'nobody', Debian/Ubuntu uses 'nogroup'
+Group=nogroup
+Environment=PATH=/usr/bin:/usr/local/bin
+Environment=NODE_ENV=production
+WorkingDirectory=/var/www/stockr
+
+[Install]
+WantedBy=multi-user.target
